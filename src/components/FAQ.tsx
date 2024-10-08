@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FAQ {
     question: string;
     answer: string;
 }
-
 
 const FAQItem: React.FC<{ faq: FAQ }> = ({ faq }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,11 +19,23 @@ const FAQItem: React.FC<{ faq: FAQ }> = ({ faq }) => {
                 <h4 className='text-main'>{faq.question}</h4>
                 <span className='signs'>{isOpen ? '-' : '+'}</span>
             </div>
-            {isOpen && (
-                <div className="faq-answer">
-                    <p>{faq.answer}</p>
-                </div>
-            )}
+            {/* Используем AnimatePresence для плавного появления/исчезновения */}
+            <AnimatePresence initial={false}>
+                {isOpen && (
+                    <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        style={{ overflow: 'hidden' }}
+                    >
+                        <div className="faq-answer">
+                            <p>{faq.answer}</p>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -41,17 +52,16 @@ const FAQ: React.FC = () => {
 
     return (
         <section className='section block-content'>
-        <div className="container ">
-            <h2 className="title-main">ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ</h2>
-            <div className="columns is-multiline">
-            {faqs.map((faq, index) => (
-                <div className="column is-half" key={index}>
-                    <FAQItem faq={faq} />
+            <div className="container">
+                <h2 className="title-main">ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ</h2>
+                <div className="columns is-multiline">
+                    {faqs.map((faq, index) => (
+                        <div className="column is-half" key={index}>
+                            <FAQItem faq={faq} />
+                        </div>
+                    ))}
                 </div>
-            ))}
-        </div>
-
-        </div>
+            </div>
         </section>
     );
 };
