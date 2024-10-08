@@ -1,0 +1,386 @@
+body {
+    background-color: #fff;
+}
+
+p {
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+
+    color: #000000;
+}
+
+.text-main {
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+
+    color: #000000;
+
+}
+
+
+.block-content {
+    padding-bottom: 150px;
+}
+
+
+
+.title-main{
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+
+    color: #000000;
+    margin-bottom: 25px;
+}
+
+.number{
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 80px;
+    
+    color: #331958;
+}
+
+.result{
+    margin-bottom: 100px;
+}
+.progress::-webkit-progress-value{
+    background: #331958;
+}
+
+.columns-block{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-project{
+    margin-top: 50px;
+    padding: 20px 110px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 10px;
+
+}
+
+
+.box {
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    height: 125px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.grey {
+    color: #807C7C;
+}
+
+.subtitle-main {
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+
+    color: #000000;
+
+    display: flex;
+    align-items: center;
+}
+
+.white {
+    color: #fff;
+}
+
+.stage-article {
+    width: 545px; 
+    word-wrap: break-word;
+    display: flex;
+    align-items: center;
+}
+
+.stage-text {
+    color: #9D9C9C;
+}
+
+.last-stage{
+    box-sizing: border-box;
+    background: #331958;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    height: 125px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.question{
+    margin-bottom: 100px;
+}
+
+.button-back {
+    padding: 15px 40px;
+    background: #CBC8C8;
+    border-radius: 40px;
+    color: #FFFFFF;
+}
+
+.button-next {
+    padding: 15px 40px;
+    background: #CBC8C8;
+    border-radius: 40px;
+    color: #FFFFFF;
+    background-color: #000000;
+}
+
+.faq-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.faq-item {
+    border-bottom: 1px solid #ccc; 
+    padding: 10px 0;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    cursor: pointer; 
+}
+
+.faq-answer {
+    margin-top: 10px; 
+    padding-left: 20px; 
+}
+
+
+.signs {
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+
+    color: #33363F;
+
+}
+
+.contact-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 90px 60px;
+    background-image: url('/../../public/background-image-contact.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 65px;
+    
+
+  }
+  
+  .left-block {
+    color: white;
+    max-width: 500px;
+  }
+  
+  .left-block h2 {
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+  
+  
+  
+  .phone-number {
+    text-decoration: none;
+    color: white;
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 40px;
+    
+  }
+
+  .text-bio {
+    margin-bottom: 70px;
+  }
+
+  .design-text{
+    text-decoration: none;
+    color: white;
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 40px;
+    margin-top: 135px;
+  }
+
+  .design {
+
+  }
+  
+  .design-text{
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 39px;
+
+    color: #FFFFFF;
+
+
+  }
+  
+  .right-block {
+    background-color: white;
+    padding: 32px 88px;
+    max-width: 500px;
+    border-radius: 65px;
+
+  }
+
+  .contact-logo {
+    margin-bottom: 50px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+
+  
+  .contact-form p {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .contact-form input {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    border: 0;
+
+    background: #EBEAEA;
+    border-radius: 509px;
+
+  }
+
+  .contact-form input::placeholder {
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+
+    color: #000000;
+  }
+  
+  .submit-button {
+    margin: 20px 0 20px 0;
+    width: 100%;
+    padding: 24px 114px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #331958;
+    
+
+  }
+
+
+  .label {
+    display: flex;
+    gap:5px;
+  }
+  
+  .privacy-policy {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: grey;
+  }
+  
+  .title-contact {
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    max-width: 365px;
+    line-height: 39px;
+
+    color: #FFFFFF;
+
+
+  }
+
+
+  .banner {
+    position: relative;
+    width: 100%;
+    background-image: url('/../../public/banner-img.png'); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    padding: 35px 35px 80px 35px;
+  }
+  
+  
+  .banner-content {
+    text-align: center;
+    margin-top: 50px;
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 5rem;
+    font-weight: bold;
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+    margin-top: 20px;
+  }
+  
+  .details {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 50px;
+    font-size: 1.2rem;
+    text-align: start;
+    flex-direction: column;
+    margin-top: 310px;
+
+  }
+  
+  .details p {
+    margin: 0;
+  }
+  
+  .banner-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .navbar-transparent {
+    background-color: transparent;
+  }
