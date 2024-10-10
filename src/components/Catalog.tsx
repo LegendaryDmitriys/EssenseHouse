@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 
 import { Link} from "react-router-dom";
-import { ROUTES} from '../utils/routes'
+// @ts-ignore
+import { ROUTES } from '../utils/routes'
 
 
 const Catalog: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
+
 
   const toggleDropdown = () => {
     setIsActive(!isActive);
@@ -19,15 +21,14 @@ const Catalog: React.FC = () => {
       <div className="columns">
         <aside className="column is-one-quarter">
           <nav className="panel">
-            <p className="panel-heading" onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
+            <h3 className="panel-heading" onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
               Каталог
               <span className="icon is-small" style={{ marginLeft: '10px' }}>
                 <i className={`fas ${isActive ? 'fa-angle-up' : 'fa-angle-down'}`}></i>
               </span>
-            </p>
+            </h3>
             <div className={`panel-blocks ${isActive ? '' : 'is-hidden'}`}>
               <Link className="panel-block is-active" to={ROUTES.FrameHouse}>Каркасные дома</Link>
-              {/* <Link className="panel-block" to={ROUTES.Home}>Дома из пеноблоков</Link> */}
               <Link className="panel-block" to={ROUTES.LogHouse}>Дома из оцилиндрованного бревна</Link>
               <Link className="panel-block" to={ROUTES.GlulamHouse}>Дома из клееного бруса</Link>
             </div>

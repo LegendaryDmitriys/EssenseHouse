@@ -5,7 +5,7 @@ import Header from './Header';
 const MainBanner: React.FC = () => {
   return (
     <div className="banner">
-      <Header />
+      <Header color="white"/>
       <motion.div
         className="banner-content"
         initial={{ opacity: 0, y: -50 }} 

@@ -1,4 +1,7 @@
 import React from 'react';
+// @ts-ignore
+import {ROUTES} from "../utils/routes";
+import {Link} from "react-router-dom";
 
 
 interface HeaderProps {
@@ -14,18 +17,18 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
 
       <div className="navbar-menu">
         <div className="navbar-end">
-          <a className={`navbar-item mr-5 text-main`} style={{ color: color }} href="#projects">
+          <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to={ROUTES.Project}>
             Проекты
-          </a>
-          <a className={`navbar-item mr-5 text-main`} style={{ color: color }} href="#about">
+          </Link>
+          <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#about">
             О нас
-          </a>
-          <a className={`navbar-item mr-5 text-main`} style={{ color: color }} href="#pricing">
+          </Link>
+          <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#pricing">
             Стоимость
-          </a>
-          <a className={`navbar-item mr-5 text-main`} style={{ color: color }} href="#contacts">
+          </Link>
+          <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#contacts">
             Контакты
-          </a>
+          </Link>
         </div>
         <div className="navbar-end">
           <a className="navbar-item" href="https://wa.me/380507774450">

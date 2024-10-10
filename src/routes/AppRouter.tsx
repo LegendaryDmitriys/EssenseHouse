@@ -1,16 +1,14 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+// @ts-ignore
 import { ROUTES } from "../utils/routes.js";
 import { Route, Routes } from "react-router-dom";
 import Home from '../pages/Home';
 import Project from '../pages/Project';
-import HouseKleeHouse from '../pages/GlulamHouse.js'
 import GlulamHouse from '../pages/GlulamHouse.js';
 import LogHouse from '../pages/LogHouse.js';
 import FrameHouse from '../pages/FrameHouse.js';
 
 const AppRoutes: React.FC = () => {
-    const location = useLocation();
     return (
         <div>
             <div>
