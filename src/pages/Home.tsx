@@ -1,7 +1,6 @@
 import React from "react";
 import '../styles/min.css'
 
-import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Outer from "../components/Outer";
 import ProjectSection from "../components/ProjectSection";

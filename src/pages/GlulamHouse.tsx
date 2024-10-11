@@ -58,7 +58,7 @@ const GlulamHouse: React.FC = () => {
                               onMouseLeave={() => setHoveredIndex(null)}
                           >
                               <div className="card-image">
-                                  <Link to={project.route}>
+                                  <Link to={`${ROUTES.GlulamHouse}/${project.id}`}>
                                       <figure className="image is-4by3">
                                           <img
                                               src={hoveredIndex === index ? project.hoverImage : project.image}

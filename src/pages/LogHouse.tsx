@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
 
-
-
 import CatalogMenu from "../components/Project/CatalogMenu.tsx";
 import {Link} from "react-router-dom";
 import FilterBar from "../components/Project/FilterBar.tsx";
@@ -59,7 +57,7 @@ const Catalog: React.FC = () => {
                         onMouseLeave={() => setHoveredIndex(null)}
                     >
                       <div className="card-image">
-                        <Link to={project.route}>
+                        <Link to={`${ROUTES.LogHouse}/${project.id}`}>
                           <figure className="image is-4by3">
                             <img
                                 src={hoveredIndex === index ? project.hoverImage : project.image}
