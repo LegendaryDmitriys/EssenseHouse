@@ -1,6 +1,9 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import useOnScreen from '../../src/hooks/useOnScreen';
+// @ts-ignore
+import {ROUTES} from "../utils/routes";
+import {Link} from "react-router-dom";
 const projects = [
   { id: 1, imgSrc: '../../public/zm-1.png', label: 'ZM-1' },
   { id: 2, imgSrc: '../../public/zm-2.png', label: 'ZM-2' },
@@ -27,6 +30,7 @@ const ProjectSection: React.FC = () => {
               transition={{ duration: 0.6, delay: index * 0.3 }} 
             >
               <div className="card">
+                <Link to={`${ROUTES.FrameHouse}/1`}>
                 <div className="card-image">
                   <figure className="image is-4by3">
                     <motion.img
@@ -45,6 +49,7 @@ const ProjectSection: React.FC = () => {
                     </motion.div>
                   </figure>
                 </div>
+                </Link>
               </div>
             </motion.div>
           ))}

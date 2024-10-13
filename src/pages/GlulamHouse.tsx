@@ -44,6 +44,8 @@ const GlulamHouse: React.FC = () => {
     <div className="container">
       <article className="catalog-href">
         <span className="text-main grey">Главная - Типовые проекты - Дома из клееного бруса</span>
+        <h1 className='title-main'>Дома из клееного бруса</h1>
+        <p>Дома из клееного бруса — это экологичный выбор для загородной жизни за разумную стоимость. Вы можете сэкономить на отделке, ведь обработанное дерево само по себе выглядит презентабельно.</p>
       </article>
       <div className="columns">
           <CatalogMenu/>

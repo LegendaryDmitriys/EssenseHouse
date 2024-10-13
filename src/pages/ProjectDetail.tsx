@@ -38,9 +38,9 @@ const ProjectDetail: React.FC = () => {
                             <span>Количество комнат</span>
                             <span>5</span>
                         </div>
-                        <Link to="/projects/karkasnye-doma/nova/characteristics" className="block-special__item">
+                        <a href="#characteristics" className="block-special__item">
                             Все характеристики
-                        </Link>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -139,17 +139,68 @@ const ProjectDetail: React.FC = () => {
                     </section>
 
                     {activeSection === 'characteristics' && (
-                        <section className='characteristics-block all-section'>
-                            <h2>Характеристика</h2>
-                            <p>Информация о характеристиках дома...</p>
+                        <section className='characteristics-block all-section' id='characteristics'>
+                            <h2 className='characteristics-title'>Характеристика</h2>
+                            <div className='characteristics-info title-main '>
+                                <table>
+                                    <tr>
+                                        <td>Площадь, м²</td>
+                                        <td>272</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Этажей</td>
+                                        <td>3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Количество комнат</td>
+                                        <td>5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Жилая площадь, м²</td>
+                                        <td>245</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Площадь кухни, м²</td>
+                                        <td>20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Количество спален</td>
+                                        <td>3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Гараж</td>
+                                        <td>на 2 машины</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Назначение</td>
+                                        <td>для больших участков</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Количество санузлов</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Срок строительства, дней</td>
+                                        <td>от 60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Гарантия, лет</td>
+                                        <td>15</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </section>
                     )}
                     {activeSection === 'description' && (
                         <section className='description-block all-section'>
                             <h2>Описание</h2>
                             <p>
-                                «Нова» — просторный трехэтажный коттедж в стиле модерн. В нем есть все для комфортной жизни большой семьи. В пяти больших комнатах легко расположить домашних и принять гостей. Есть два санузла, которые просто необходимы для такой площади.
-                                Дом легко разделить на зоны и выделить кабинеты для удаленной работы. Просторная гостиная станет любимым местом сбора всей семьи. Благодаря панорамным окнам вы сможете любоваться природой каждое утро. Начинайте свой день с пения птиц, а не пробок и шума!
+                                «Нова» — просторный трехэтажный коттедж в стиле модерн. В нем есть все для комфортной
+                                жизни большой семьи. В пяти больших комнатах легко расположить домашних и принять
+                                гостей. Есть два санузла, которые просто необходимы для такой площади.
+                                Дом легко разделить на зоны и выделить кабинеты для удаленной работы. Просторная
+                                гостиная станет любимым местом сбора всей семьи. Благодаря панорамным окнам вы сможете
+                                любоваться природой каждое утро. Начинайте свой день с пения птиц, а не пробок и шума!
                             </p>
                             <p>
                                 <br/><strong className='subtitle-main'>Отличительные особенности :</strong>
@@ -172,14 +223,108 @@ const ProjectDetail: React.FC = () => {
                     )}
                     {activeSection === 'finishing' && (
                         <section className="finishing-block all-section">
-                            <h2>Варианты отделки</h2>
-                            <p>Информация о вариантах отделки...</p>
+                            <h2 className='tariff-title'>Варианты отделки</h2>
+                            <div className='tarrif-list'>
+                                <div className='tarrif-list__item'>
+                                    <div className='tarrif-list__head'>
+                                        <img src="../../public/otdelka.png" alt="" className="tarrif-img"/>
+                                        <h3 className='subtitle'>Косметический ремонт</h3>
+                                    </div>
+                                    <div>
+                                        <div className='tarrif-list__info'>
+                                            <div className='tarrif-list__text'>
+                                                <p>Прекрасное решение для обновления интерьера помещения, улучшения его
+                                                    эстетики.</p>
+                                                <ul>
+                                                    <li>Демонтажные работы</li>
+                                                    <li>Монтаж натяжных потолков</li>
+                                                    <li>Шпатлевка стен под обои</li>
+                                                    <li>Покраска стен</li>
+                                                    <li>Установка плинтусов</li>
+                                                </ul>
+                                            </div>
+                                            <div className='tarrif-list__price'>
+                                                <p>от 3 500 ₽ за 1 м²</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='tarrif-list__item'>
+                                    <div className='tarrif-list__head'>
+                                        <img src="../../public/otdelka.png" alt="" className="tarrif-img"/>
+                                        <h3 className='subtitle'>Косметический ремонт</h3>
+                                    </div>
+                                    <div>
+                                        <div className='tarrif-list__info'>
+                                            <div className='tarrif-list__text'>
+                                                <p>Прекрасное решение для обновления интерьера помещения, улучшения его
+                                                    эстетики.</p>
+                                                <ul>
+                                                    <li>Демонтажные работы</li>
+                                                    <li>Монтаж натяжных потолков</li>
+                                                    <li>Шпатлевка стен под обои</li>
+                                                    <li>Покраска стен</li>
+                                                    <li>Установка плинтусов</li>
+                                                </ul>
+                                            </div>
+                                            <div className='tarrif-list__price'>
+                                                <p>от 3 500 ₽ за 1 м²</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='tarrif-list__item'>
+                                    <div className='tarrif-list__head'>
+                                        <img src="../../public/otdelka.png" alt="" className="tarrif-img"/>
+                                        <h3 className='subtitle'>Косметический ремонт</h3>
+                                    </div>
+                                    <div>
+                                        <div className='tarrif-list__info'>
+                                            <div className='tarrif-list__text'>
+                                                <p>Прекрасное решение для обновления интерьера помещения, улучшения его
+                                                    эстетики.</p>
+                                                <ul>
+                                                    <li>Демонтажные работы</li>
+                                                    <li>Монтаж натяжных потолков</li>
+                                                    <li>Шпатлевка стен под обои</li>
+                                                    <li>Покраска стен</li>
+                                                    <li>Установка плинтусов</li>
+                                                </ul>
+                                            </div>
+                                            <div className='tarrif-list__price'>
+                                                <p>от 3 500 ₽ за 1 м²</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </section>
                     )}
                     {activeSection === 'documents' && (
                         <section className="documents-block all-section">
-                            <h2>Документы</h2>
-                            <p>Документы, касающиеся проекта...</p>
+                            <h2 className='documents-title'>Документы</h2>
+                            <div className='documents-list'>
+                                <div className='documents-list__item'>
+                                    <img src="../../public/doc.png" alt=""/>
+                                    <div className='documents-list__info'>
+                                        <article>
+                                            <p>Коммерческое предложение</p>
+                                            <p>29 байт</p>
+                                        </article>
+                                        <i className="fas fa-download download-icon"></i>
+                                    </div>
+                                </div>
+                                <div className='documents-list__item'>
+                                    <img src="../../public/doc.png" alt=""/>
+                                    <div className='documents-list__info'>
+                                        <article>
+                                            <p>Коммерческое предложение</p>
+                                            <p>29 байт</p>
+                                        </article>
+                                        <i className="fas fa-download download-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </section>
                     )}
 

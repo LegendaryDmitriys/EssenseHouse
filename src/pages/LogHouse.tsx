@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import CatalogMenu from "../components/Project/CatalogMenu.tsx";
 import {Link} from "react-router-dom";
 import FilterBar from "../components/Project/FilterBar.tsx";
+// @ts-ignore
 import {ROUTES} from "../utils/routes";
 
 const Catalog: React.FC = () => {
@@ -43,6 +44,8 @@ const Catalog: React.FC = () => {
       <div className="container">
         <article className="catalog-href">
           <span className="text-main grey">Главная - Типовые проекты - Дома из оцилиндрованного бревна</span>
+          <h1 className='title-main'>Дома из оцилиндрованного бревна</h1>
+          <p>Готовый дом из оцилиндрованного бревна — это теплый и уютный коттедж по разумной цене. Вы можете выбрать подходящий проект и заказать такой же для своего участка.</p>
         </article>
         <div className="columns">
           <CatalogMenu/>

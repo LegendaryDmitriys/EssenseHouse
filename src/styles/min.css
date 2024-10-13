@@ -2,6 +2,10 @@ body {
     background-color: #fff;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 p {
     font-family: 'Cygre';
     font-style: normal;
@@ -626,7 +630,11 @@ p {
     transition: border 0.3s;
 }
 
-
+.button.is-active-filter {
+    background-color: #331958;
+    color: white;
+    border: transparent;
+}
 
 .filter-options button.active {
     background-color: #331958;
@@ -740,15 +748,15 @@ p {
 }
 
 .price-section {
-    top: 50px;
+    top: 100px;
     width: 350px;
     position: sticky;
-    background: #f8f8f8;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex-shrink: 0;
+    border-radius: 4px;
 }
 
 .price-details {
@@ -973,36 +981,275 @@ p {
 .house-nav li {
     cursor: pointer;
     padding: 10px 20px;
-    background-color: #f4f4f4;
     margin-right: 5px;
     transition: background-color 0.3s ease;
     margin-top: 10px;
     color: #555555;
-    border: 1px solid #000;
+    border: 1px solid #bfbfbf;
 
 }
 
 .house-nav li {
     cursor: pointer;
     padding: 10px 20px;
-    background-color: #f4f4f4;
     margin-right: 5px;
     transition: background-color 0.3s ease;
-    border-top: 1px solid #000;
+    border-top: 1px solid #bfbfbf;
 }
 
 
 .house-nav li:hover {
-    background-color: #FFFFFF;
 }
 
 .house-nav li.active {
-    background-color: #fff;
     font-weight: bold;
     color: #331958;
     border-top: 3px solid #331958;
 }
 
+.characteristics-title {
+    margin-bottom: 20px;
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    color: #000000;
+}
+
 .all-section {
     padding-bottom: 80px;
+}
+
+
+.characteristics-info {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.characteristics-info table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.characteristics-info td {
+    padding: 10px 0;
+    color: #333;
+    vertical-align: top;
+}
+
+.characteristics-info td:first-child {
+    text-align: left;
+    padding-right: 10px;
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.characteristics-info td:first-child::after {
+    content: "";
+    display: block;
+    border-bottom: 1px dotted #000000;
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.characteristics-info td:last-child {
+    width: 20%;
+    white-space: nowrap;
+}
+
+
+
+.tarrif-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.tarrif-list__item {
+    padding: 20px;
+    display: flex;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarrif-list__item:hover {
+    border-color: transparent;
+    box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+.tarrif-list__info{
+    display: flex;
+    padding-left: 39px;
+}
+
+.tarrif-list__price {
+
+}
+
+.tarrif-img{
+    border-radius: 50%;
+    height: 120px;
+    width: 120px;
+}
+
+.tarrif-list__head {
+    display: flex;
+
+}
+
+.tarrif-list__head h3 {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.tarrif-list__text p{
+    max-width: 310px;
+}
+
+.subtitle {
+    font-family: 'PP Neue Machina';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    margin: 0;
+    color: #000000;
+}
+
+.tariff-title{
+    margin-bottom: 20px;
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    color: #000000;
+}
+
+.documents-title {
+    margin-bottom: 20px;
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    color: #000000;
+}
+
+.documents-list {
+    width: 100%;
+}
+
+.documents-list__item {
+    display: flex;
+    padding: 27px 32px;
+    border: 1px solid #e0e0e0;
+    align-items: center;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.documents-list__item:hover {
+    border-color: transparent;
+    box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.documents-list__item img {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.documents-list__info {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.documents-list__info article {
+    display: flex;
+    flex-direction: column;
+}
+
+.download-icon {
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.documents-list__item:hover .download-icon {
+    color: #331958;
+}
+
+
+.dropdown-item {
+    font-family: 'Cygre';
+    font-style: normal;
+    font-weight: 400;
+
+    color: #000000;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+}
+
+
+.dropdown-item:hover {
+    background-color: #eee;
+}
+
+
+.dropdown-item.active {
+    background-color: #331958;
+    color: white;
+}
+
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item label {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-item input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-scrolled {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.container {
+    padding: 10px;
+}
+
+.navbar-item.mr-5.text-main:hover {
+    color: #331958;
+}
+
+
+.navbar-item:hover {
+    color: #331958;
+    background-color: transparent;
 }

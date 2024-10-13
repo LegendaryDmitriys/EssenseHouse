@@ -15,10 +15,11 @@ const Catalog: React.FC = () => {
 
   return (
     <div className="container">
-      <article className="catalog-href">
-        <span className="text-main grey">Главная - Типовые проекты</span>
-      </article>
-      <div className="columns">
+        <article className="catalog-href">
+            <span className="text-main grey">Главная - Типовые проекты</span>
+        </article>
+
+        <div className="columns">
         <aside className="column is-one-quarter">
           <nav className="panel">
             <h3 className="panel-heading" onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
