@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -14,11 +14,14 @@
     "@react-buddy/ide-toolbox": "^2.4.0",
     "bulma": "^1.0.2",
     "framer-motion": "^11.11.4",
+    "gsap": "^3.12.5",
     "konva": "^9.3.15",
+    "leaflet": "^1.9.4",
     "node-sass": "^9.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-konva": "^18.2.10",
+    "react-leaflet": "^4.2.1",
     "react-range": "^1.10.0",
     "react-router-dom": "^6.26.2",
     "sass": "^1.79.4",

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
-import {ROUTES} from "../../utils/routes";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+import {ROUTES} from "../../utils/routes";
 
 
 const CatalogMenu: React.FC = () => {

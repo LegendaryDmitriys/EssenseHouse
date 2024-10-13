@@ -193,7 +193,7 @@ const ProjectDetail: React.FC = () => {
                     )}
                     {activeSection === 'description' && (
                         <section className='description-block all-section'>
-                            <h2>Описание</h2>
+                            <h2 className='description-title'>Описание</h2>
                             <p>
                                 «Нова» — просторный трехэтажный коттедж в стиле модерн. В нем есть все для комфортной
                                 жизни большой семьи. В пяти больших комнатах легко расположить домашних и принять

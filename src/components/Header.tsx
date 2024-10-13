@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
             <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#pricing">
               Стоимость
             </Link>
-            <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#contacts">
+            <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to={ROUTES.Contacts}>
               Контакты
             </Link>
           </div>
