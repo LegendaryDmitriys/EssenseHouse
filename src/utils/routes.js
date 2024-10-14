@@ -8,4 +8,6 @@ export const ROUTES = {
     LogHouseDetails: "/product/doma-iz-ocilindrovannogo-brevna/:id",
     FrameHouseDetails: "/product/karkas-doma/:id",
     Contacts: "/contacts",
+    About: "/about",
+    Reviews: "/reviews",
 }

@@ -1,11 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Header from './Header';
 
 const MainBanner: React.FC = () => {
   return (
     <div className="banner">
-      <Header color="white"/>
       <motion.div
         className="banner-content"
         initial={{ opacity: 0, y: -50 }} 

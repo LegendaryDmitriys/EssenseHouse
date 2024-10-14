@@ -9,6 +9,8 @@ import LogHouse from '../pages/LogHouse.js';
 import FrameHouse from '../pages/FrameHouse.js';
 import ProjectDetail from "../pages/ProjectDetail.tsx";
 import ContactsPage from "../pages/ContactsPage.tsx";
+import About from "../pages/About.tsx";
+import Reviews from "../pages/Reviews.tsx";
 
 const AppRoutes: React.FC = () => {
     return (
@@ -24,6 +26,8 @@ const AppRoutes: React.FC = () => {
                     <Route path={ROUTES.LogHouseDetails} element={<ProjectDetail />} />
                     <Route path={ROUTES.FrameHouseDetails} element={<ProjectDetail />} />
                     <Route path={ROUTES.Contacts} element={<ContactsPage/>} />
+                    <Route path={ROUTES.About} element={<About/>} />
+                    <Route path={ROUTES.Reviews} element={<Reviews />} />
                 </Routes>
             </div>
         </div>

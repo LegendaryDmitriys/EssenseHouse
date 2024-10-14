@@ -1,4 +1,8 @@
 import React from 'react'
+import sprite from "../../public/sprite.svg";
+import {Link} from "react-router-dom";
+// @ts-ignore
+import {ROUTES} from "../utils/routes";
 
 
 
@@ -7,22 +11,26 @@ const Footer: React.FC = () => {
         <>
             <footer className='footer navbar'>
                 <div className="navbar-logo">
-                    <img  src="../../public/logo-white.png" alt="Essense House" className="logo" />
+                    <Link to={ROUTES.Home}>
+                        <svg className='logo-footer' width={190} height={21} fill="white">
+                            <use xlinkHref={sprite + "#logo"}/>
+                        </svg>
+                    </Link>
                 </div>
                 <div className="navbar-menu">
                     <div className="navbar-end">
-                        <a className="navbar-item mr-5" href="#projects">
-                        Проекты
-                        </a>
-                        <a className="navbar-item mr-5" href="#about">
-                        О нас
-                        </a>
+                        <Link className="navbar-item mr-5" to={ROUTES.Project}>
+                            Проекты
+                        </Link>
+                        <Link className="navbar-item mr-5" to={ROUTES.About}>
+                            О нас
+                        </Link>
                         <a className="navbar-item mr-5" href="#pricing">
-                        Стоимость
+                            Стоимость
                         </a>
-                        <a className="navbar-item mr-5" href="#contacts">
-                        Контакты
-                        </a>
+                        <Link className="navbar-item mr-5" to={ROUTES.Contacts}>
+                            Контакты
+                        </Link>
                     </div>
                     <div className="navbar-end">
                         <a className="navbar-item" href="https://wa.me/380507774450">

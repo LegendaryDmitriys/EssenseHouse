@@ -27,24 +27,25 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
   return (
       <header className={`navbar ${isScrolled ? 'navbar-scrolled' : 'navbar-transparent'} container section`}>
         <div className="navbar-logo">
-          {/*<img src="../../public/logo-white.png" alt="Essense House" className="logo" />*/}
-          <svg className='logo' width={134} height={51}>
-            <use xlinkHref={sprite + "#logo"}/>
-          </svg>
+          <Link to={ROUTES.Home}>
+            <svg className='logo' width={190} height={25}>
+              <use xlinkHref={sprite + "#logo"}/>
+            </svg>
+          </Link>
         </div>
 
         <div className="navbar-menu">
           <div className="navbar-end">
-            <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to={ROUTES.Project}>
+            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Project}>
               Проекты
             </Link>
-            <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#about">
+            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.About}>
               О нас
             </Link>
-            <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to="#pricing">
-              Стоимость
+            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Reviews}>
+              Отзывы
             </Link>
-            <Link className={`navbar-item mr-5 text-main`} style={{ color: color }} to={ROUTES.Contacts}>
+            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Contacts}>
               Контакты
             </Link>
           </div>

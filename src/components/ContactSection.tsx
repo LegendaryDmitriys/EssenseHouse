@@ -107,7 +107,7 @@ const ContactSection: React.FC = () => {
               <motion.button 
                 type="submit" 
                 className="submit-button text-main white"
-                whileHover={{ scale: 1.1, backgroundColor: '#ffcc00' }} 
+                whileHover={{ scale: 1.1, backgroundColor: '#452377' }}
                 whileTap={{ scale: 0.95 }}
               >
                 Отправить
