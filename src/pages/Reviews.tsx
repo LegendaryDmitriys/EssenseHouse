@@ -14,7 +14,7 @@ interface Review {
 
 const Reviews: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [showForm, setShowForm] = useState<boolean>(false); // Состояние для управления видимостью формы
+    const [showForm, setShowForm] = useState<boolean>(false);
 
     const handleReviewSubmit = (name: string, reviewText: string, rating: number) => {
         const newReview: Review = {
@@ -26,7 +26,7 @@ const Reviews: React.FC = () => {
         };
 
         setReviews([...reviews, newReview]);
-        setShowForm(false); // Скрываем форму после отправки
+        setShowForm(false);
     };
 
     return (

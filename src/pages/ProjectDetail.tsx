@@ -1,10 +1,28 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
+import sprite from "../../public/sprite.svg";
 
 const ProjectDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-
+    const [projectData, setProjectData] = useState<any>(null);
     const [activeSection, setActiveSection] = useState<'characteristics' | 'description' | 'finishing' | 'documents'>('characteristics');
+
+    console.log("Project ID:", id);
+
+
+    useEffect(() => {
+        const fetchProjectData = async () => {
+            try {
+                const response = await fetch(`http://192.168.0.103:8000/houses/${id}`);
+                const data = await response.json();
+                setProjectData(data);
+            } catch (error) {
+                console.error("Ошибка при загрузке данных проекта:", error);
+            }
+        };
+
+        fetchProjectData();
+    }, [id]);
 
     return (
         <div className="container">
@@ -28,7 +46,7 @@ const ProjectDetail: React.FC = () => {
                     <div className="block-special text-main white">
                         <div className="block-special__item">
                             <span>Площадь, м²</span>
-                            <span>272</span>
+                            <span>{projectData.area}</span>
                         </div>
                         <div className="block-special__item">
                             <span>Этажей</span>
@@ -67,18 +85,27 @@ const ProjectDetail: React.FC = () => {
                         <div className="tizer-list">
                             <div className="tizer-list__item">
                                 <article>
+                                    <svg className='detail-icon' width={40} height={40}>
+                                        <use xlinkHref={sprite + "#square-icon"}/>
+                                    </svg>
                                     <h4>Подготавливаем площадь</h4>
                                     <p>Ровняем местность, проводим коммуникации и заливаем фундамент</p>
                                 </article>
                             </div>
                             <div className="tizer-list__item">
                                 <article>
+                                    <svg className='detail-icon' width={40} height={40}>
+                                        <use xlinkHref={sprite + "#build-icon"}/>
+                                    </svg>
                                     <h4>Строим дом</h4>
                                     <p>Устанавливаем и утепляем стены, кроем крышу и застилаем пол</p>
                                 </article>
                             </div>
                             <div className="tizer-list__item">
                                 <article>
+                                    <svg className='detail-icon' width={40} height={40}>
+                                        <use xlinkHref={sprite + "#comfort-icon"}/>
+                                    </svg>
                                     <h4>Добавляем комфорта</h4>
                                     <p>Устанавливаем двери, проводим внешнюю и внутреннюю отделку, подключаем к
                                         электросети</p>
@@ -87,7 +114,7 @@ const ProjectDetail: React.FC = () => {
                         </div>
                     </section>
                     <section className="layout-block">
-                        <h2 className="title-main layout-title">Планировка</h2>
+                    <h2 className="title-main layout-title">Планировка</h2>
                         <div className="layouts">
                             <img src="../../public/planirovka.jpg" alt=""/>
                             <img src="../../public/planirovka.jpg" alt=""/>
