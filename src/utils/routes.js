@@ -6,4 +6,5 @@ export const ROUTES = {
     Reviews: "/reviews",
     CatalogCategory: "/catalog/:category",
     ProjectDetail: "/project/details/:id"
-}
+} ;
+

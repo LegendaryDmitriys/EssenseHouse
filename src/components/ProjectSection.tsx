@@ -2,8 +2,9 @@ import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import useOnScreen from '../../src/hooks/useOnScreen';
 // @ts-ignore
-import {ROUTES} from "../utils/routes";
+import {ROUTES} from "../utils/routes.js";
 import {Link} from "react-router-dom";
+
 const projects = [
   { id: 1, imgSrc: '../../public/zm-1.png', label: 'ZM-1' },
   { id: 2, imgSrc: '../../public/zm-2.png', label: 'ZM-2' },
@@ -16,6 +17,7 @@ const projects = [
 const ProjectSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const isVisible = useOnScreen(sectionRef);
+
   return (
     <section className="section block-content" ref={sectionRef}>
       <div className="container">
@@ -55,13 +57,15 @@ const ProjectSection: React.FC = () => {
           ))}
         </div>
         <div className="has-text-centered">
-          <motion.button
-            className="button-project text-main"
-            whileHover={{ scale: 1.1, rotate: 3 }}
-            transition={{ duration: 0.3 }}
-          >
-            Посмотреть все проекты
-          </motion.button>
+          <Link to={ROUTES.Project}>
+            <motion.button
+              className="button-project text-main"
+              whileHover={{ scale: 1.1, rotate: 3 }}
+              transition={{ duration: 0.3 }}
+            >
+              Посмотреть все проекты
+            </motion.button>
+          </Link>
         </div>
       </div>
     </section>

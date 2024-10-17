@@ -4,9 +4,12 @@ import { Link, useParams } from 'react-router-dom';
 
 import axios from 'axios';
 import FilterBar from "./FilterBar.tsx";
-import {ROUTES} from "../../utils/routes";
+
+// @ts-ignore
+import { ROUTES } from "../../utils/routes.js";
+
 import CatalogMenu from "./CatalogMenu.tsx";
-import project from "../../pages/Project.tsx";
+import {formatNumber} from "../../utils/formatNumber.ts";
 
 interface HouseProject {
     id: number;
@@ -31,9 +34,10 @@ interface Category {
 
 const CatalogPage: React.FC = () => {
     const [houseProjects, setHouseProjects] = useState<HouseProject[]>([]);
-    const [categoryInfo, setCategoryInfo] = useState<Category[]>([]);
+    const [categoryInfo, setCategoryInfo] = useState<Category | null>(null);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const { category } = useParams<{ category: string }>();
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -43,7 +47,8 @@ const CatalogPage: React.FC = () => {
                 setCategoryInfo(response.data[0].category);
 
             } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
+                setError((error as Error).message);
+                console.error("Ошибка при загрузке данных проектов:", error);
             }
         };
 
@@ -51,7 +56,13 @@ const CatalogPage: React.FC = () => {
     }, [category]);
 
 
+    if (error) {
+        return <p className="error-message">{error}</p>;
+    }
 
+    if (!categoryInfo) {
+        return <p>Загрузка...</p>;
+    }
 
 
     return (
@@ -77,7 +88,7 @@ const CatalogPage: React.FC = () => {
                                     onMouseLeave={() => setHoveredIndex(null)}
                                 >
                                     <div className="card-image">
-                                        <Link to={`${ROUTES.GlulamHouse}/${project.id}`}>
+                                        <Link to={ROUTES.ProjectDetail.replace(':id', project.id.toString())}>
                                             <figure className="image is-4by3">
                                                 <img
                                                     src={
@@ -98,16 +109,15 @@ const CatalogPage: React.FC = () => {
                                     <div className="card-content">
                                         <p className="project-title">{project.title}</p>
                                         <div className="project-price">
-                                            {project.price && <span className="new-price text-main">{project.price} ₽</span>}
+                                            {project.price && <span className="new-price text-main">{formatNumber(project.price)} ₽</span>}
                                             {project.discount && (
                                                 <div className="discount">
-                                                    <span className="old-price text-main">{project.old_price} ₽</span>
-                                                    <span className="discount-price">- {project.discount} ₽</span>
+                                                    <span className="old-price text-main">{formatNumber(project.old_price)} ₽</span>
+                                                    <span className="discount-price">- {formatNumber(project.discount)} ₽</span>
                                                 </div>
                                             )}
                                         </div>
-                                        <p>{project.id}</p>
-                                        <Link to={`/project/details/${project.id}/:category`} className="button is-primary">
+                                        <Link to={`/project/details/${project.id}`} className="button is-primary">
                                             Подробнее
                                         </Link>
                                     </div>

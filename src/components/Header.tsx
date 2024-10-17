@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // @ts-ignore
-import { ROUTES } from "../utils/routes";
+import { ROUTES } from "../utils/routes.js";
 import { Link } from "react-router-dom";
 
 import sprite from "../../public/sprite.svg";
@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
   }, []);
 
   return (
-      <header className={`navbar ${isScrolled ? 'navbar-scrolled' : 'navbar-transparent'} container section`}>
+      <header className={`navbar ${isScrolled ? 'navbar-scrolled' : 'navbar-transparent'} container`}>
         <div className="navbar-logo">
           <Link to={ROUTES.Home}>
             <svg className='logo' width={190} height={25}>

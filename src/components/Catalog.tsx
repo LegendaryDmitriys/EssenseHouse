@@ -1,12 +1,44 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 // @ts-ignore
 import { ROUTES } from '../utils/routes.js';
 import CatalogMenu from "./Project/CatalogMenu.tsx";
+import axios from "axios";
+import config from "../api/api.ts";
 
 
+interface Category {
+    id: number;
+    name: string;
+    slug: string;
+    random_image_url: string;
+}
 
 const Catalog: React.FC = () => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('http://192.168.0.103:8000/category/');
+                setCategories(response.data);
+            } catch (err) {
+                setError('Ошибка загрузки категорий.');
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    if (categories.length === 0) {
+        return <div>Категории не найдены.</div>;
+    }
+
     return (
         <div className="container">
             <article className="catalog-href">
@@ -33,30 +65,16 @@ const Catalog: React.FC = () => {
                     </p>
 
                     <div className="columns mt-5">
-                        <div className="column">
-                            <Link to={ROUTES.GlulamHouse}>
-                                <figure className="image is-4by3">
-                                    <img src="../../public/catalog1.png" alt="Дома из клееного бруса"/>
-                                </figure>
-                            </Link>
-                            <p className="has-text-centered grey">Дома из клееного бруса</p>
-                        </div>
-                        <div className="column">
-                            <Link to={ROUTES.LogHouse}>
-                                <figure className="image is-4by3">
-                                    <img src="../../public/catalog2.png" alt="Дома из оцилиндрованного бревна"/>
-                                </figure>
-                            </Link>
-                            <p className="has-text-centered grey">Дома из оцилиндрованного бревна</p>
-                        </div>
-                        <div className="column">
-                            <Link to={ROUTES.FrameHouse}>
-                                <figure className="image is-4by3">
-                                    <img src="../../public/catalog3.png" alt="Каркасные дома"/>
-                                </figure>
-                            </Link>
-                            <p className="has-text-centered grey">Каркасные дома</p>
-                        </div>
+                        {categories.map((category) => (
+                            <div className="column" key={category.id}>
+                                <Link to={`/catalog/${category.slug}`}>
+                                    <figure className="image is-4by3">
+                                        <img src={`${config.API_URL}${category.random_image_url}`} alt={category.name} />
+                                    </figure>
+                                </Link>
+                                <p className="has-text-centered grey">{category.name}</p>
+                            </div>
+                        ))}
                     </div>
 
                     <p className="mt-5 text-main grey">

@@ -21,7 +21,7 @@ const AppRoutes: React.FC = () => {
                     <Route path={ROUTES.About} element={<About/>} />
                     <Route path={ROUTES.Reviews} element={<Reviews />} />
                     <Route path={ROUTES.CatalogCategory} element={<CatalogPage />} />
-                    <Route path="/project/details/:id/:category" element={<ProjectDetail/>} />
+                    <Route path={ROUTES.ProjectDetail} element={<ProjectDetail/>} />
                 </Routes>
             </div>
         </div>
