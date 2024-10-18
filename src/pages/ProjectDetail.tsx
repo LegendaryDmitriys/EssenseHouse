@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import sprite from "../../public/sprite.svg";
 import {formatNumber} from "../utils/formatNumber.ts";
+import {useFullScreen} from "../hooks/useFullScreen.ts";
+import FullScreenModal from "../components/FullSreen/FullScreenModal.tsx";
 
 
 
@@ -36,9 +38,13 @@ interface ProjectData {
 
 const ProjectDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const { elementRef, isFullScreen, closeFullScreenModal, setIsFullScreen  } = useFullScreen();
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [activeSection, setActiveSection] = useState<'characteristics' | 'description' | 'finishing' | 'documents'>('characteristics');
     const [error, setError] = useState<string | null>(null);
+    const [currentImage, setCurrentImage] = useState<string | null>(null);
+
+
 
     useEffect(() => {
         const fetchProjectData = async () => {
@@ -58,6 +64,8 @@ const ProjectDetail: React.FC = () => {
         fetchProjectData();
     }, [id]);
 
+
+
     if (error) {
         return <p className="error-message">{error}</p>;
     }
@@ -66,7 +74,12 @@ const ProjectDetail: React.FC = () => {
         return <p>Загрузка...</p>;
     }
 
-    console.log(projectData);
+    const openFullScreenModal = (image: string) => {
+        setCurrentImage(image);
+        setIsFullScreen(true);
+    };
+
+
 
     return (
         <div className="container">
@@ -111,7 +124,11 @@ const ProjectDetail: React.FC = () => {
                     <section className="gallery-section">
                         {projectData.images.map((image, index) => (
                             <div key={index} className="gallery-item">
-                                <img src={image.image} alt={`House-images-${image.id}`} />
+                                <img src={image.image} alt={`House-images-${image.id}`}
+                                     ref={elementRef}
+                                     onClick={() => openFullScreenModal(image.image)}
+                                     style={{ cursor: 'pointer'}}
+                                />
                             </div>
                         ))}
                     </section>
@@ -152,7 +169,10 @@ const ProjectDetail: React.FC = () => {
                         <div className="layouts">
                             {projectData.layout_images.map((layout, index) => (
                                 <div key={index} className="layout">
-                                    <img src={layout.image} alt={`House-images-layout${layout.id}`}/>
+                                    <img src={layout.image} alt={`House-images-layout${layout.id}`}
+                                         ref={elementRef}
+                                         onClick={() => openFullScreenModal(layout.image)}
+                                         style={{ cursor: 'pointer'}}/>
                                 </div>
                             ))}
                         </div>
@@ -162,7 +182,10 @@ const ProjectDetail: React.FC = () => {
                         <div className="interiors">
                             {projectData.interior_images.map((interior, index) => (
                                 <div key={index} className="interior">
-                                    <img src={interior.image} alt={`House-images-interior${interior.id}`}/>
+                                    <img src={interior.image} alt={`House-images-interior${interior.id}`}
+                                         ref={elementRef}
+                                         onClick={() => openFullScreenModal(interior.image)}
+                                         style={{ cursor: 'pointer'}}/>
                                 </div>
                             ))}
                         </div>
@@ -172,7 +195,10 @@ const ProjectDetail: React.FC = () => {
                         <div className="facades">
                             {projectData.facade_images.map((facade, index) => (
                                 <div key={index} className="facade">
-                                    <img src={facade.image} alt={`House-images-facades${facade.id}`}/>
+                                    <img src={facade.image} alt={`House-images-facades${facade.id}`}
+                                         ref={elementRef}
+                                         onClick={() => openFullScreenModal(facade.image)}
+                                         style={{ cursor: 'pointer'}}/>
                                 </div>
                             ))}
                         </div>
@@ -341,10 +367,12 @@ const ProjectDetail: React.FC = () => {
                     <div className="project-price">
                         <h2 className="text-main project-info__title">{projectData.title}</h2>
                         <span className="new-price text-main">{formatNumber(projectData.price)} ₽</span>
-                        <div className="discount">
-                            <span className="old-price text-main">{formatNumber(projectData.old_price)} ₽</span>
-                            <span className="discount-price">- {formatNumber(projectData.discount)} ₽</span>
-                        </div>
+                        {projectData.old_price && projectData.discount ? (
+                            <div className="discount">
+                                <span className="old-price text-main">{formatNumber(projectData.old_price)} ₽</span>
+                                <span className="discount-price">- {formatNumber(projectData.discount)} ₽</span>
+                            </div>
+                        ) : null}
                     </div>
                     <button className="order-button">Заказать
                     </button>
@@ -367,7 +395,9 @@ const ProjectDetail: React.FC = () => {
                     </p>
                 </div>
             </section>
-
+            {isFullScreen && currentImage && (
+                <FullScreenModal imgSrc={currentImage} onClose={closeFullScreenModal} />
+            )}
         </div>
     );
 };

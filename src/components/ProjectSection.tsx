@@ -32,7 +32,7 @@ const ProjectSection: React.FC = () => {
               transition={{ duration: 0.6, delay: index * 0.3 }} 
             >
               <div className="card">
-                <Link to={`${ROUTES.FrameHouse}/1`}>
+                <Link to={`${ROUTES.Project}`}>
                 <div className="card-image">
                   <figure className="image is-4by3">
                     <motion.img
