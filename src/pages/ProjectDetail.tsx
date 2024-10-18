@@ -4,10 +4,12 @@ import sprite from "../../public/sprite.svg";
 import {formatNumber} from "../utils/formatNumber.ts";
 import {useFullScreen} from "../hooks/useFullScreen.ts";
 import FullScreenModal from "../components/FullSreen/FullScreenModal.tsx";
+import OrderFormModal from "../components/Project/OrderFormModal.tsx";
 
 
 
 interface ProjectData {
+    id: number;
     area: number;
     floors: number;
     rooms: number;
@@ -43,6 +45,7 @@ const ProjectDetail: React.FC = () => {
     const [activeSection, setActiveSection] = useState<'characteristics' | 'description' | 'finishing' | 'documents'>('characteristics');
     const [error, setError] = useState<string | null>(null);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
 
@@ -78,6 +81,9 @@ const ProjectDetail: React.FC = () => {
         setCurrentImage(image);
         setIsFullScreen(true);
     };
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
 
 
@@ -374,8 +380,17 @@ const ProjectDetail: React.FC = () => {
                             </div>
                         ) : null}
                     </div>
-                    <button className="order-button">Заказать
+                    <button className="order-button" onClick={openModal}>
+                        Заказать
                     </button>
+
+                    {isModalOpen && <OrderFormModal
+                        onClose={closeModal}
+                        projectName={projectData.title}
+                        finishOptions={projectData.finishing_options}
+                        houseId={projectData.id}
+                    />}
+
                     <div className="info-buttons">
                         <button className="question-button"><span><i
                             className="fa-solid fa-question"></i> </span> Задать
