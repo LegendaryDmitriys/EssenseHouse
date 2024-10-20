@@ -801,6 +801,7 @@ p {
     cursor: pointer;
     border: 1px solid #331958;
     border-radius: 5px;
+    flex: 1;
 
 }
 
@@ -879,7 +880,7 @@ p {
 .info-buttons{
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    gap:20px;
 }
 
 .tizer-block {

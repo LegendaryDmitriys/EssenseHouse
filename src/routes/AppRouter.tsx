@@ -10,6 +10,7 @@ import Reviews from "../pages/Reviews.tsx";
 import CatalogPage from "../components/Project/CatalogPage.tsx";
 import ProjectDetail from "../pages/ProjectDetail.tsx";
 
+
 const AppRoutes: React.FC = () => {
     return (
         <div>

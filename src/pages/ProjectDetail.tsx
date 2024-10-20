@@ -6,6 +6,9 @@ import {useFullScreen} from "../hooks/useFullScreen.ts";
 import FullScreenModal from "../components/FullSreen/FullScreenModal.tsx";
 import OrderFormModal from "../components/Project/OrderFormModal.tsx";
 
+import Skeleton from 'react-loading-skeleton';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import QuestionFormModal from "../components/Project/QuestionFormModal.tsx";
 
 
 interface ProjectData {
@@ -40,14 +43,13 @@ interface ProjectData {
 
 const ProjectDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { elementRef, isFullScreen, closeFullScreenModal, setIsFullScreen  } = useFullScreen();
+    const { isFullScreen, closeFullScreenModal, setIsFullScreen  } = useFullScreen();
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [activeSection, setActiveSection] = useState<'characteristics' | 'description' | 'finishing' | 'documents'>('characteristics');
     const [error, setError] = useState<string | null>(null);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-
+    const [isQuestionModalOpen, setQuestionModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchProjectData = async () => {
@@ -74,7 +76,13 @@ const ProjectDetail: React.FC = () => {
     }
 
     if (!projectData) {
-        return <p>Загрузка...</p>;
+        return (
+            <div className="skeleton-container">
+                <Skeleton height={30} width={200} />
+                <Skeleton height={20} width={`80%`} count={3} />
+                <Skeleton height={150} width={150} style={{ marginRight: 10 }} />
+            </div>
+        );
     }
 
     const openFullScreenModal = (image: string) => {
@@ -84,7 +92,6 @@ const ProjectDetail: React.FC = () => {
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-
 
 
     return (
@@ -130,10 +137,12 @@ const ProjectDetail: React.FC = () => {
                     <section className="gallery-section">
                         {projectData.images.map((image, index) => (
                             <div key={index} className="gallery-item">
-                                <img src={image.image} alt={`House-images-${image.id}`}
-                                     ref={elementRef}
-                                     onClick={() => openFullScreenModal(image.image)}
-                                     style={{ cursor: 'pointer'}}
+                                <LazyLoadImage
+                                    src={image.image}
+                                    alt={`House-images-${image.id}`}
+                                    onClick={() => openFullScreenModal(image.image)}
+                                    style={{ cursor: 'pointer' }}
+                                    effect="blur"
                                 />
                             </div>
                         ))}
@@ -175,10 +184,13 @@ const ProjectDetail: React.FC = () => {
                         <div className="layouts">
                             {projectData.layout_images.map((layout, index) => (
                                 <div key={index} className="layout">
-                                    <img src={layout.image} alt={`House-images-layout${layout.id}`}
-                                         ref={elementRef}
-                                         onClick={() => openFullScreenModal(layout.image)}
-                                         style={{ cursor: 'pointer'}}/>
+                                    <LazyLoadImage
+                                        src={layout.image}
+                                        alt={`House-images-layout${layout.id}`}
+                                        onClick={() => openFullScreenModal(layout.image)}
+                                        style={{ cursor: 'pointer' }}
+                                        effect="blur"
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -188,10 +200,13 @@ const ProjectDetail: React.FC = () => {
                         <div className="interiors">
                             {projectData.interior_images.map((interior, index) => (
                                 <div key={index} className="interior">
-                                    <img src={interior.image} alt={`House-images-interior${interior.id}`}
-                                         ref={elementRef}
-                                         onClick={() => openFullScreenModal(interior.image)}
-                                         style={{ cursor: 'pointer'}}/>
+                                    <LazyLoadImage
+                                        src={interior.image}
+                                        alt={`House-images-interior${interior.id}`}
+                                        onClick={() => openFullScreenModal(interior.image)}
+                                        style={{ cursor: 'pointer' }}
+                                        effect="blur"
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -201,10 +216,14 @@ const ProjectDetail: React.FC = () => {
                         <div className="facades">
                             {projectData.facade_images.map((facade, index) => (
                                 <div key={index} className="facade">
-                                    <img src={facade.image} alt={`House-images-facades${facade.id}`}
-                                         ref={elementRef}
-                                         onClick={() => openFullScreenModal(facade.image)}
-                                         style={{ cursor: 'pointer'}}/>
+                                    <LazyLoadImage
+                                        src={facade.image}
+                                        alt={`House-images-facades${facade.id}`}
+                                        onClick={() => openFullScreenModal(facade.image)}
+                                        style={{ cursor: 'pointer' }}
+                                        effect="blur"
+                                    />
+
                                 </div>
                             ))}
                         </div>
@@ -384,15 +403,8 @@ const ProjectDetail: React.FC = () => {
                         Заказать
                     </button>
 
-                    {isModalOpen && <OrderFormModal
-                        onClose={closeModal}
-                        projectName={projectData.title}
-                        finishOptions={projectData.finishing_options}
-                        houseId={projectData.id}
-                    />}
-
                     <div className="info-buttons">
-                        <button className="question-button"><span><i
+                        <button className="question-button" onClick={() => setQuestionModalOpen(true)}><span><i
                             className="fa-solid fa-question"></i> </span> Задать
                             вопрос
                         </button>
@@ -412,6 +424,19 @@ const ProjectDetail: React.FC = () => {
             </section>
             {isFullScreen && currentImage && (
                 <FullScreenModal imgSrc={currentImage} onClose={closeFullScreenModal} />
+            )}
+            {isModalOpen && <OrderFormModal
+                onClose={closeModal}
+                projectName={projectData.title}
+                finishOptions={projectData.finishing_options}
+                houseId={projectData.id}
+            />}
+            {isQuestionModalOpen && (
+                <QuestionFormModal
+                    onClose={() => setQuestionModalOpen(false)}
+                    projectName={projectData.title}
+                    houseId={projectData.id}
+                />
             )}
         </div>
     );

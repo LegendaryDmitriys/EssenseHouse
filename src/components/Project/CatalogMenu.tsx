@@ -15,6 +15,8 @@ const CatalogMenu: React.FC<CatalogMenuProps> = () => {
     const [isActive, setIsActive] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -22,6 +24,7 @@ const CatalogMenu: React.FC<CatalogMenuProps> = () => {
                 setCategories(response.data);
             } catch (err) {
                 setError('Ошибка загрузки категорий.');
+            } finally {
             }
         };
 

@@ -1,7 +1,6 @@
 import React from "react";
 import '../styles/min.css'
 
-import Footer from "../components/Footer";
 import Outer from "../components/Outer";
 import ProjectSection from "../components/ProjectSection";
 import HouseCosteCalck from "../components/HouseCosteCalck";
@@ -20,7 +19,6 @@ const Home: React.FC = () => {
             <Stages/>
             <FAQ/>
             <ContactSection/>
-            <Footer/>
         </>
     )
 }

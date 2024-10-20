@@ -21,7 +21,7 @@ const Reviews: React.FC = () => {
 
     const fetchReviews = async () => {
         try {
-            const response = await fetch(`${config.API_URL}/reviews/`);
+            const response = await fetch(`${config.API_URL}reviews/`);
             const data = await response.json();
             setReviews(data);
         } catch (error) {
