@@ -24,7 +24,6 @@ const CatalogMenu: React.FC<CatalogMenuProps> = () => {
                 setCategories(response.data);
             } catch (err) {
                 setError('Ошибка загрузки категорий.');
-            } finally {
             }
         };
 

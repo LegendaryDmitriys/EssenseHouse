@@ -68,8 +68,8 @@ const Catalog: React.FC = () => {
                         {categories.map((category) => (
                             <div className="column" key={category.id}>
                                 <Link to={`/catalog/${category.slug}`}>
-                                    <figure className="image is-4by3">
-                                        <img src={`${config.API_URL}${category.random_image_url}`} alt={category.name} />
+                                    <figure className="">
+                                        <img src={`${config.API_URL}${category.random_image_url}`} alt={category.name} className="category-img" />
                                     </figure>
                                 </Link>
                                 <p className="has-text-centered grey">{category.name}</p>

@@ -1,10 +1,26 @@
+@font-face {
+    font-family: 'Cygre';
+    src: url('http://192.168.0.103:8000/static/fonts/Cygre-Regular.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'PP Neue Machina';
+    src: url('http://192.168.0.103:8000/static/fonts/PPNeueMachina-Regular.otf') format('opentype');
+    font-weight: 400;
+}
+
+
+
+
+
 html {
     scroll-behavior: smooth;
     background-color: #fff;
 }
 
 p {
-    font-family: 'Cygre';
+    font-family: 'Cygre', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
@@ -13,7 +29,7 @@ p {
 }
 
 .text-main {
-    font-family: 'Cygre';
+    font-family: 'Cygre', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
@@ -30,7 +46,7 @@ p {
 
 
 .title-main{
-    font-family: 'PP Neue Machina';
+    font-family: 'PP Neue Machina', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 40px;
@@ -505,8 +521,10 @@ p {
 }
 
 .card-image img {
-  border-radius: 8px;
-  transition: transform 0.3s ease-in-out;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+    height: 300px;
+
 }
 
 .project-card:hover .card-image img {
@@ -1579,3 +1597,75 @@ p {
 .rating {
     margin-bottom: 20px;
 }
+
+.project-all__image  {
+    width: 100%;
+}
+
+
+.category-img{
+    height: 200px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.catalog-images {
+    width: 100%;
+
+}
+
+.completed-house__map {
+    margin-bottom: 50px;
+}
+
+.line-block{
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+    color:#331958;
+    margin-bottom: 50px;
+}
+
+.card-image > .completed-house__image {
+    filter: brightness(0.7)
+}
+
+
+.completed-house__span{
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.completed-house__text {
+
+}
+
+
+.card-margin {
+    margin: 10px;
+}
+
+
+.completedet-block__info{
+    display: flex;
+    gap:10px
+}
+
+.completedet-block__info > article {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.completedet-block__info > article > p{
+    margin: 5px 0 0 0;
+}
+
+.completedet-img {
+    display: flex;
+    align-items: center;
+}
+
+

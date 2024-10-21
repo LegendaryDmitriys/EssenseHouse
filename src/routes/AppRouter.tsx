@@ -9,6 +9,7 @@ import About from "../pages/About.tsx";
 import Reviews from "../pages/Reviews.tsx";
 import CatalogPage from "../components/Project/CatalogPage.tsx";
 import ProjectDetail from "../pages/ProjectDetail.tsx";
+import CompletedProject from "../pages/CompletedProject.tsx";
 
 
 const AppRoutes: React.FC = () => {
@@ -23,6 +24,7 @@ const AppRoutes: React.FC = () => {
                     <Route path={ROUTES.Reviews} element={<Reviews />} />
                     <Route path={ROUTES.CatalogCategory} element={<CatalogPage />} />
                     <Route path={ROUTES.ProjectDetail} element={<ProjectDetail/>} />
+                    <Route path={ROUTES.CompletedProject} element={<CompletedProject/>} />
                 </Routes>
             </div>
         </div>

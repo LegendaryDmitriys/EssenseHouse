@@ -5,6 +5,7 @@ export const ROUTES = {
     About: "/about",
     Reviews: "/reviews",
     CatalogCategory: "/catalog/:category",
-    ProjectDetail: "/project/details/:id"
+    ProjectDetail: "/project/details/:id",
+    CompletedProject: "/project/completed/",
 } ;
 
