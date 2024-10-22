@@ -1,46 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import {AppDispatch, RootState} from "../../redux/store.ts";
+import {fetchCategories} from "../../redux/features/category/categorySlice.ts";
 
-interface CatalogMenuProps {}
 
-interface Category {
-    id: number;
-    name: string;
-    slug: string;
-}
-
-const CatalogMenu: React.FC<CatalogMenuProps> = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
+const CatalogMenu: React.FC = () => {
     const [isActive, setIsActive] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
+    const dispatch: AppDispatch = useDispatch();
+    const categories = useSelector((state: RootState) => state.categories.items);
+    const status = useSelector((state: RootState) => state.categories.status);
+    const error = useSelector((state: RootState) => state.categories.error);
 
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get('http://192.168.0.103:8000/category/');
-                setCategories(response.data);
-            } catch (err) {
-                setError('Ошибка загрузки категорий.');
-            }
-        };
+        if (status === 'idle') {
+            dispatch(fetchCategories());
+        }
+    }, [status, dispatch]);
 
-        fetchCategories();
-    }, []);
-
-    const toggleDropdown = () => {
-        setIsActive(!isActive);
-    };
+    if (status === 'loading') {
+        return <div>Загрузка категорий...</div>;
+    }
 
     if (error) {
         return <div>{error}</div>;
     }
 
-    if (categories.length === 0) {
-        return <div>Категории не найдены.</div>;
-    }
+
+
+    const toggleDropdown = () => {
+        setIsActive(!isActive);
+    };
+    //
+    // if (error) {
+    //     return <div>{error}</div>;
+    // }
+    //
+    // if (categories.length === 0) {
+    //     return <div>Категории не найдены.</div>;
+    // }
 
     return (
         <nav className="panel">

@@ -11,7 +11,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ color }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleScroll = () => {
     setIsScrolled(window.scrollY > 50);
@@ -23,6 +23,14 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const handleMouseEnter = () => {
+    setIsDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDropdownOpen(false);
+  };
 
   return (
       <header className={`navbar ${isScrolled ? 'navbar-scrolled' : 'navbar-transparent'} container`}>
@@ -36,44 +44,57 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
 
         <div className="navbar-menu">
           <div className="navbar-end">
-            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Project}>
-              Проекты
-            </Link>
-            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.About}>
-              О нас
-            </Link>
-            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Reviews}>
-              Отзывы
-            </Link>
-            <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Contacts}>
-              Контакты
-            </Link>
-          </div>
-          <div className="navbar-end">
-            <a className="navbar-item" href="https://wa.me/380507774450">
-            <span className="icon" style={{ color: color }}>
+            <div
+                className="navbar-item has-dropdown"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
+              <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Project}>
+                Проекты
+              </Link>
+              {isDropdownOpen && (
+                  <div className="navbar-dropdown">
+                    <Link className="navbar-item black" to={ROUTES.CompletedProject}>
+                      Готовые дома
+                    </Link>
+                  </div>
+              )}
+            </div>
+              <Link className={`navbar-item mr-5 text-main`} to={ROUTES.About}>
+                О нас
+              </Link>
+              <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Reviews}>
+                Отзывы
+              </Link>
+              <Link className={`navbar-item mr-5 text-main`} to={ROUTES.Contacts}>
+                Контакты
+              </Link>
+            </div>
+            <div className="navbar-end">
+              <a className="navbar-item" href="https://wa.me/380507774450">
+            <span className="icon" style={{color: color}}>
               <i className="fab fa-whatsapp"></i>
             </span>
-            </a>
-            <a className="navbar-item" href="https://t.me/username">
-            <span className="icon" style={{ color: color }}>
+              </a>
+              <a className="navbar-item" href="https://t.me/username">
+            <span className="icon" style={{color: color}}>
               <i className="fab fa-telegram"></i>
             </span>
-            </a>
-            <a className="navbar-item" style={{ color: color }} href="https://instagram.com/username">
-            <span className="icon" style={{ color: color }}>
+              </a>
+              <a className="navbar-item" style={{color: color}} href="https://instagram.com/username">
+            <span className="icon" style={{color: color}}>
               <i className="fab fa-instagram"></i>
             </span>
-            </a>
-            <span className="navbar-item">
-            <a className={`text-main`} style={{ color: color }} href="tel:+380507774450">
+              </a>
+              <span className="navbar-item">
+            <a className={`text-main`} style={{color: color}} href="tel:+380507774450">
               +38 (050) 777-44-50
             </a>
           </span>
+            </div>
           </div>
-        </div>
       </header>
-  );
+);
 };
 
 export default Header;

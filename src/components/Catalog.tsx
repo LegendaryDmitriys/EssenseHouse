@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 // @ts-ignore
 import { ROUTES } from '../utils/routes.js';
 import CatalogMenu from "./Project/CatalogMenu.tsx";
 import axios from "axios";
 import config from "../api/api.ts";
-
 
 interface Category {
     id: number;
@@ -31,6 +30,7 @@ const Catalog: React.FC = () => {
         fetchCategories();
     }, []);
 
+
     if (error) {
         return <div>{error}</div>;
     }
@@ -47,7 +47,7 @@ const Catalog: React.FC = () => {
 
             <div className="columns">
                 <aside className="column is-one-quarter">
-                    <CatalogMenu/>
+                    <CatalogMenu />
                 </aside>
 
                 <div className="column is-three-quarters">
@@ -55,8 +55,7 @@ const Catalog: React.FC = () => {
                     <p className="text-main">
                         Наша компания предлагает дома и дополнительные строения под ключ. Мы возводим дома из любых
                         материалов и используем актуальные технологии. Гарантируем высокое качество строения и
-                        коммуникаций
-                        и всегда укладываемся в срок.
+                        коммуникаций и всегда укладываемся в срок.
                     </p>
                     <p className="text-main">
                         У нас большой опыт работы, мы сотрудничаем только с проверенными поставщиками. Все материалы

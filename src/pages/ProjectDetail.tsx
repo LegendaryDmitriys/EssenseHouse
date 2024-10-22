@@ -6,84 +6,44 @@ import {useFullScreen} from "../hooks/useFullScreen.ts";
 import FullScreenModal from "../components/FullSreen/FullScreenModal.tsx";
 import OrderFormModal from "../components/Project/OrderFormModal.tsx";
 
-import Skeleton from 'react-loading-skeleton';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import QuestionFormModal from "../components/Project/QuestionFormModal.tsx";
-
-
-interface ProjectData {
-    id: number;
-    area: number;
-    floors: number;
-    rooms: number;
-    images: { id: number; image: string }[];
-    interior_images: { id: number; image: string }[];
-    facade_images: { id: number; image: string}[];
-    layout_images: { id: number; image: string }[];
-    living_area: number;
-    kitchen_area: number;
-    bedrooms: number;
-    garage: boolean;
-    garage_capacity: number;
-    bathrooms: number;
-    construction_time: number;
-    warranty: number;
-    price: number;
-    old_price: number;
-    discount: number;
-    purpose: string;
-    description: string;
-    finishing_options: { id: number; title:string; description: string; price_per_sqm: number; image: string }[];
-    documents: { id: number; file: string; title: string; size: number }[];
-    title: string;
-
-}
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../redux/store.ts";
+import {fetchProjectById} from "../redux/features/house/houseProjectsSlice.ts";
 
 
 
 const ProjectDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { isFullScreen, closeFullScreenModal, setIsFullScreen  } = useFullScreen();
-    const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [activeSection, setActiveSection] = useState<'characteristics' | 'description' | 'finishing' | 'documents'>('characteristics');
-    const [error, setError] = useState<string | null>(null);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isQuestionModalOpen, setQuestionModalOpen] = useState(false);
 
+    const dispatch = useDispatch();
+    const { selectedProject, loading, error } = useSelector((state: RootState) => state.houseProjects);
+
     useEffect(() => {
-        const fetchProjectData = async () => {
-            try {
-                const response = await fetch(`http://192.168.0.103:8000/houses/${id}`);
-                if (!response.ok) {
-                    throw new Error(`Ошибка: ${response.statusText}`);
-                }
-                const data = await response.json();
-                setProjectData(data);
-            } catch (error) {
-                setError((error as Error).message);
-                console.error("Ошибка при загрузке данных проекта:", error);
-            }
-        };
+        if (id) {
+            // @ts-ignore
+            dispatch(fetchProjectById(Number(id)));
+        }
+    }, [dispatch, id]);
 
-        fetchProjectData();
-    }, [id]);
-
-
+    if (loading) {
+        return <p>Загрузка...</p>;
+    }
 
     if (error) {
         return <p className="error-message">{error}</p>;
     }
 
-    if (!projectData) {
-        return (
-            <div className="skeleton-container">
-                <Skeleton height={30} width={200} />
-                <Skeleton height={20} width={`80%`} count={3} />
-                <Skeleton height={150} width={150} style={{ marginRight: 10 }} />
-            </div>
-        );
+    if (!selectedProject) {
+        return <p>Проект не найден.</p>;
     }
+
 
     const openFullScreenModal = (image: string) => {
         setCurrentImage(image);
@@ -106,25 +66,25 @@ const ProjectDetail: React.FC = () => {
             <section className="main-image-section">
                 <img
                     className="house-image"
-                    src={projectData.images[0].image}
-                    alt={`${projectData.title}-${projectData.images[0].id} ${id}`}
+                    src={selectedProject.images[0].image}
+                    alt={`${selectedProject.title}-${selectedProject.images[0].id} ${id}`}
                 />
                 <div className="house-info">
                     <div className="section-house__title title-main white">
-                        <h1>{projectData.title}</h1>
+                        <h1>{selectedProject.title}</h1>
                     </div>
                     <div className="block-special text-main white">
                         <div className="block-special__item">
                             <span>Площадь, м²</span>
-                            <span>{formatNumber(projectData?.area)}</span>
+                            <span>{formatNumber(selectedProject.area)}</span>
                         </div>
                         <div className="block-special__item">
                             <span>Этажей</span>
-                            <span>{projectData?.floors}</span>
+                            <span>{selectedProject.floors}</span>
                         </div>
                         <div className="block-special__item">
                             <span>Количество комнат</span>
-                            <span>{projectData?.rooms}</span>
+                            <span>{selectedProject?.rooms}</span>
                         </div>
                         <a href="#characteristics" className="block-special__item">
                             Все характеристики
@@ -135,7 +95,7 @@ const ProjectDetail: React.FC = () => {
             <section className="info-house">
                 <div className="info-house__content">
                     <section className="gallery-section">
-                        {projectData.images.map((image, index) => (
+                        {selectedProject.images.map((image, index) => (
                             <div key={index} className="gallery-item">
                                 <LazyLoadImage
                                     src={image.image}
@@ -182,7 +142,7 @@ const ProjectDetail: React.FC = () => {
                     <section className="layout-block">
                     <h2 className="title-main layout-title">Планировка</h2>
                         <div className="layouts">
-                            {projectData.layout_images.map((layout, index) => (
+                            {selectedProject.layout_images.map((layout, index) => (
                                 <div key={index} className="layout">
                                     <LazyLoadImage
                                         src={layout.image}
@@ -198,7 +158,7 @@ const ProjectDetail: React.FC = () => {
                     <section className="interior-block">
                         <h2 className="title-main interior-title">Интерьер</h2>
                         <div className="interiors">
-                            {projectData.interior_images.map((interior, index) => (
+                            {selectedProject.interior_images.map((interior, index) => (
                                 <div key={index} className="interior">
                                     <LazyLoadImage
                                         src={interior.image}
@@ -214,7 +174,7 @@ const ProjectDetail: React.FC = () => {
                     <section className="facade-block">
                         <h2 className="title-main facade-title">Фасады</h2>
                         <div className="facades">
-                            {projectData.facade_images.map((facade, index) => (
+                            {selectedProject.facade_images.map((facade, index) => (
                                 <div key={index} className="facade">
                                     <LazyLoadImage
                                         src={facade.image}
@@ -266,50 +226,50 @@ const ProjectDetail: React.FC = () => {
                                 <table>
                                     <tr>
                                         <td>Площадь, м²</td>
-                                        <td>{formatNumber(projectData.area)}</td>
+                                        <td>{formatNumber(selectedProject.area)}</td>
                                     </tr>
                                     <tr>
                                         <td>Этажей</td>
-                                        <td>{projectData.floors}</td>
+                                        <td>{selectedProject.floors}</td>
                                     </tr>
                                     <tr>
                                         <td>Количество комнат</td>
-                                        <td>{projectData.rooms}</td>
+                                        <td>{selectedProject.rooms}</td>
                                     </tr>
                                     <tr>
                                         <td>Жилая площадь, м²</td>
-                                        <td>{formatNumber(projectData.living_area)}</td>
+                                        <td>{formatNumber(selectedProject.living_area)}</td>
                                     </tr>
                                     <tr>
                                         <td>Площадь кухни, м²</td>
-                                        <td>{formatNumber(projectData.kitchen_area)}</td>
+                                        <td>{formatNumber(selectedProject.kitchen_area)}</td>
                                     </tr>
                                     <tr>
                                         <td>Количество спален</td>
-                                        <td>{projectData.bedrooms}</td>
+                                        <td>{selectedProject.bedrooms}</td>
                                     </tr>
                                     <tr>
                                         <td>Гараж</td>
                                         <td>
-                                            {projectData.garage
-                                            ? projectData.garage_capacity  : "Отсутсвует"}
+                                            {selectedProject.garage
+                                            ? selectedProject.garage_capacity  : "Отсутсвует"}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Назначение</td>
-                                        <td>{projectData.purpose}</td>
+                                        <td>{selectedProject.purpose}</td>
                                     </tr>
                                     <tr>
                                         <td>Количество санузлов</td>
-                                        <td>{projectData.bathrooms}</td>
+                                        <td>{selectedProject.bathrooms}</td>
                                     </tr>
                                     <tr>
                                         <td>Срок строительства, дней</td>
-                                        <td>от {projectData.construction_time}</td>
+                                        <td>от {selectedProject.construction_time}</td>
                                     </tr>
                                     <tr>
                                         <td>Гарантия, лет</td>
-                                        <td>{projectData.warranty}</td>
+                                        <td>{selectedProject.warranty}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -319,7 +279,7 @@ const ProjectDetail: React.FC = () => {
                         <section className='description-block all-section'>
                             <h2 className='description-title'>Описание</h2>
                             <p>
-                                {projectData.description}
+                                {selectedProject.description}
                             </p>
                             <p>
                                 <br/><strong className='subtitle-main'>Отличительные особенности :</strong>
@@ -344,7 +304,7 @@ const ProjectDetail: React.FC = () => {
                         <section className="finishing-block all-section">
                             <h2 className='tariff-title'>Варианты отделки</h2>
                             <div className='tarrif-list'>
-                                {projectData.finishing_options.map((finishingOption, index) => (
+                                {selectedProject.finishing_options.map((finishingOption, index) => (
                                     <div key={index} className='tarrif-list__item'>
                                         <div className='tarrif-list__head'>
                                             <img src={finishingOption.image} alt={`finishingOption-image${finishingOption.id}`} className="tarrif-img"/>
@@ -368,7 +328,7 @@ const ProjectDetail: React.FC = () => {
                     {activeSection === 'documents' && (
                         <section className="documents-block all-section">
                             <h2 className='documents-title'>Документы</h2>
-                            {projectData.documents.map((document, index) => (
+                            {selectedProject.documents.map((document, index) => (
                                 <div key={index} className='documents-list'>
                                     <div className='documents-list__item'>
                                         <img src="../../public/doc.png" alt=""/>
@@ -390,12 +350,12 @@ const ProjectDetail: React.FC = () => {
                 </div>
                 <div className="price-section">
                     <div className="project-price">
-                        <h2 className="text-main project-info__title">{projectData.title}</h2>
-                        <span className="new-price text-main">{formatNumber(projectData.price)} ₽</span>
-                        {projectData.old_price && projectData.discount ? (
+                        <h2 className="text-main project-info__title">{selectedProject.title}</h2>
+                        <span className="new-price text-main">{formatNumber(selectedProject.price)} ₽</span>
+                        {selectedProject.old_price && selectedProject.discount ? (
                             <div className="discount">
-                                <span className="old-price text-main">{formatNumber(projectData.old_price)} ₽</span>
-                                <span className="discount-price">- {formatNumber(projectData.discount)} ₽</span>
+                                <span className="old-price text-main">{formatNumber(selectedProject.old_price)} ₽</span>
+                                <span className="discount-price">- {formatNumber(selectedProject.discount)} ₽</span>
                             </div>
                         ) : null}
                     </div>
@@ -427,15 +387,15 @@ const ProjectDetail: React.FC = () => {
             )}
             {isModalOpen && <OrderFormModal
                 onClose={closeModal}
-                projectName={projectData.title}
-                finishOptions={projectData.finishing_options}
-                houseId={projectData.id}
+                projectName={selectedProject.title}
+                finishOptions={selectedProject.finishing_options}
+                houseId={selectedProject.id}
             />}
             {isQuestionModalOpen && (
                 <QuestionFormModal
                     onClose={() => setQuestionModalOpen(false)}
-                    projectName={projectData.title}
-                    houseId={projectData.id}
+                    projectName={selectedProject.title}
+                    houseId={selectedProject.id}
                 />
             )}
         </div>

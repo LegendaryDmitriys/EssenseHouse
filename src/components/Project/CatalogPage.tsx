@@ -1,67 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-
-import axios from 'axios';
 import FilterBar from "./FilterBar.tsx";
-
-// @ts-ignore
-import { ROUTES } from "../../utils/routes.js";
-
+import {AppDispatch, RootState} from "../../redux/store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchProjectsByCategory} from "../../redux/features/house/houseProjectsSlice.ts";
 import CatalogMenu from "./CatalogMenu.tsx";
+// @ts-ignore
+import {ROUTES} from "../../utils/routes";
 import {formatNumber} from "../../utils/formatNumber.ts";
 
-interface HouseProject {
-    id: number;
-    title: string;
-    images: { id: number; image: string }[];
-    price?: number;
-    old_price?: number;
-    discount?: number;
-    best_seller?: string;
-    new?: boolean;
-    short_description?: string;
-}
-
-interface Category {
-    id: number;
-    name: string;
-    slug: string;
-    short_description: string;
-    long_description: string;
-}
-
-
 const CatalogPage: React.FC = () => {
-    const [houseProjects, setHouseProjects] = useState<HouseProject[]>([]);
-    const [categoryInfo, setCategoryInfo] = useState<Category | null>(null);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+    const dispatch: AppDispatch = useDispatch();
+    const { houseProjects, categoryInfo, loading, error } = useSelector((state: RootState) => state.houseProjects);
     const { category } = useParams<{ category: string }>();
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const response = await axios.get(`http://192.168.0.103:8000/houses?category=${category}`);
-                setHouseProjects(response.data);
-                setCategoryInfo(response.data[0].category);
+        if (category) {
+            dispatch(fetchProjectsByCategory(category));
+        }
+    }, [category, dispatch]);
 
-            } catch (error) {
-                setError((error as Error).message);
-                console.error("Ошибка при загрузке данных проектов:", error);
-            }
-        };
-
-        fetchProjects();
-    }, [category]);
-
+    if (loading) {
+        return <p>Загрузка...</p>;
+    }
 
     if (error) {
         return <p className="error-message">{error}</p>;
     }
 
     if (!categoryInfo) {
-        return <p>Загрузка...</p>;
+        return <p>Категория не найдена.</p>;
     }
 
 
