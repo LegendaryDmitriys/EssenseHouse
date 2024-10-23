@@ -36,7 +36,7 @@ const Catalog: React.FC = () => {
     }
 
     if (categories.length === 0) {
-        return <div>Категории не найдены.</div>;
+        return <div></div>;
     }
 
     return (

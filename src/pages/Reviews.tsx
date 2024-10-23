@@ -3,6 +3,8 @@ import ReviewForm from "../components/Reviews/ReviewForm.tsx";
 import Rating from "../components/Reviews/Rating.tsx";
 import sprite from "../../public/sprite.svg";
 import config from "../api/api.ts";
+import 'react-loading-skeleton/dist/skeleton.css';
+import ReviewSkeleton from "../components/Skeleton/ReviewSkeleton.tsx";
 
 interface Review {
     id: number;
@@ -17,6 +19,7 @@ interface Review {
 
 const Reviews: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const [showForm, setShowForm] = useState<boolean>(false);
 
     const fetchReviews = async () => {
@@ -24,8 +27,10 @@ const Reviews: React.FC = () => {
             const response = await fetch(`${config.API_URL}reviews/`);
             const data = await response.json();
             setReviews(data);
+            setLoading(false);
         } catch (error) {
             console.error('Ошибка при получении отзывов:', error);
+            setLoading(false);
         }
     };
 
@@ -101,41 +106,49 @@ const Reviews: React.FC = () => {
             {showForm && <ReviewForm onSubmit={handleReviewSubmit} />}
 
             <div>
-                {reviews.length === 0 ? (
-                    <></>
+                {loading ? (
+                    <>
+                       <ReviewSkeleton/>
+                       <ReviewSkeleton/>
+                    </>
                 ) : (
-                    reviews.map((review) => (
-                        <div key={review.id} className="reviews-people">
-                            <div className='reviews-people__inner'>
-                                <i className="fas fa-user fa-5x"></i>
-                                <div className="reviews-people_head">
-                                    <article>
-                                         <span className="reviews-date">
-                                        {formatDate(review.date)}
-                                    </span>
-                                        <p className="reviews-user">
-                                            {review.name}
-                                        </p>
-                                    </article>
-                                    <Rating rating={review.rating} setRating={() => { }} />
+                    reviews.length === 0 ? (
+                        <p>Отзывов пока нет</p>
+                    ) : (
+                        reviews.map((review) => (
+                            <div key={review.id} className="reviews-people">
+                                <div className='reviews-people__inner'>
+                                    <i className="fas fa-user fa-5x"></i>
+                                    <div className="reviews-people_head">
+                                        <article>
+                                            <span className="reviews-date">
+                                                {formatDate(review.date)}
+                                            </span>
+                                            <p className="reviews-user">
+                                                {review.name}
+                                            </p>
+                                        </article>
+                                        <Rating rating={review.rating} setRating={() => {
+                                        }}/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='review-text'>
-                                <p>{review.review}</p>
-                            </div>
-                            {review.file_name && review.file_size ? (
-                                <div className='review-file'>
-                                    <img src="../../public/doc.png" alt=""/>
-                                    <article>
-                                        <a href={review.file} download={review.file_name}>
-                                            <p>{review.file_name}</p>
-                                        </a>
-                                        <p>{review.file_size} MB</p>
-                                    </article>
+                                <div className='review-text'>
+                                    <p>{review.review}</p>
                                 </div>
+                                {review.file_name && review.file_size ? (
+                                    <div className='review-file'>
+                                        <img src="../../public/doc.png" alt=""/>
+                                        <article>
+                                            <a href={review.file} download={review.file_name}>
+                                                <p>{review.file_name}</p>
+                                            </a>
+                                            <p>{review.file_size} MB</p>
+                                        </article>
+                                    </div>
                                 ) : null}
-                        </div>
-                    ))
+                            </div>
+                        ))
+                    )
                 )}
             </div>
         </div>

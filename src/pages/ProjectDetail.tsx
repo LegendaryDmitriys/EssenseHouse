@@ -11,6 +11,7 @@ import QuestionFormModal from "../components/Project/QuestionFormModal.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/store.ts";
 import {fetchProjectById} from "../redux/features/house/houseProjectsSlice.ts";
+import ProjectDetailSkeleton from "../components/Skeleton/ProjectDetailSkeleton.tsx";
 
 
 
@@ -33,7 +34,7 @@ const ProjectDetail: React.FC = () => {
     }, [dispatch, id]);
 
     if (loading) {
-        return <p>Загрузка...</p>;
+        return<><ProjectDetailSkeleton /></>
     }
 
     if (error) {
@@ -41,7 +42,7 @@ const ProjectDetail: React.FC = () => {
     }
 
     if (!selectedProject) {
-        return <p>Проект не найден.</p>;
+        return <></>;
     }
 
 
@@ -139,55 +140,61 @@ const ProjectDetail: React.FC = () => {
                             </div>
                         </div>
                     </section>
-                    <section className="layout-block">
-                    <h2 className="title-main layout-title">Планировка</h2>
-                        <div className="layouts">
-                            {selectedProject.layout_images.map((layout, index) => (
-                                <div key={index} className="layout">
-                                    <LazyLoadImage
-                                        src={layout.image}
-                                        alt={`House-images-layout${layout.id}`}
-                                        onClick={() => openFullScreenModal(layout.image)}
-                                        style={{ cursor: 'pointer' }}
-                                        effect="blur"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                    <section className="interior-block">
-                        <h2 className="title-main interior-title">Интерьер</h2>
-                        <div className="interiors">
-                            {selectedProject.interior_images.map((interior, index) => (
-                                <div key={index} className="interior">
-                                    <LazyLoadImage
-                                        src={interior.image}
-                                        alt={`House-images-interior${interior.id}`}
-                                        onClick={() => openFullScreenModal(interior.image)}
-                                        style={{ cursor: 'pointer' }}
-                                        effect="blur"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                    <section className="facade-block">
-                        <h2 className="title-main facade-title">Фасады</h2>
-                        <div className="facades">
-                            {selectedProject.facade_images.map((facade, index) => (
-                                <div key={index} className="facade">
-                                    <LazyLoadImage
-                                        src={facade.image}
-                                        alt={`House-images-facades${facade.id}`}
-                                        onClick={() => openFullScreenModal(facade.image)}
-                                        style={{ cursor: 'pointer' }}
-                                        effect="blur"
-                                    />
+                    {selectedProject.layout_images.length > 0 && (
+                        <section className="layout-block">
+                        <h2 className="title-main layout-title">Планировка</h2>
+                            <div className="layouts">
+                                {selectedProject.layout_images.map((layout, index) => (
+                                    <div key={index} className="layout">
+                                        <LazyLoadImage
+                                            src={layout.image}
+                                            alt={`House-images-layout${layout.id}`}
+                                            onClick={() => openFullScreenModal(layout.image)}
+                                            style={{ cursor: 'pointer' }}
+                                            effect="blur"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                    {selectedProject.interior_images.length > 0 && (
+                        <section className="interior-block">
+                            <h2 className="title-main interior-title">Интерьер</h2>
+                            <div className="interiors">
+                                {selectedProject.interior_images.map((interior, index) => (
+                                    <div key={index} className="interior">
+                                        <LazyLoadImage
+                                            src={interior.image}
+                                            alt={`House-images-interior${interior.id}`}
+                                            onClick={() => openFullScreenModal(interior.image)}
+                                            style={{ cursor: 'pointer' }}
+                                            effect="blur"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                    {selectedProject.facade_images.length > 0 && (
+                        <section className="facade-block">
+                            <h2 className="title-main facade-title">Фасады</h2>
+                            <div className="facades">
+                                {selectedProject.facade_images.map((facade, index) => (
+                                    <div key={index} className="facade">
+                                        <LazyLoadImage
+                                            src={facade.image}
+                                            alt={`House-images-facades${facade.id}`}
+                                            onClick={() => openFullScreenModal(facade.image)}
+                                            style={{ cursor: 'pointer' }}
+                                            effect="blur"
+                                        />
 
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
                     <section className="house-nav">
                         <nav>
                             <ul className='tabs-nav text-main'>
@@ -203,18 +210,22 @@ const ProjectDetail: React.FC = () => {
                                 >
                                     Описание
                                 </li>
-                                <li
-                                    className={activeSection === 'finishing' ? 'active' : ''}
-                                    onClick={() => setActiveSection('finishing')}
-                                >
-                                    Варианты отделки
-                                </li>
-                                <li
-                                    className={activeSection === 'documents' ? 'active' : ''}
-                                    onClick={() => setActiveSection('documents')}
-                                >
-                                    Документы
-                                </li>
+                                {selectedProject.finishing_options.length > 0 && (
+                                    <li
+                                        className={activeSection === 'finishing' ? 'active' : ''}
+                                        onClick={() => setActiveSection('finishing')}
+                                    >
+                                        Варианты отделки
+                                    </li>
+                                )}
+                                {selectedProject.documents.length > 0 && (
+                                    <li
+                                        className={activeSection === 'documents' ? 'active' : ''}
+                                        onClick={() => setActiveSection('documents')}
+                                    >
+                                        Документы
+                                    </li>
+                                )}
                             </ul>
                         </nav>
                     </section>
@@ -248,21 +259,25 @@ const ProjectDetail: React.FC = () => {
                                         <td>Количество спален</td>
                                         <td>{selectedProject.bedrooms}</td>
                                     </tr>
-                                    <tr>
-                                        <td>Гараж</td>
-                                        <td>
-                                            {selectedProject.garage
-                                            ? selectedProject.garage_capacity  : "Отсутсвует"}
-                                        </td>
-                                    </tr>
+                                    {selectedProject.garage  !== null && selectedProject.garage_capacity !== null &&(
+                                        <tr>
+                                            <td>Гараж</td>
+                                            <td>
+                                                {selectedProject.garage
+                                                ? selectedProject.garage_capacity  : "Отсутсвует"}
+                                            </td>
+                                        </tr>
+                                    )}
                                     <tr>
                                         <td>Назначение</td>
                                         <td>{selectedProject.purpose}</td>
                                     </tr>
-                                    <tr>
-                                        <td>Количество санузлов</td>
-                                        <td>{selectedProject.bathrooms}</td>
-                                    </tr>
+                                    {selectedProject.bathrooms !== null && (
+                                        <tr>
+                                            <td>Количество санузлов</td>
+                                            <td>{selectedProject.bathrooms}</td>
+                                        </tr>
+                                    )}
                                     <tr>
                                         <td>Срок строительства, дней</td>
                                         <td>от {selectedProject.construction_time}</td>

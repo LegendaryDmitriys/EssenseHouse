@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
               </Link>
               {isDropdownOpen && (
                   <div className="navbar-dropdown">
-                    <Link className="navbar-item black" to={ROUTES.CompletedProject}>
+                    <Link className="navbar-item__drop" to={ROUTES.CompletedProject}>
                       Готовые дома
                     </Link>
                   </div>

@@ -1,27 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {AppDispatch, RootState} from "../../redux/store.ts";
 import {fetchCategories} from "../../redux/features/category/categorySlice.ts";
+import CatalogMenuSkeleton from "../Skeleton/CatalogMenuSkeleton.tsx";
 
-
-const CatalogMenu: React.FC = () => {
-    const [isActive, setIsActive] = useState(false);
-
+const useFetchCategories = () => {
     const dispatch: AppDispatch = useDispatch();
-    const categories = useSelector((state: RootState) => state.categories.items);
     const status = useSelector((state: RootState) => state.categories.status);
-    const error = useSelector((state: RootState) => state.categories.error);
-
 
     useEffect(() => {
         if (status === 'idle') {
             dispatch(fetchCategories());
         }
     }, [status, dispatch]);
+};
+
+
+const CatalogMenu: React.FC = React.memo(() => {
+    const [isActive, setIsActive] = useState(false);
+
+    useFetchCategories();
+
+    const categories = useSelector((state: RootState) => state.categories.items);
+    const status = useSelector((state: RootState) => state.categories.status);
+    const error = useSelector((state: RootState) => state.categories.error);
+
+    const toggleDropdown = useCallback(() => {
+        setIsActive((prevState) => !prevState);
+    }, []);
 
     if (status === 'loading') {
-        return <div>Загрузка категорий...</div>;
+        return <div>
+            <CatalogMenuSkeleton/>
+        </div>;
     }
 
     if (error) {
@@ -29,18 +41,6 @@ const CatalogMenu: React.FC = () => {
     }
 
 
-
-    const toggleDropdown = () => {
-        setIsActive(!isActive);
-    };
-    //
-    // if (error) {
-    //     return <div>{error}</div>;
-    // }
-    //
-    // if (categories.length === 0) {
-    //     return <div>Категории не найдены.</div>;
-    // }
 
     return (
         <nav className="panel">
@@ -59,6 +59,6 @@ const CatalogMenu: React.FC = () => {
             </div>
         </nav>
     );
-};
+});
 
 export default CatalogMenu;

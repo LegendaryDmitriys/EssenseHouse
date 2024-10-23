@@ -1689,14 +1689,15 @@ p {
 
 }
 
-.navbar-item {
-    background-color: #fff !important;
+
+.navbar-item__drop{
+    background-color: #FFFFFF;
     color: #000;
+    gap: .75rem;
+    line-height: 1.5;
+    padding: .5rem .75rem;
 }
 
-.black {
-    color: #000 !important;
-}
 
 .navbar-dropdown .navbar-item:hover {
     background-color: #f5f5f5;

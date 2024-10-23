@@ -4,8 +4,6 @@ import './App.css'
 import AppRoutes from './routes/AppRouter';
 import Header from "./components/Header.tsx";
 import React from "react";
-import Footer from "./components/Footer.tsx";
-
 
 
 const App: React.FC = () => {
@@ -14,7 +12,6 @@ const App: React.FC = () => {
     <>
         <Header color="black"/>
         <AppRoutes/>
-        <Footer/>
     </>
   )
 }
