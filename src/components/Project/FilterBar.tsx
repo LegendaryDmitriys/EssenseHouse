@@ -1,82 +1,91 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFilters } from "../../redux/features/filter/filterSlice.ts";
 import { Range, getTrackBackground } from 'react-range';
+import {setSelectedFilters} from "../../redux/features/house/houseProjectsSlice.ts";
 
-const MIN = 0;
-const MAX = 100000;
-const AREA_MIN = 50;
-const AREA_MAX = 300;
-const LIVING_AREA_MIN = 30;
-const LIVING_AREA_MAX = 200;
 
-interface FilterOption {
-    label: string;
-    value: string;
-    options?: string[];
-    type?: 'range' | 'dropdown';
-    min?: number;
-    max?: number;
-}
-
-const filterOptions: FilterOption[] = [
-    { label: 'Цена', value: 'price', type: 'range', min: MIN, max: MAX },
-    { label: 'Хит продаж', value: 'bestSeller', type: 'dropdown', options: ['Акция', 'Новинка'] },
-    { label: 'Площадь, м²', value: 'area', type: 'range', min: AREA_MIN, max: AREA_MAX },
-    { label: 'Этажей', value: 'floors', type: 'dropdown', options: ['1', '2', '3', '4', '5'] },
-    { label: 'Количество комнат', value: 'rooms', type: 'dropdown', options: ['1', '2', '3', '4'] },
-    { label: 'Жилая площадь, м²', value: 'livingArea', type: 'range', min: LIVING_AREA_MIN, max: LIVING_AREA_MAX },
-    { label: 'Количество спален', value: 'bedrooms', type: 'dropdown', options: ['1', '2', '3', '4'] },
-    { label: 'Гараж', value: 'garage', type: 'dropdown', options: ['Да', 'Нет'] },
-    { label: 'Назначение', value: 'purpose', type: 'dropdown', options: ['Частный дом', 'Коммерческая недвижимость'] },
-    { label: 'Технологии строительства', value: 'constructionTechnology', type: 'dropdown', options: ['Каркасная', 'Кирпичная', 'Монолитная'] },
-];
-
-const FilterBar: React.FC = () => {
-    const [sortOrder, setSortOrder] = useState<string>('priceAsc');
-    const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: string[] }>({});
-    const [priceRange, setPriceRange] = useState<[number, number]>([MIN, MAX]);
-    const [areaRange, setAreaRange] = useState<[number, number]>([AREA_MIN, AREA_MAX]);
-    const [livingAreaRange, setLivingAreaRange] = useState<[number, number]>([LIVING_AREA_MIN, LIVING_AREA_MAX]);
+const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
+    const dispatch = useDispatch();
+    const { filterOptions } = useSelector((state: any) => state.filters);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
+    const [rangeValues, setRangeValues] = useState<{ [key: string]: number[] }>({});
+    const [exactValues, setExactValues] = useState<{ [key: string]: number }>({});
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSortOrder(event.target.value);
+    useEffect(() => {
+        dispatch(fetchFilters());
+    }, [dispatch]);
+
+    const toggleDropdown = (filterName: string) => {
+        setOpenDropdown((prev) => (prev === filterName ? null : filterName));
     };
 
-    const toggleDropdown = (filter: string) => {
-        setOpenDropdown((prev) => (prev === filter ? null : filter));
-    };
-
-    const handleFilterChange = (filter: string, option: string) => {
-        setSelectedFilters((prev) => {
-            const prevSelected = prev[filter] || [];
-            if (prevSelected.includes(option)) {
-                return { ...prev, [filter]: prevSelected.filter((o) => o !== option) };
+    useEffect(() => {
+        const initialRangeValues: { [key: string]: number[] } = {};
+        filterOptions.forEach(filter => {
+            if (filter.filter_type === 'range') {
+                initialRangeValues[filter.field_name] = [filter.options.min, filter.options.max];
             }
-            return { ...prev, [filter]: [...prevSelected, option] };
         });
+        setRangeValues(initialRangeValues);
+    }, [filterOptions]);
+
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const dropdown = dropdownRef.current;
+            if (dropdown && !dropdown.contains(event.target as Node)) {
+                setOpenDropdown(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleRangeChange = (filterName: string, values: number[]) => {
+        setRangeValues((prev) => ({ ...prev, [filterName]: values }));
+        dispatch(setSelectedFilters({ ...rangeValues, [filterName]: values }));
     };
 
-    const getSelectedLabel = (filter: string, defaultLabel: string) => {
-        const selected = selectedFilters[filter];
-        if (!selected || selected.length === 0) return defaultLabel;
-        return `${defaultLabel}: ${selected.length}`;
+    const handleExactChange = (filterName: string, value: number) => {
+        setExactValues((prev) => ({ ...prev, [filterName]: value }));
+        dispatch(setSelectedFilters((prev: any) => ({ ...prev, [filterName]: value })));
     };
 
-    const isActive = (filter: string) => {
-        return selectedFilters[filter] && selectedFilters[filter].length > 0;
+    const sendFiltersToServer = async () => {
+        const params = new URLSearchParams();
+
+        Object.keys(rangeValues).forEach((filterKey) => {
+            if (Array.isArray(rangeValues[filterKey])) {
+                params.append(`${filterKey}__gte`, rangeValues[filterKey][0].toString());
+                params.append(`${filterKey}__lte`, rangeValues[filterKey][1].toString());
+            }
+        });
+
+        Object.keys(exactValues).forEach((filterKey) => {
+            if (exactValues[filterKey] !== undefined) {
+                params.append(filterKey, exactValues[filterKey].toString());
+            }
+        });
+
+        onFilterChange(Object.fromEntries(params));
     };
 
-    const renderRangeSlider = (label: string, range: [number, number], setRange: React.Dispatch<React.SetStateAction<[number, number]>>, min: number, max: number) => (
+
+
+    const renderRangeSlider = (label: string, filterName: string, min: number, max: number) => (
         <div className="dropdown-item">
-            <label className="text-main">{label}:<br /> {range[0]} - {range[1]}</label>
+            <label className="text-main">{label}:<br /> {rangeValues[filterName][0]} - {rangeValues[filterName][1]}</label>
             <Range
-                values={range}
+                values={rangeValues[filterName]}
                 step={10}
                 min={min}
                 max={max}
-                onChange={(values) => setRange(values as [number, number])}
+                onChange={(values) => handleRangeChange(filterName, values as [number, number])}
                 renderTrack={({ props, children }) => (
                     <div
                         {...props}
@@ -85,7 +94,7 @@ const FilterBar: React.FC = () => {
                             height: '6px',
                             width: '100%',
                             background: getTrackBackground({
-                                values: range,
+                                values: rangeValues[filterName],
                                 colors: ['#ccc', '#331958', '#ccc'],
                                 min: min,
                                 max: max,
@@ -108,34 +117,56 @@ const FilterBar: React.FC = () => {
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}
-                    >
-                    </div>
+                    />
                 )}
             />
-            <button className="dropdown-btn">Показать</button>
         </div>
     );
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            const dropdown = dropdownRef.current;
-            if (dropdown && !dropdown.contains(event.target as Node)) {
-                setOpenDropdown(null);
-            }
-        };
+    const renderExactSelector = (filterName: string, choices: number[]) => (
+        <div>
+            {choices.map((choice) => (
+                <div className="dropdown-item" key={choice}>
+                    <label className="text-main">
+                        <input
+                            type="checkbox"
+                            value={choice}
+                            checked={exactValues[filterName] === choice}
+                            onChange={(e) => {
+                                const isChecked = e.target.checked;
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+                                if (isChecked) {
+                                    handleExactChange(filterName, choice);
+                                } else {
+                                    setExactValues((prev) => {
+                                        const newExactValues = { ...prev };
+                                        delete newExactValues[filterName];
+                                        return newExactValues;
+                                    });
+                                    dispatch(setSelectedFilters((prev: any) => {
+                                        const newSelectedFilters = { ...prev };
+                                        delete newSelectedFilters[filterName];
+                                        return newSelectedFilters;
+                                    }));
+                                }
+                            }}
+                        />
+                        {choice}
+                    </label>
+                </div>
+            ))}
+        </div>
+    );
+
+
+
 
     return (
         <div className="filter-container" ref={dropdownRef}>
             <div className="sort-by">
                 <label htmlFor="sort">По цене (сначала дешевые)</label>
                 <div className="select">
-                    <select id="sort" value={sortOrder} onChange={handleSortChange}>
+                    <select id="sort">
                         <option value="priceAsc">Цена ↑</option>
                         <option value="priceDesc">Цена ↓</option>
                         <option value="popularityAsc">Популярность ↑</option>
@@ -144,66 +175,34 @@ const FilterBar: React.FC = () => {
                 </div>
             </div>
             <div className="filter-options">
-                {filterOptions.map((option) => (
-                    option.type === 'range' ? (
-                        <div className={`dropdown ${openDropdown === option.value ? 'is-active' : ''}`}
-                             key={option.value}>
-                            <div className="dropdown-trigger">
-                                <button
-                                    className="button"
-                                    aria-haspopup="true"
-                                    aria-controls="dropdown-menu"
-                                    onClick={() => toggleDropdown(option.value)}
-                                >
-                                    <span>{option.label}</span>
-                                    <span className="icon is-small">
-                                        <i className="fas fa-angle-down" aria-hidden="true"></i>
-                                    </span>
-                                </button>
-                            </div>
+                {filterOptions.map(filter => (
+                    <div className={`dropdown ${openDropdown === filter.field_name ? 'is-active' : ''}`}
+                         key={filter.id}>
+                        <div className="dropdown-trigger">
+                            <button
+                                className="button"
+                                aria-haspopup="true"
+                                aria-controls="dropdown-menu"
+                                onClick={() => toggleDropdown(filter.field_name)}
+                            >
+                                <span>{filter.name}</span>
+                                <span className="icon is-small">
+                                    <i className="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
+                        </div>
+                        {openDropdown === filter.field_name && (
                             <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                 <div className="dropdown-content">
-                                    {option.value === 'price' && renderRangeSlider('Диапазон цены', priceRange, setPriceRange, option.min!, option.max!)}
-                                    {option.value === 'area' && renderRangeSlider('Площадь, м²', areaRange, setAreaRange, option.min!, option.max!)}
-                                    {option.value === 'livingArea' && renderRangeSlider('Жилая площадь, м²', livingAreaRange, setLivingAreaRange, option.min!, option.max!)}
+                                    {filter.filter_type === 'range' && renderRangeSlider(filter.name, filter.field_name, filter.options.min, filter.options.max)}
+                                    {filter.filter_type === 'exact' && renderExactSelector(filter.field_name, filter.options.choices)}
                                 </div>
                             </div>
-                        </div>
-                    ) : (
-                        <div className={`dropdown ${openDropdown === option.value ? 'is-active' : ''}`} key={option.value}>
-                            <div className="dropdown-trigger">
-                                <button
-                                    className={`button ${isActive(option.value) ? 'is-active-filter' : ''}`}
-                                    aria-haspopup="true"
-                                    aria-controls="dropdown-menu"
-                                    onClick={() => toggleDropdown(option.value)}
-                                >
-                                    <span>{getSelectedLabel(option.value, option.label)}</span>
-                                    <span className="icon is-small">
-                                        <i className="fas fa-angle-down" aria-hidden="true"></i>
-                                    </span>
-                                </button>
-                            </div>
-                            <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                                <div className="dropdown-content">
-                                    {option.options?.map((opt) => (
-                                        <div className="dropdown-item" key={opt}>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedFilters[option.value]?.includes(opt) || false}
-                                                    onChange={() => handleFilterChange(option.value, opt)}
-                                                />
-                                                {opt}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    )
+                        )}
+                    </div>
                 ))}
             </div>
+            <button onClick={sendFiltersToServer} className="btn">Применить</button>
         </div>
     );
 };

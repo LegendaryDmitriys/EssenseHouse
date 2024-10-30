@@ -1,33 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import FilterBar from "./FilterBar";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import {fetchCategoryInfo, fetchProjectsByCategory} from "../../redux/features/house/houseProjectsSlice";
+import CatalogMenu from "./CatalogMenu";
+// import CatalogPageSkeleton from "../Skeleton/CatalogPageSkeleton";
+import HouseProjectList from "./product/HouseProjectList";
 
-import FilterBar from "./FilterBar.tsx";
-import {AppDispatch, RootState} from "../../redux/store.ts";
-import {useDispatch, useSelector} from "react-redux";
-import {fetchProjectsByCategory} from "../../redux/features/house/houseProjectsSlice.ts";
-import CatalogMenu from "./CatalogMenu.tsx";
-// @ts-ignore
-import {ROUTES} from "../../utils/routes";
-import {formatNumber} from "../../utils/formatNumber.ts";
-import CatalogPageSkeleton from "../Skeleton/CatalogPageSkeleton.tsx";
+export interface ProjectImage {
+    image: string;
+}
+
+export interface HouseProject {
+    id: number;
+    title: string;
+    price?: number;
+    old_price?: number;
+    discount?: number;
+    best_seller?: string;
+    new?: boolean;
+    images: ProjectImage[];
+}
+
+
 
 const CatalogPage: React.FC = () => {
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+    const [filters, setFilters] = useState<Record<string, string>>({});
     const dispatch: AppDispatch = useDispatch();
     const { houseProjects, categoryInfo, loading, error } = useSelector((state: RootState) => state.houseProjects);
-    const { category } = useParams<{ category: string }>();
+    const { category } = useParams();
 
     useEffect(() => {
         if (category) {
-            dispatch(fetchProjectsByCategory(category));
+            dispatch(fetchCategoryInfo(category));
         }
     }, [category, dispatch]);
 
+
+    useEffect(() => {
+        if (category) {
+            dispatch(fetchProjectsByCategory({ category, filters }));
+        }
+    }, [category, filters, dispatch]);
+
+    const handleFilterChange = (newFilters: Record<string, string>) => {
+        setFilters(newFilters);
+    };
+
+
     if (loading) {
-        return <>
-            <CatalogPageSkeleton/>
-        </>
+        // return <CatalogPageSkeleton />;
     }
 
     if (error) {
@@ -35,9 +58,8 @@ const CatalogPage: React.FC = () => {
     }
 
     if (!categoryInfo) {
-        return <p></p>;
+        return <p>Информация о категории не найдена.</p>;
     }
-
 
     return (
         <div className="container">
@@ -49,60 +71,17 @@ const CatalogPage: React.FC = () => {
 
             <div className="columns">
                 <aside className="column is-one-quarter">
-                    <CatalogMenu/>
+                    <CatalogMenu />
                 </aside>
                 <div className="column is-three-quarters">
-                    <FilterBar/>
-                    <div className="columns is-multiline mt-5">
-                        {houseProjects.map((project, index) => (
-                            <div className="column is-one-third" key={project.id}>
-                                <div
-                                    className="card project-card"
-                                    onMouseEnter={() => setHoveredIndex(index)}
-                                    onMouseLeave={() => setHoveredIndex(null)}
-                                >
-                                    <div className="card-image">
-                                        <Link to={ROUTES.ProjectDetail.replace(':id', project.id.toString())}>
-                                            <figure className="image is-4by3">
-                                                <img
-                                                    src={
-                                                        hoveredIndex === index && project.images.length > 1
-                                                            ? `http://192.168.0.103:8000${project.images[1]?.image}`
-                                                            : `http://192.168.0.103:8000${project.images[0]?.image}`
-                                                    }
-                                                    alt={project.title}
-                                                    className="project-image"
-                                                />
-                                            </figure>
-                                        </Link>
-                                        <div className="tags-wrapper">
-                                            {project.best_seller === 'Акция' ?
-                                                <span className="tag is-warning">Акция</span> : null}
-                                            {project.new ? <span className="tag is-success">Новинка</span> : null}
-                                        </div>
-                                    </div>
-                                    <div className="card-content">
-                                        <p className="project-title">{project.title}</p>
-                                        <div className="project-price">
-                                            {project.price && <span
-                                                className="new-price text-main">{formatNumber(project.price)} ₽</span>}
-                                            {project.discount && (
-                                                <div className="discount">
-                                                    <span
-                                                        className="old-price text-main">{formatNumber(project.old_price)} ₽</span>
-                                                    <span
-                                                        className="discount-price">- {formatNumber(project.discount)} ₽</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <Link to={`/project/details/${project.id}`} className="button is-primary">
-                                            Подробнее
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <FilterBar onFilterChange={handleFilterChange} />
+                    {houseProjects.length === 0 ? (
+                        <div className="no-results">
+                            <p>Ничего не найдено по выбранным фильтрам.</p>
+                        </div>
+                    ) : (
+                        <HouseProjectList houseProjects={houseProjects} />
+                    )}
                     <p className="mt-5 text-main grey">{categoryInfo.long_description}</p>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import config from "../../../api/api.ts";
 
 interface HouseProject {
     id: number;
@@ -46,6 +47,7 @@ interface HouseProjectsState {
     loading: boolean;
     error: string | null;
     selectedProject: HouseProject | null;
+    selectedFilters: Record<string, any>;
 }
 
 const initialState: HouseProjectsState = {
@@ -54,13 +56,30 @@ const initialState: HouseProjectsState = {
     loading: false,
     error: null,
     selectedProject: null,
+    selectedFilters: {},
 };
+
+export const fetchCategoryInfo = createAsyncThunk(
+    'houseProjects/fetchCategoryInfo',
+    async (categorySlug: string, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${config.API_URL}/categories/${categorySlug}`);
+            return response.data;
+        } catch (err) {
+            return rejectWithValue('Ошибка при загрузке информации о категории.');
+        }
+    }
+);
+
 
 export const fetchProjectsByCategory = createAsyncThunk(
     'houseProjects/fetchProjectsByCategory',
-    async (category: string, { rejectWithValue }) => {
+    async ({ category, filters }: { category: string; filters: Record<string, any> }, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`http://192.168.0.103:8000/houses?category=${category}`);
+            const params = new URLSearchParams({ category });
+            addFiltersToParams(filters, params);
+
+            const response = await axios.get(`${config.API_URL}/houses?${params.toString()}`);
             return response.data;
         } catch (err) {
             return rejectWithValue('Ошибка при загрузке данных проектов.');
@@ -68,11 +87,19 @@ export const fetchProjectsByCategory = createAsyncThunk(
     }
 );
 
+const addFiltersToParams = (filters: Record<string, any>, params: URLSearchParams) => {
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+            params.append(key, value);
+        }
+    })
+};
+
 export const fetchProjectById = createAsyncThunk(
     'houseProjects/fetchProjectById',
     async (id: number, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`http://192.168.0.103:8000/houses/${id}`);
+            const response = await axios.get(`${config.API_URL}/houses/${id}`);
             return response.data;
         } catch (err) {
             return rejectWithValue('Ошибка при загрузке данных проекта.');
@@ -84,16 +111,37 @@ export const fetchProjectById = createAsyncThunk(
 const houseProjectsSlice = createSlice({
     name: 'houseProjects',
     initialState,
-    reducers: {},
+    reducers: {
+        setSelectedFilters: (state, action) => {
+            state.selectedFilters = action.payload;
+        },
+        clearSelectedFilters: (state) => {
+            state.selectedFilters = {};
+        },
+    },
     extraReducers: (builder) => {
         builder
+            .addCase(fetchCategoryInfo.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCategoryInfo.fulfilled, (state, action) => {
+                state.categoryInfo = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetchCategoryInfo.rejected, (state, action) => {
+                state.error = action.payload as string;
+                state.loading = false;
+            })
             .addCase(fetchProjectsByCategory.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
             .addCase(fetchProjectsByCategory.fulfilled, (state, action) => {
                 state.houseProjects = action.payload;
-                state.categoryInfo = action.payload[0]?.category || null;
+                if (action.payload.length > 0) {
+                    state.categoryInfo = action.payload[0].category;
+                }
                 state.loading = false;
             })
             .addCase(fetchProjectsByCategory.rejected, (state, action) => {
@@ -115,5 +163,7 @@ const houseProjectsSlice = createSlice({
             });
     },
 });
+
+export const { setSelectedFilters, clearSelectedFilters } = houseProjectsSlice.actions;
 
 export default houseProjectsSlice.reducer;
