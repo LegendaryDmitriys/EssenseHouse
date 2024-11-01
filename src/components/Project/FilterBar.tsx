@@ -10,7 +10,9 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
     const { filterOptions } = useSelector((state: any) => state.filters);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [rangeValues, setRangeValues] = useState<{ [key: string]: number[] }>({});
+    const [defaultRangeValues, setDefaultRangeValues] = useState<{ [key: string]: number[] }>({});
     const [exactValues, setExactValues] = useState<{ [key: string]: number }>({});
+    const [defaultExactValues, setDefaultExactValues] = useState<{ [key: string]: number }>({});
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -23,12 +25,25 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
 
     useEffect(() => {
         const initialRangeValues: { [key: string]: number[] } = {};
+        const defaultRangeVals: { [key: string]: number[] } = {};
+        const exactVals: { [key: string]: number } = {};
+        const defaultExactVals: { [key: string]: number } = {};
+
         filterOptions.forEach(filter => {
             if (filter.filter_type === 'range') {
-                initialRangeValues[filter.field_name] = [filter.options.min, filter.options.max];
+                const range = [filter.options.min, filter.options.max];
+                initialRangeValues[filter.field_name] = range;
+                defaultRangeVals[filter.field_name] = range; // Заполняем значения по умолчанию
+            } else if (filter.filter_type === 'exact') {
+                exactVals[filter.field_name] = filter.options.default || 0;
+                defaultExactVals[filter.field_name] = filter.options.default || 0;
             }
         });
+
         setRangeValues(initialRangeValues);
+        setDefaultRangeValues(defaultRangeVals);
+        setExactValues(exactVals);
+        setDefaultExactValues(defaultExactVals);
     }, [filterOptions]);
 
 
@@ -56,23 +71,44 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
         dispatch(setSelectedFilters((prev: any) => ({ ...prev, [filterName]: value })));
     };
 
+    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        onFilterChange({ sort: event.target.value });
+    };
+
     const sendFiltersToServer = async () => {
         const params = new URLSearchParams();
 
         Object.keys(rangeValues).forEach((filterKey) => {
-            if (Array.isArray(rangeValues[filterKey])) {
-                params.append(`${filterKey}__gte`, rangeValues[filterKey][0].toString());
-                params.append(`${filterKey}__lte`, rangeValues[filterKey][1].toString());
+            const defaultRange = defaultRangeValues[filterKey];
+            const currentRange = rangeValues[filterKey];
+
+            if (Array.isArray(currentRange) && (currentRange[0] !== defaultRange[0] || currentRange[1] !== defaultRange[1])) {
+                params.append(`${filterKey}__gte`, currentRange[0].toString());
+                params.append(`${filterKey}__lte`, currentRange[1].toString());
             }
         });
 
         Object.keys(exactValues).forEach((filterKey) => {
-            if (exactValues[filterKey] !== undefined) {
-                params.append(filterKey, exactValues[filterKey].toString());
+            const defaultExactValue = defaultExactValues[filterKey];
+            const currentExactValue = exactValues[filterKey];
+
+            if (currentExactValue !== defaultExactValue) {
+                params.append(filterKey, currentExactValue.toString());
             }
         });
 
-        onFilterChange(Object.fromEntries(params));
+        if (params.toString()) {
+            onFilterChange(Object.fromEntries(params));
+        }
+    };
+
+    const resetFilters = () => {
+        setRangeValues(defaultRangeValues);
+        setExactValues(defaultExactValues);
+
+        dispatch(setSelectedFilters({}));
+
+        onFilterChange({});
     };
 
 
@@ -159,16 +195,13 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
     );
 
 
-
-
     return (
         <div className="filter-container" ref={dropdownRef}>
             <div className="sort-by">
-                <label htmlFor="sort">По цене (сначала дешевые)</label>
-                <div className="select">
-                    <select id="sort">
-                        <option value="priceAsc">Цена ↑</option>
-                        <option value="priceDesc">Цена ↓</option>
+                <div className="select text-main">
+                    <select id="sort" onChange={handleSortChange}>
+                        <option value="priceAsc">По цене (сначала дешевые)</option>
+                        <option value="priceDesc">По цене (сначала дорогие)</option>
                         <option value="popularityAsc">Популярность ↑</option>
                         <option value="popularityDesc">Популярность ↓</option>
                     </select>
@@ -202,7 +235,10 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
                     </div>
                 ))}
             </div>
-            <button onClick={sendFiltersToServer} className="btn">Применить</button>
+            <div>
+                <button onClick={sendFiltersToServer} className="btn-filter__post">Применить</button>
+                <button onClick={resetFilters} className="btn-filter__delete">Очистить</button>
+            </div>
         </div>
     );
 };

@@ -7,6 +7,7 @@ import {fetchCategoryInfo, fetchProjectsByCategory} from "../../redux/features/h
 import CatalogMenu from "./CatalogMenu";
 // import CatalogPageSkeleton from "../Skeleton/CatalogPageSkeleton";
 import HouseProjectList from "./product/HouseProjectList";
+import Skeleton from "react-loading-skeleton";
 
 export interface ProjectImage {
     image: string;
@@ -58,7 +59,11 @@ const CatalogPage: React.FC = () => {
     }
 
     if (!categoryInfo) {
-        return <p>Информация о категории не найдена.</p>;
+        return <article className="catalog-href">
+            <span className="text-main grey"><Skeleton width="35%" count={1} height={40}/></span>
+            <h1 className='title-main skeleton-text'><Skeleton width="40%" count={1} height={40}/></h1>
+            <p className="skeleton-text"><Skeleton width="100%" count={2} height={20}/></p>
+        </article>
     }
 
     return (
@@ -77,7 +82,13 @@ const CatalogPage: React.FC = () => {
                     <FilterBar onFilterChange={handleFilterChange} />
                     {houseProjects.length === 0 ? (
                         <div className="no-results">
-                            <p>Ничего не найдено по выбранным фильтрам.</p>
+                            <div className="icon-result">
+                                <i className="fa-regular fa-circle-xmark fa-shake fa-4x" style={{color: '#000'}}></i>
+                            </div>
+                            <article>
+                                <p className='text-main'>К сожалению, раздел пуст</p>
+                                <span className="text-span">В данный момент нет активных товаров</span>
+                            </article>
                         </div>
                     ) : (
                         <HouseProjectList houseProjects={houseProjects} />

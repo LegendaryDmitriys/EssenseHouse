@@ -7,5 +7,6 @@ export const ROUTES = {
     CatalogCategory: "/catalog/:category",
     ProjectDetail: "/project/details/:id",
     CompletedProject: "/project/completed/",
+    ComparisonProject: "/comparison"
 } ;
 

@@ -63,7 +63,7 @@ export const fetchCategoryInfo = createAsyncThunk(
     'houseProjects/fetchCategoryInfo',
     async (categorySlug: string, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${config.API_URL}/categories/${categorySlug}`);
+            const response = await axios.get(`${config.API_URL}categories/${categorySlug}`);
             return response.data;
         } catch (err) {
             return rejectWithValue('Ошибка при загрузке информации о категории.');
@@ -79,7 +79,7 @@ export const fetchProjectsByCategory = createAsyncThunk(
             const params = new URLSearchParams({ category });
             addFiltersToParams(filters, params);
 
-            const response = await axios.get(`${config.API_URL}/houses?${params.toString()}`);
+            const response = await axios.get(`${config.API_URL}houses?${params.toString()}`);
             return response.data;
         } catch (err) {
             return rejectWithValue('Ошибка при загрузке данных проектов.');
@@ -99,7 +99,7 @@ export const fetchProjectById = createAsyncThunk(
     'houseProjects/fetchProjectById',
     async (id: number, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${config.API_URL}/houses/${id}`);
+            const response = await axios.get(`${config.API_URL}houses/${id}`);
             return response.data;
         } catch (err) {
             return rejectWithValue('Ошибка при загрузке данных проекта.');

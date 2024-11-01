@@ -54,6 +54,17 @@ const ProjectDetail: React.FC = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
+    const addToComparison = () => {
+        const existingComparison = JSON.parse(localStorage.getItem('comparisonProjects') || '[]');
+
+        if (!existingComparison.some((project: any) => project.id === selectedProject.id)) {
+            existingComparison.push(selectedProject);
+            localStorage.setItem('comparisonProjects', JSON.stringify(existingComparison));
+            window.dispatchEvent(new Event("comparisonUpdated"));
+        } else {
+            alert('Проект уже добавлен для сравнения.');
+        }
+    };
 
     return (
         <div className="container">
@@ -383,7 +394,7 @@ const ProjectDetail: React.FC = () => {
                             className="fa-solid fa-question"></i> </span> Задать
                             вопрос
                         </button>
-                        <button className="comparison-button">
+                        <button className="comparison-button" onClick={addToComparison}>
                             <span className="icon">
                                 <i className="fas fa-balance-scale"></i>
                             </span>
