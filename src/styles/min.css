@@ -414,6 +414,10 @@ p {
     padding: 80px 0 45px 0;
   }
 
+.navbar.is-fixed-top {
+    top: 0;
+    z-index: 1000;
+}
 
   .panel-heading {
     background: #FFFFFF;
@@ -544,9 +548,9 @@ p {
   border-radius: 4px;
 }
 
-.card-content {
-  padding: 15px 0 0 0;
-}
+/*.card-content {*/
+/*  padding: 15px 0 0 0;*/
+/*}*/
 
 .project-subtitle {
   font-size: 12px;
@@ -612,7 +616,6 @@ p {
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    padding: 10px;
     border-radius: 5px;
     color: black;
 }
@@ -1863,4 +1866,19 @@ p {
     font-weight: 400;
     font-size: 16px;
     color:#FFFFFF;
+}
+
+.icon.is-left i {
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+
+.input:focus + .icon.is-left i {
+    color: #46217a;
+}
+
+.input:not(:focus):hover + .icon.is-left i,
+.icon.is-left:hover i {
+    color: #777777;
 }

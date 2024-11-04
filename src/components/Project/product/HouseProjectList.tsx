@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import HouseProjectCard from './HouseProjectCard';
 
 export interface ProjectImage {
@@ -22,18 +22,11 @@ interface HouseProjectListProps {
 }
 
 const HouseProjectList: React.FC<HouseProjectListProps> = ({ houseProjects }) => {
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
     return (
         <div className="columns is-multiline mt-5">
-            {houseProjects.map((project, index) => (
+            {houseProjects.map((project) => (
                 <div className="column is-one-third" key={project.id}>
-                    <HouseProjectCard
-                        project={project}
-                        index={index}
-                        hoveredIndex={hoveredIndex}
-                        setHoveredIndex={setHoveredIndex}
-                    />
+                    <HouseProjectCard project={project} />
                 </div>
             ))}
         </div>

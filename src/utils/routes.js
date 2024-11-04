@@ -7,6 +7,10 @@ export const ROUTES = {
     CatalogCategory: "/catalog/:category",
     ProjectDetail: "/project/details/:id",
     CompletedProject: "/project/completed/",
-    ComparisonProject: "/comparison"
+    ComparisonProject: "/comparison",
+    AdminLogin: "/admin/login/",
+    AdminDashboard: "/admin/dashboard/",
+    AdminComment: "/admin/comment/",
+    AdminOrders: "/admin/orders",
 } ;
 

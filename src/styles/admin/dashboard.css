@@ -1,0 +1,16 @@
+
+.dashboard-container {
+    display: flex;
+    transition: all 0.3s ease;
+}
+
+
+.main-content {
+    flex: 1;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+
+.main-content.expanded {
+    margin-left: -170px;
+}

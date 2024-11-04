@@ -1,43 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ReviewForm from "../components/Reviews/ReviewForm.tsx";
 import Rating from "../components/Reviews/Rating.tsx";
 import sprite from "../../public/sprite.svg";
-import config from "../api/api.ts";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchReviews, addReview } from '../redux/features/reviews/reviewsSlice';
 import 'react-loading-skeleton/dist/skeleton.css';
 import ReviewSkeleton from "../components/Skeleton/ReviewSkeleton.tsx";
 
-interface Review {
-    id: number;
-    name: string;
-    review: string;
-    date: string;
-    rating: number;
-    file: string;
-    file_name: string;
-    file_size: number;
-}
-
 const Reviews: React.FC = () => {
-    const [reviews, setReviews] = useState<Review[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const dispatch = useDispatch();
+    const { reviews, loading } = useSelector((state: any) => state.reviews);
     const [showForm, setShowForm] = useState<boolean>(false);
 
-    const fetchReviews = async () => {
-        try {
-            const response = await fetch(`${config.API_URL}reviews/`);
-            const data = await response.json();
-            setReviews(data);
-            setLoading(false);
-        } catch (error) {
-            console.error('Ошибка при получении отзывов:', error);
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchReviews();
-    }, []);
-
+        dispatch(fetchReviews('published'));
+    }, [dispatch]);
 
     const formatDate = (dateString: string) => {
         const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -61,24 +38,13 @@ const Reviews: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${config.API_URL}/reviews/`, {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                const savedReview = await response.json();
-                setReviews([...reviews, savedReview]);
-            } else {
-                console.error('Ошибка при добавлении отзыва:', response.statusText);
-            }
+            await dispatch(addReview(formData)).unwrap();
         } catch (error) {
             console.error('Ошибка при отправке отзыва:', error);
         }
 
         setShowForm(false);
     };
-
 
     return (
         <div className="container">
@@ -88,10 +54,7 @@ const Reviews: React.FC = () => {
                     <svg className='icon-reviews' width={41} height={42}>
                         <use xlinkHref={sprite + "#reviews-icon"} />
                     </svg>
-                    <p>Мы благодарны нашим клиентам за оказанное доверие и положительные отзывы о совместной работе.
-                        Если хотите, можем помочь и вам: наладим работу отдела продаж, установим системы видеонаблюдения
-                        и автоматизации, разработаем дизайн интерьера под любой стиль и бюджет. Просто свяжитесь с
-                        нами!</p>
+                    <p>Мы благодарны нашим клиентам за оказанное доверие и положительные отзывы о совместной работе. Если хотите, можем помочь и вам: наладим работу отдела продаж, установим системы видеонаблюдения и автоматизации, разработаем дизайн интерьера под любой стиль и бюджет. Просто свяжитесь с нами!</p>
                 </div>
                 <div>
                     <button
@@ -108,8 +71,8 @@ const Reviews: React.FC = () => {
             <div>
                 {loading ? (
                     <>
-                       <ReviewSkeleton/>
-                       <ReviewSkeleton/>
+                        <ReviewSkeleton />
+                        <ReviewSkeleton />
                     </>
                 ) : (
                     reviews.length === 0 ? (
@@ -128,8 +91,7 @@ const Reviews: React.FC = () => {
                                                 {review.name}
                                             </p>
                                         </article>
-                                        <Rating rating={review.rating} setRating={() => {
-                                        }}/>
+                                        <Rating rating={review.rating} setRating={() => { }} />
                                     </div>
                                 </div>
                                 <div className='review-text'>

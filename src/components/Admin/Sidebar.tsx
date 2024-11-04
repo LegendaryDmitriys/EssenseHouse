@@ -1,0 +1,64 @@
+import React, { useState } from 'react';
+import '../../styles/admin/Sidebar.css';
+// @ts-ignore
+import { ROUTES } from "../../utils/routes";
+import sprite from "../../../public/sprite.svg";
+import { Link } from "react-router-dom";
+
+
+const Sidebar: React.FC = () => {
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+
+    const toggleSidebar = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
+    return (
+        <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+            <div className="sidebar-header">
+                {!isCollapsed && (
+                    <div className="logo">
+                        <Link to={ROUTES.Home}>
+                            <svg className="logo-icon" width={190} height={25} style={{color:"black"}}>
+                                <use xlinkHref={sprite + "#logo"} />
+                            </svg>
+                        </Link>
+                    </div>
+                )}
+                <button onClick={toggleSidebar} className="toggle-button">
+                    <i className={`fas ${isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'}`}></i>
+                </button>
+            </div>
+            <nav className="menu">
+                <ul>
+                <li>
+                    <Link to={ROUTES.AdminDashboard}>
+                        <i className="fas fa-th-large"></i>
+                        <span className="menu-text">Дэшборд</span>
+                    </Link>
+                    </li>
+                    <li>
+                        <a>
+                            <i className="fas fa-table"></i>
+                            <span className="menu-text">Datatables</span>
+                        </a>
+                    </li>
+                    <li>
+                        <Link to={ROUTES.AdminOrders}>
+                            <i className="fas fa-home"></i>
+                            <span className="menu-text">Заказы</span>
+                        </Link>
+                    </li>
+                    <li>
+                    <Link to={ROUTES.AdminComment}>
+                            <i className="fas fa-comment"></i>
+                            <span className="menu-text">Комментарии</span>
+                    </Link>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    );
+};
+
+export default Sidebar;

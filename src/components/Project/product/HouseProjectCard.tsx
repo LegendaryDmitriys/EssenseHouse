@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 // @ts-ignore
-import {ROUTES} from "../../../utils/routes";
-import {formatNumber} from "../../../utils/formatNumber.ts";
-
+import { ROUTES } from "../../../utils/routes";
+import { formatNumber } from "../../../utils/formatNumber.ts";
 
 export interface ProjectImage {
     image: string;
@@ -20,31 +19,47 @@ export interface HouseProject {
     images: ProjectImage[];
 }
 
-
-
 interface HouseProjectCardProps {
     project: HouseProject;
-    index: number;
-    hoveredIndex: number | null;
-    setHoveredIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const HouseProjectCard: React.FC<HouseProjectCardProps> = ({ project, index, hoveredIndex, setHoveredIndex }) => {
+const HouseProjectCard: React.FC<HouseProjectCardProps> = ({ project }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [cachedImages, setCachedImages] = useState<string[]>([]);
+
+    useEffect(() => {
+        const loadImages = () => {
+            const images = project.images.map(img => {
+                const image = new Image();
+                image.src = `http://192.168.0.103:8000${img.image}`;
+                return image.src;
+            });
+            setCachedImages(images);
+        };
+
+        if (project.images.length > 0) {
+            loadImages();
+        }
+    }, [project.images]);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const { width, left } = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - left;
+
+        if (x < width / 2 && currentImageIndex !== 1 && project.images.length > 1) {
+            setCurrentImageIndex(1);
+        } else if (x >= width / 2 && currentImageIndex !== 0) {
+            setCurrentImageIndex(0);
+        }
+    };
+
     return (
-        <div
-            className="card project-card"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-        >
+        <div className="card project-card">
             <div className="card-image">
                 <Link to={ROUTES.ProjectDetail.replace(':id', project.id.toString())}>
-                    <figure className="image is-4by3">
+                    <figure className="image is-4by3" onMouseMove={handleMouseMove}>
                         <img
-                            src={
-                                hoveredIndex === index && project.images.length > 1
-                                    ? `http://192.168.0.103:8000${project.images[1]?.image}`
-                                    : `http://192.168.0.103:8000${project.images[0]?.image}`
-                            }
+                            src={cachedImages[currentImageIndex] || ''}
                             alt={project.title}
                             className="project-image"
                         />

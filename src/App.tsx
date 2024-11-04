@@ -2,16 +2,17 @@ import 'bulma/css/bulma.min.css'
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.css'
 import AppRoutes from './routes/AppRouter';
-import Header from "./components/Header.tsx";
 import React from "react";
+import {AuthProvider} from "./services/AuthContext.tsx";
 
 
 const App: React.FC = () => {
 
   return (
     <>
-        <Header color="black"/>
-        <AppRoutes/>
+        <AuthProvider>
+            <AppRoutes/>
+        </AuthProvider>
     </>
   )
 }

@@ -73,11 +73,11 @@ const Stages: React.FC = () => {
             }}
           >
             <div className="columns is-vcentered">
-              <div className="column is-1 has-text-centered">
+              <div className="column is-1 has-text-centered" style={{marginTop: "0"}}>
                 <strong className="is-size-3 grey">{stage.step}.</strong>
               </div>
               <div className="column is-flex is-justify-content-space-between">
-                <h3 className={`subtitle-main ${stage.isLast ? "subtitle-main white" : ""}`}>
+                <h3 className={`subtitle-main ${stage.isLast ? "subtitle-main white" : ""}`} style={{marginBottom: "0"}}>
                   {stage.title}
                 </h3>
                 <article className="stage-article">

@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { ROUTES } from "../utils/routes.js";
 import { Link } from "react-router-dom";
 import sprite from "../../public/sprite.svg";
+import {useAuth} from "../services/AuthContext.tsx";
 
 interface HeaderProps {
   color: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ color }) => {
+  const { isAuthenticated } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [comparisonCount, setComparisonCount] = useState(0);
@@ -83,6 +85,11 @@ const Header: React.FC<HeaderProps> = ({ color }) => {
               <Link className="navbar-item text-main" to={ROUTES.Contacts}>
                 Контакты
               </Link>
+              {isAuthenticated && (
+                  <Link className="navbar-item text-main" to={ROUTES.AdminDashboard}>
+                    Дэшборд
+                  </Link>
+              )}
             </div>
 
             <div className="navbar-end">
