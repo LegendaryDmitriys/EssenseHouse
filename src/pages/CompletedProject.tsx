@@ -35,7 +35,7 @@ const CompletedProject: React.FC = () => {
         const fetchHouses = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${config.API_URL}houses/purchase/`);
+                const response = await fetch(`${config.API_URL}houses/purchase/?construction_status=completed`);
                 const data = await response.json();
                 setPurchases(data);
                 setLoading(false);

@@ -17,13 +17,14 @@ import ProtectedRoute from "./ProtectedRoute.tsx";
 import Header from "../components/Header.tsx";
 import CommentsList from "../components/Admin/CommentsList.tsx";
 import AdminOrders from "../components/Admin/AdminOrders.tsx";
+import AdminPurchasedHouses from "../components/Admin/AdminPurchasedHouses.tsx";
 
 
 const AppRoutes: React.FC = () => {
     const location = useLocation();
 
 
-    const noHeaderPaths = [ROUTES.AdminLogin, ROUTES.AdminDashboard, ROUTES.AdminComment, ROUTES.AdminOrders];
+    const noHeaderPaths = [ROUTES.AdminLogin, ROUTES.AdminDashboard, ROUTES.AdminComment, ROUTES.AdminOrders, ROUTES.AdminPurchaseHouse];
     const shouldShowHeader = !noHeaderPaths.includes(location.pathname);
 
     return (
@@ -45,6 +46,7 @@ const AppRoutes: React.FC = () => {
                         <Route path={ROUTES.AdminDashboard} element={<Dashboard />} />
                         <Route path={ROUTES.AdminComment} element={<CommentsList />} />
                         <Route path={ROUTES.AdminOrders} element={<AdminOrders />} />
+                        <Route path={ROUTES.AdminPurchaseHouse} element={<AdminPurchasedHouses/>} />
                     </Route>
                 </Routes>
         </div>

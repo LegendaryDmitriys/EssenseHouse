@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders, updateOrderStatus } from "../../redux/features/orders/ordersSlice.ts";
 import Sidebar from "./Sidebar.tsx";
-import {Link} from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 const AdminOrders: React.FC = () => {
     const dispatch = useDispatch();
@@ -22,41 +21,46 @@ const AdminOrders: React.FC = () => {
         return new Date(dateString).toLocaleDateString('ru-RU', options);
     };
 
-    if (loading) return <p>Загрузка заказов...</p>;
-    if (error) return <p>Ошибка: {error}</p>;
+    if (loading) return <p className="has-text-centered">Загрузка заказов...</p>;
+    if (error) return <p className="has-text-centered has-text-danger">Ошибка: {error}</p>;
 
     return (
         <div className="dashboard-container">
-            <Sidebar/>
+            <Sidebar />
             <main className="main-content">
                 <h2 className="subtitle-main">Управление заказами домов</h2>
                 <div className="orders-list">
                     {orders.map((order) => (
-                        <div key={order.id} className="order-item">
+                        <div key={order.id} className="box order-item mb-5" style={{height:"auto", border: "1px solid #e5e5e5"}}>
                             {order.house && order.finishing_option ? (
                                 <div className="order-details">
                                     <Link to={`/project/details/${order.house.id}`}>
-                                        <h3 className="subtitle is-5">{order.house.title} {order.house.id}</h3>
+                                        <h3 className="subtitle is-5">
+                                            {order.house.title} #{order.house.id}
+                                        </h3>
                                     </Link>
-                                    <p>Данные покупателя</p>
-                                    <p className="text-main">Имя {order.name}</p>
-                                    <p className="text-main">Номер телефона - {order.phone}</p>
-                                    <p className="text-main">Электронная почта - {order.email}</p>
-                                    <p className="text-main">Заявленное место строительства - {order.construction_place}</p>
-                                    <p className="text-main">Выбранная отделка для дома {order.finishing_option.title}</p>
-                                    <p className="text-main">Дата заказа: {formatDate(order.data_created)}</p>
-                                    <p className="text-main">Статус:
-                                        <span className={`tag ${order.status === "approved" ? "is-success" : order.status === "rejected" ? "is-danger" : "is-warning"}`}>
-                        {order.status === "approved" ? "Подтвержден" : order.status === "rejected" ? "Отменен" : "В обработке"}
-                    </span>
-                                    </p>
+                                    <div className="content">
+                                        <p className="text-main">Данные покупателя</p>
+                                        <p>Имя: <span className="has-text-weight-medium">{order.name}</span></p>
+                                        <p>Номер телефона: <span className="has-text-weight-medium">{order.phone}</span></p>
+                                        <p>Электронная почта: <span className="has-text-weight-medium">{order.email}</span></p>
+                                        <p>Место строительства: <span className="has-text-weight-medium">{order.construction_place} ({order.latitude}, {order.longitude})</span></p>
+                                        <p>Отделка: <span className="has-text-weight-medium">{order.finishing_option.title}</span></p>
+                                        <p>Дата заказа: <span className="has-text-weight-medium">{formatDate(order.data_created)}</span></p>
+                                        <p>Статус:
+                                            <span className={`tag is-medium ${order.status === "approved" ? "is-success" : order.status === "rejected" ? "is-danger" : "is-warning"} ml-2`}>
+                                                <i className={`fas ${order.status === "approved" ? "fa-check-circle" : order.status === "rejected" ? "fa-times-circle" : "fa-spinner"} mr-1`}></i>
+                                                {order.status === "approved" ? "Подтвержден" : order.status === "rejected" ? "Отменен" : "В обработке"}
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             ) : (
-                                <p>Некорректные данные заказа</p>
+                                <p className="has-text-danger">Некорректные данные заказа</p>
                             )}
-                            <div className="order-actions">
+                            <div className="order-actions buttons mt-4">
                                 <button
-                                    className="button is-small is-warning"
+                                    className="button is-small is-info"
                                     onClick={() => handleUpdateStatus(order.id, "pending")}
                                     disabled={order.status === "pending"}
                                 >
@@ -82,7 +86,7 @@ const AdminOrders: React.FC = () => {
                 </div>
             </main>
         </div>
-);
+    );
 };
 
 export default AdminOrders;

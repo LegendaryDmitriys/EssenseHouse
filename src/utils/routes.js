@@ -12,5 +12,6 @@ export const ROUTES = {
     AdminDashboard: "/admin/dashboard/",
     AdminComment: "/admin/comment/",
     AdminOrders: "/admin/orders",
+    AdminPurchaseHouse: "/admin/purchase/",
 } ;
 

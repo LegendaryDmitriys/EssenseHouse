@@ -38,10 +38,10 @@ const Sidebar: React.FC = () => {
                     </Link>
                     </li>
                     <li>
-                        <a>
-                            <i className="fas fa-table"></i>
-                            <span className="menu-text">Datatables</span>
-                        </a>
+                        <Link to={ROUTES.AdminPurchaseHouse}>
+                            <i className="fas fa-home"></i>
+                            <span className="menu-text">Cтроительство домов</span>
+                        </Link>
                     </li>
                     <li>
                         <Link to={ROUTES.AdminOrders}>

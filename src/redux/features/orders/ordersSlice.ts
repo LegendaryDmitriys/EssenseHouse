@@ -2,13 +2,12 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import config from "../../../api/api.ts";
 
-// Асинхронное действие для получения всех заказов
+
 export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
     const response = await axios.get(`${config.API_URL}orders/`);
     return response.data;
 });
 
-// Асинхронное действие для обновления статуса заказа
 export const updateOrderStatus = createAsyncThunk(
     "orders/updateOrderStatus",
     async ({ id, status }: { id: number; status: string }) => {
