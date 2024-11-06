@@ -21,14 +21,19 @@ const AdminOrders: React.FC = () => {
         return new Date(dateString).toLocaleDateString('ru-RU', options);
     };
 
-    if (loading) return <p className="has-text-centered">Загрузка заказов...</p>;
-    if (error) return <p className="has-text-centered has-text-danger">Ошибка: {error}</p>;
 
     return (
         <div className="dashboard-container">
             <Sidebar />
             <main className="main-content">
                 <h2 className="subtitle-main">Управление заказами домов</h2>
+                {loading ? (
+                    <div className="has-text-centered">
+                        <i className="fa spinner"></i>
+                    </div>
+                ) : error ? (
+                    <p className="has-text-danger">{error}</p>
+                ) : (
                 <div className="orders-list">
                     {orders.map((order) => (
                         <div key={order.id} className="box order-item mb-5" style={{height:"auto", border: "1px solid #e5e5e5"}}>
@@ -84,6 +89,7 @@ const AdminOrders: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                )}
             </main>
         </div>
     );

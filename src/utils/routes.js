@@ -13,5 +13,6 @@ export const ROUTES = {
     AdminComment: "/admin/comment/",
     AdminOrders: "/admin/orders",
     AdminPurchaseHouse: "/admin/purchase/",
+    AdminQuestions: "/admin/questions/",
 } ;
 

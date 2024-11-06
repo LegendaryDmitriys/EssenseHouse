@@ -60,7 +60,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ onSubmit }) => {
                     <input
                         className="review-input"
                         type="file"
-                        onChange={handleFileChange} // Обработчик изменения файла
+                        onChange={handleFileChange}
                     />
                 </div>
             </div>

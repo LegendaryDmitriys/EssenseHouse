@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import useOnScreen from '../../src/hooks/useOnScreen'; 
+import useOnScreen from '../../src/hooks/useOnScreen';
+import axios from "axios";
+import config from "../api/api.ts";
 
 const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,16 +16,12 @@ const ContactSection: React.FC = () => {
 
 
   const validate = () => {
-    const newErrors: { name?: string; phone?: string } = {};
+    const newErrors: { name?: string; } = {};
 
     if (!formData.name.trim()) {
       newErrors.name = 'Введите ваше имя.';
     }
 
-    const phoneRegex = /^\+38\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      newErrors.phone = 'Введите телефон в формате: +38 (050) 777-44-50';
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -34,12 +32,18 @@ const ContactSection: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validate()) {
-      console.log('Форма отправлена:', formData);
-      setFormSubmitted(true);
+      try {
+        const response = await axios.post(`${config.API_URL}user-questions/`, formData);
+        console.log("Форма отправлена:", response.data);
+        setFormSubmitted(true);
+      } catch (error) {
+        console.error("Ошибка при отправке формы:", error);
+        setErrors({ name: "Ошибка при отправке формы. Попробуйте еще раз." });
+      }
     }
   };
 

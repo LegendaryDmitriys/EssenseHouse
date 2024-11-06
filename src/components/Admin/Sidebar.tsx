@@ -31,11 +31,11 @@ const Sidebar: React.FC = () => {
             </div>
             <nav className="menu">
                 <ul>
-                <li>
-                    <Link to={ROUTES.AdminDashboard}>
-                        <i className="fas fa-th-large"></i>
-                        <span className="menu-text">Дэшборд</span>
-                    </Link>
+                    <li>
+                        <Link to={ROUTES.AdminDashboard}>
+                            <i className="fas fa-th-large"></i>
+                            <span className="menu-text">Дэшборд</span>
+                        </Link>
                     </li>
                     <li>
                         <Link to={ROUTES.AdminPurchaseHouse}>
@@ -50,10 +50,16 @@ const Sidebar: React.FC = () => {
                         </Link>
                     </li>
                     <li>
-                    <Link to={ROUTES.AdminComment}>
+                        <Link to={ROUTES.AdminComment}>
                             <i className="fas fa-comment"></i>
                             <span className="menu-text">Комментарии</span>
-                    </Link>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={ROUTES.AdminQuestions}>
+                            <i className="fas fa-comment"></i>
+                            <span className="menu-text">Вопросы</span>
+                        </Link>
                     </li>
                 </ul>
             </nav>

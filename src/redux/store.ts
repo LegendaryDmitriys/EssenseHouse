@@ -4,6 +4,8 @@ import houseProjectsReducer from '../redux/features/house/houseProjectsSlice.ts'
 import filtersReducer from '../redux/features/filter/filterSlice.ts';
 import reviewsReducer from '../redux/features/reviews/reviewsSlice.ts'
 import orderReducer from '../redux/features/orders/ordersSlice.ts'
+import questionHouseReducer from './features/questions/userQuestionsHouseSlice.ts'
+import questionReducer from '../redux/features/questions/userQuestionsSlice.ts'
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
         houseProjects: houseProjectsReducer,
         filters: filtersReducer,
         reviews: reviewsReducer,
-        orders: orderReducer
+        orders: orderReducer,
+        questionsHouse: questionHouseReducer,
+        question: questionReducer
     },
 });
 
