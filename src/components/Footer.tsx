@@ -1,8 +1,7 @@
 import React from 'react'
 import sprite from "../../public/sprite.svg";
 import {Link} from "react-router-dom";
-// @ts-ignore
-import {ROUTES} from "../utils/routes.js";
+import {ROUTES} from "../utils/routes.ts";
 
 
 

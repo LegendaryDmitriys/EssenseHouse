@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// @ts-ignore
 import { ROUTES } from "../../../utils/routes";
 import { formatNumber } from "../../../utils/formatNumber.ts";
 

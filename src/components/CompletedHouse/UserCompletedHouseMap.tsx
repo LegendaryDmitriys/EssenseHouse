@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Link } from "react-router-dom";
 
-// @ts-ignore
 import { ROUTES } from "../../utils/routes";
+import {latLng} from "leaflet";
 
 interface UserCompletedHouseMapProps {
     purchases: {
@@ -21,7 +21,7 @@ interface UserCompletedHouseMapProps {
 }
 
 const UserCompletedHouseMap: React.FC<UserCompletedHouseMapProps> = ({ purchases }) => {
-    const NovgorodPosition = [58.5228, 31.2690];
+    const NovgorodPosition = latLng(58.5228, 31.2690);
 
     return (
         <MapContainer center={NovgorodPosition} zoom={8} style={{ height: '500px', width: '100%' }}>

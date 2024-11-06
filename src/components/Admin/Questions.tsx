@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { RootState } from "../../redux/store.ts";
+import {AppDispatch, RootState} from "../../redux/store.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserQuestions, updateUserQuestionStatus } from "../../redux/features/questions/userQuestionsSlice.ts";
 
 const Questions: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { questions, loading, error } = useSelector((state: RootState) => state.question);
 
     const [localQuestions, setLocalQuestions] = useState(questions);
@@ -20,7 +20,9 @@ const Questions: React.FC = () => {
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p>Ошибка: {error}</p>;
 
-    const statusLabels = {
+    type StatusType = 'waiting' | 'answered' | 'closed';
+
+    const statusLabels: Record<StatusType, { label: string; className: string }> = {
         waiting: { label: 'Ожидает ответа', className: 'has-background-warning text-main' },
         answered: { label: 'Ответ предоставлен', className: 'has-background-success text-main' },
         closed: { label: 'Закрыт', className: 'has-background-grey-light text-main' },
@@ -53,8 +55,8 @@ const Questions: React.FC = () => {
                         <td>{question.name}</td>
                         <td>{question.phone}</td>
                         <td>{new Date(question.created_at).toLocaleDateString()}</td>
-                        <td className={`tag ${statusLabels[question.status]?.className}`}>
-                            {statusLabels[question.status]?.label}
+                        <td className={`tag ${statusLabels[question.status as StatusType]?.className}`}>
+                            {statusLabels[question.status as StatusType]?.label}
                         </td>
                         <td>
                             <button

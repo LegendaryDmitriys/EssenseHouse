@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import config from "../../../api/api.ts";
 
@@ -12,14 +11,16 @@ interface Review {
     file: string;
     file_name: string;
     file_size: number;
-    status: string;
+    status: "published" | "rejected";
 }
+
 
 interface ReviewsState {
     reviews: Review[];
     loading: boolean;
     error: string | null;
 }
+
 
 const initialState: ReviewsState = {
     reviews: [],
@@ -30,7 +31,7 @@ const initialState: ReviewsState = {
 
 export const fetchReviews = createAsyncThunk(
     'reviews/fetchReviews',
-    async (status: string | null = null) => {
+    async (status: "published" | "rejected"| "pending" | null = null) => {
         const url = status ? `${config.API_URL}reviews/?status=${status}` : `${config.API_URL}reviews/`;
         const response = await fetch(url);
         if (!response.ok) {
@@ -39,6 +40,7 @@ export const fetchReviews = createAsyncThunk(
         return (await response.json()) as Review[];
     }
 );
+
 
 export const addReview = createAsyncThunk(
     'reviews/addReview',
@@ -57,7 +59,7 @@ export const addReview = createAsyncThunk(
 
 export const updateReviewStatus = createAsyncThunk(
     'reviews/updateReviewStatus',
-    async ({ id, status }: { id: number; status: "published" | "denied" }) => {
+    async ({ id, status }: { id: number; status: "published" | "rejected" | "pending" }) => {
         const response = await fetch(`${config.API_URL}reviews/${id}/`, {
             method: 'PATCH',
             headers: {
@@ -71,6 +73,9 @@ export const updateReviewStatus = createAsyncThunk(
         return await response.json() as Review;
     }
 );
+
+
+
 
 const reviewsSlice = createSlice({
     name: 'reviews',

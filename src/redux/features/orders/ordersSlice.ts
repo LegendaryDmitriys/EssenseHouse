@@ -29,13 +29,23 @@ export const updatePurchasedHouseStatus = createAsyncThunk(
     }
 );
 
-type Order = {
+type House = {
+    id: number;
+    title: string;
+}
+
+type finishingOption = {
+    id: number;
+    title: string;
+}
+
+export type Order = {
     id: number;
     name: string;
     phone: string;
     email: string;
-    house: number;
-    finishing_option: number | null;
+    house: House;
+    finishing_option: finishingOption;
     construction_place: string;
     message: string;
     data_created: string;
@@ -46,7 +56,7 @@ type Order = {
 
 type PurchasedHouse = {
     id: number;
-    house: number;
+    house: House;
     purchase_date: string;
     buyer_name: string;
     buyer_phone: string;

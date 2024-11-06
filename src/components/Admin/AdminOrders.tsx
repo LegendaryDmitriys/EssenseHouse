@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders, updateOrderStatus } from "../../redux/features/orders/ordersSlice.ts";
 import Sidebar from "./Sidebar.tsx";
 import { Link } from "react-router-dom";
+import {AppDispatch} from "../../redux/store.ts";
+import { Order } from "../../redux/features/orders/ordersSlice.ts"
 
 const AdminOrders: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { orders, loading, error } = useSelector((state: any) => state.orders);
 
     useEffect(() => {
@@ -35,7 +37,7 @@ const AdminOrders: React.FC = () => {
                     <p className="has-text-danger">{error}</p>
                 ) : (
                 <div className="orders-list">
-                    {orders.map((order) => (
+                    {orders.map((order: Order) => (
                         <div key={order.id} className="box order-item mb-5" style={{height:"auto", border: "1px solid #e5e5e5"}}>
                             {order.house && order.finishing_option ? (
                                 <div className="order-details">

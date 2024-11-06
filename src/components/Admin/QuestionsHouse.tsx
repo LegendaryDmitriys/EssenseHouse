@@ -7,7 +7,9 @@ type QuestionsHouseProps = {
 
 const QuestionsHouse: React.FC<QuestionsHouseProps> = ({ questions, onOpenModal }) => {
 
-    const statusLabels = {
+    type StatusType = 'waiting' | 'answered' | 'closed';
+
+    const statusLabels: Record<StatusType, { label: string; className: string }> = {
         waiting: { label: 'Ожидает ответа', className: 'has-background-warning text-main' },
         answered: { label: 'Ответ предоставлен', className: 'has-background-success text-main' },
         closed: { label: 'Закрыт', className: 'has-background-grey-light text-main' },
@@ -42,8 +44,8 @@ const QuestionsHouse: React.FC<QuestionsHouseProps> = ({ questions, onOpenModal 
                             Ответить
                         </button>
                     </td>
-                    <td className={`tag ${statusLabels[question.status].className}`}>
-                        {statusLabels[question.status].label}
+                    <td className={`tag ${statusLabels[question.status as StatusType]?.className}`}>
+                        {statusLabels[question.status as StatusType]?.label}
                     </td>
                 </tr>
             ))}

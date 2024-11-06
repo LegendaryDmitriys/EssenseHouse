@@ -21,7 +21,7 @@ const ProjectDetailSkeleton: React.FC = () => {
                                 <Skeleton count={2} height={20}/>
                             </div>
                         ))}
-                        <a href="#characteristics" className="block-special__item">
+                        <a className="block-special__item">
                             <Skeleton count={1} height={20} width={30}/>
                         </a>
                     </div>

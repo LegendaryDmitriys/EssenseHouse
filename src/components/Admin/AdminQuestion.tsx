@@ -1,25 +1,22 @@
 import React, {useEffect, useState} from "react";
 import Sidebar from "./Sidebar.tsx";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import {AppDispatch, RootState} from "../../redux/store";
 import {fetchUserQuestionsHouse, updateUserQuestionHouseStatus} from "../../redux/features/questions/userQuestionsHouseSlice.ts";
 import axios from "axios";
 import config from "../../api/api.ts";
 import Modal from "../Modal.tsx";
 import Questions from "./Questions.tsx";
 import QuestionsHouse from "./QuestionsHouse.tsx";
+import { UserQuestionHouse } from "../../redux/features/questions/userQuestionsHouseSlice.ts"
+
 
 const AdminQuestion: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { questions, loading, error } = useSelector((state: RootState) => state.questionsHouse);
-    const [selectedQuestion, setSelectedQuestion] = useState(null);
+    const [selectedQuestion, setSelectedQuestion] = useState<UserQuestionHouse | null>(null);
     const [answer, setAnswer] = useState("");
 
-    const statusLabels = {
-        waiting: { label: 'Ожидает ответа', className: 'has-background-warning text-main' },
-        answered: { label: 'Ответ предоставлен', className: 'has-background-success text-main' },
-        closed: { label: 'Закрыт', className: 'has-background-grey-light text-main' },
-    };
 
     useEffect(() => {
         dispatch(fetchUserQuestionsHouse());
@@ -38,7 +35,7 @@ const AdminQuestion: React.FC = () => {
         if (selectedQuestion) {
             console.log("Selected Question ID:", selectedQuestion.id);
             try {
-                const response = await axios.post(
+                await axios.post(
                     `${config.API_URL}mail/send-answer/`,
                     {
                         email: selectedQuestion.email,
@@ -46,7 +43,6 @@ const AdminQuestion: React.FC = () => {
                         answer: answer,
                     },
                 );
-
                 dispatch(updateUserQuestionHouseStatus({ id: selectedQuestion.id, status: 'answered' }))
 
                 alert("Ответ отправлен на почту!");

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {ChangeEvent, useState} from "react";
 import { motion } from "framer-motion";
 
 const HouseCostCalc: React.FC = () => {
@@ -9,13 +9,13 @@ const HouseCostCalc: React.FC = () => {
   const [houseType, setHouseType] = useState(""); 
   const [wallMaterial, setWallMaterial] = useState(""); 
   const [houseArea, setHouseArea] = useState(""); 
-  const [floors, setFloors] = useState(""); 
+  const [floors, setFloors] = useState("");
 
-  const handleTypeChange = (event) => setHouseType(event.target.value);
-  const handleMaterialChange = (event) => setWallMaterial(event.target.value);
-  const handlePurposeChange = (event) => setPurpose(event.target.value);
-  const handleAreaChange = (event) => setHouseArea(event.target.value);
-  const handleFloorsChange = (event) => setFloors(event.target.value);
+  const handleTypeChange = (event: ChangeEvent<HTMLInputElement>) => setHouseType(event.target.value);
+  const handleMaterialChange = (event: ChangeEvent<HTMLInputElement>) => setWallMaterial(event.target.value);
+  const handlePurposeChange = (event: ChangeEvent<HTMLInputElement>) => setPurpose(event.target.value);
+  const handleAreaChange = (event: ChangeEvent<HTMLInputElement>) => setHouseArea(event.target.value);
+  const handleFloorsChange = (event: ChangeEvent<HTMLInputElement>) => setFloors(event.target.value);
 
   const calculateCost = () => {
     let baseCost = 1000000;
@@ -90,7 +90,7 @@ const HouseCostCalc: React.FC = () => {
             </progress>
           </div>
           <div className="column has-text-right">
-            <span className="text-main">{step}/5</span>
+            <span className="text-main">{step}/6</span>
           </div>
         </div>
 
@@ -243,6 +243,41 @@ const HouseCostCalc: React.FC = () => {
           )}
 
           {step === 5 && (
+              <>
+                <p className="mb-5">Сколько этажей вам нужно?</p>
+                <label className="label text-main">
+                  <input
+                      type="radio"
+                      value="1 этаж"
+                      checked={floors === "1 этаж"}
+                      onChange={handleFloorsChange}
+                  />
+                  1 этаж
+                </label>
+                <br />
+                <label className="label text-main">
+                  <input
+                      type="radio"
+                      value="2 этажа"
+                      checked={floors === "2 этажа"}
+                      onChange={handleFloorsChange}
+                  />
+                  2 этажа
+                </label>
+                <br />
+                <label className="label text-main">
+                  <input
+                      type="radio"
+                      value="3 и более этажей"
+                      checked={floors === "3 и более этажей"}
+                      onChange={handleFloorsChange}
+                  />
+                  3 и более этажей
+                </label>
+              </>
+          )}
+
+          {step === 6 && (
             <div className="result">
               <h3 className="text-main">Примерная стоимость вашего дома: {houseCost} руб.</h3>
             </div>
@@ -259,7 +294,7 @@ const HouseCostCalc: React.FC = () => {
                 </button>}
             </div>
             <div className="column is-half has-text-right">
-            {step < 5 && 
+            {step < 6 &&
                 <button onClick={handleNextStep} className="button-next text-main">
                     <span>ДАЛЕЕ</span>
                 </button>}

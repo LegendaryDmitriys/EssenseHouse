@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import {latLng} from "leaflet";
 
 const OfficeMap: React.FC = () => {
-    const officePosition = [58.5228, 31.2690];
+    const officePosition = latLng(58.5228, 31.2690);
 
     return (
         <MapContainer center={officePosition} zoom={13} style={{ height: '500px', width: '100%' }}>

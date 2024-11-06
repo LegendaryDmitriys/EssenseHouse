@@ -6,7 +6,7 @@ import {fetchCategories} from "../../redux/features/category/categorySlice.ts";
 import CatalogMenuSkeleton from "../Skeleton/CatalogMenuSkeleton.tsx";
 
 const useFetchCategories = () => {
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const status = useSelector((state: RootState) => state.categories.status);
 
     useEffect(() => {

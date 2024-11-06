@@ -6,10 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchReviews, addReview } from '../redux/features/reviews/reviewsSlice';
 import 'react-loading-skeleton/dist/skeleton.css';
 import ReviewSkeleton from "../components/Skeleton/ReviewSkeleton.tsx";
+import {AppDispatch, RootState} from "../redux/store.ts";
 
 const Reviews: React.FC = () => {
-    const dispatch = useDispatch();
-    const { reviews, loading } = useSelector((state: any) => state.reviews);
+    const dispatch = useDispatch<AppDispatch>();
+    const { reviews, loading } = useSelector((state: RootState) => state.reviews);
     const [showForm, setShowForm] = useState<boolean>(false);
 
     useEffect(() => {

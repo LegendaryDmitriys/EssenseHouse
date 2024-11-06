@@ -1,6 +1,5 @@
 import 'bulma/css/bulma.min.css'
 import '@fortawesome/fontawesome-free/css/all.css';
-import './App.css'
 import AppRoutes from './routes/AppRouter';
 import React from "react";
 import {AuthProvider} from "./services/AuthContext.tsx";

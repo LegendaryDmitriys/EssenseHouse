@@ -4,14 +4,15 @@ import { fetchReviews, updateReviewStatus } from "../../redux/features/reviews/r
 import Sidebar from "./Sidebar.tsx";
 import "../../styles/admin/Comment.css"
 import Rating from "../Reviews/Rating.tsx";
+import {AppDispatch, RootState} from "../../redux/store.ts";
 
 
 const CommentsList: React.FC = () => {
-    const dispatch = useDispatch();
-    const { reviews, loading, error } = useSelector((state: []) => state.reviews);
+    const dispatch = useDispatch<AppDispatch>();
+    const { reviews, loading, error } = useSelector((state: RootState) => state.reviews);
 
     useEffect(() => {
-        dispatch(fetchReviews());
+        dispatch(fetchReviews(null));
     }, [dispatch]);
 
     const publishedCount = reviews.filter((review: { status: string; }) => review.status === "published").length;

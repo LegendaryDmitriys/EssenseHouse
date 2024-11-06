@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// @ts-ignore
-import { ROUTES } from "../utils/routes.js";
+import { ROUTES } from "../utils/routes.ts";
 import { Link } from "react-router-dom";
 import sprite from "../../public/sprite.svg";
 import {useAuth} from "../services/AuthContext.tsx";

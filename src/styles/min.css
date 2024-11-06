@@ -199,14 +199,13 @@ p {
     justify-content: space-between;
     align-items: center;
     padding: 90px 60px;
-    background-image: url('/../../public/background-image-contact.jpg');
+    background-image: url('/background-image-contact.jpg');
     background-size: cover;
     background-position: center;
-    border-radius: 15px;
     max-width: 1200px;
     margin: 0 auto;
     border-radius: 65px;
-    
+
 
   }
   
@@ -352,7 +351,7 @@ p {
   .banner {
     position: relative;
     width: 100%;
-    background-image: url('/../../public/banner-img.png'); 
+    background-image: url('/banner-img.png');
     background-size: cover;
     background-position: center;
     display: flex;

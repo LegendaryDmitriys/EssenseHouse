@@ -1,6 +1,5 @@
 import React from 'react';
-// @ts-ignore
-import { ROUTES } from "../utils/routes.js";
+import { ROUTES } from "../utils/routes.ts";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Home from '../pages/Home';
 import Project from '../pages/Project';

@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPurchasedHouses, updatePurchasedHouseStatus } from "../../redux/features/orders/ordersSlice.ts";
-import { RootState } from "../../redux/store.ts";
+import {AppDispatch, RootState} from "../../redux/store.ts";
 import Sidebar from "./Sidebar.tsx";
 
 const AdminPurchasedHouses: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { purchasedHouses, loading, error } = useSelector((state: RootState) => state.orders);
 
     useEffect(() => {

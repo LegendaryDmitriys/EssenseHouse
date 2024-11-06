@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-// @ts-ignore
-import { ROUTES } from '../utils/routes.js';
 import CatalogMenu from "./Project/CatalogMenu.tsx";
 import axios from "axios";
 import config from "../api/api.ts";
@@ -20,7 +18,7 @@ const Catalog: React.FC = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://192.168.0.103:8000/category/');
+                const response = await axios.get(`${config.API_URL}category/`);
                 setCategories(response.data);
             } catch (err) {
                 setError('Ошибка загрузки категорий.');

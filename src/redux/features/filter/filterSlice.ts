@@ -7,6 +7,12 @@ interface FilterOption {
     name: string;
     field_name: string;
     filter_type: 'exact' | 'range' | 'contains';
+    options?: {
+        min?: number;
+        max?: number;
+        default?: number;
+        choices?: number[];
+    };
 }
 
 interface FiltersState {
@@ -50,7 +56,4 @@ const filterSlice = createSlice({
             });
     },
 });
-
-export const { setAppliedFilter, clearFilters } = filterSlice.actions;
-
 export default filterSlice.reducer;

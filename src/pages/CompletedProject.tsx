@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UserCompletedHouseMap from "../components/CompletedHouse/UserCompletedHouseMap.tsx";
 import { Link } from "react-router-dom";
-// @ts-ignore
+
 import { ROUTES } from "../utils/routes";
 import config from "../api/api.ts";
 import CompletedProjectSkeleton from "../components/Skeleton/CompletedProjectSkeleton.tsx";

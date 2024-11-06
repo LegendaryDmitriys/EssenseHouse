@@ -5,25 +5,8 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {fetchCategoryInfo, fetchProjectsByCategory} from "../../redux/features/house/houseProjectsSlice";
 import CatalogMenu from "./CatalogMenu";
-// import CatalogPageSkeleton from "../Skeleton/CatalogPageSkeleton";
 import HouseProjectList from "./product/HouseProjectList";
 import Skeleton from "react-loading-skeleton";
-
-export interface ProjectImage {
-    image: string;
-}
-
-export interface HouseProject {
-    id: number;
-    title: string;
-    price?: number;
-    old_price?: number;
-    discount?: number;
-    best_seller?: string;
-    new?: boolean;
-    images: ProjectImage[];
-}
-
 
 
 const CatalogPage: React.FC = () => {

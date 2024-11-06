@@ -246,57 +246,59 @@ const ProjectDetail: React.FC = () => {
                             <h2 className='characteristics-title'>Характеристика</h2>
                             <div className='characteristics-info title-main '>
                                 <table>
-                                    <tr>
-                                        <td>Площадь, м²</td>
-                                        <td>{formatNumber(selectedProject.area)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Этажей</td>
-                                        <td>{selectedProject.floors}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Количество комнат</td>
-                                        <td>{selectedProject.rooms}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Жилая площадь, м²</td>
-                                        <td>{formatNumber(selectedProject.living_area)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Площадь кухни, м²</td>
-                                        <td>{formatNumber(selectedProject.kitchen_area)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Количество спален</td>
-                                        <td>{selectedProject.bedrooms}</td>
-                                    </tr>
-                                    {selectedProject.garage  !== null && selectedProject.garage_capacity !== null &&(
+                                    <tbody>
                                         <tr>
-                                            <td>Гараж</td>
-                                            <td>
-                                                {selectedProject.garage
-                                                ? selectedProject.garage_capacity  : "Отсутсвует"}
-                                            </td>
+                                            <td>Площадь, м²</td>
+                                            <td>{formatNumber(selectedProject.area)}</td>
                                         </tr>
-                                    )}
-                                    <tr>
-                                        <td>Назначение</td>
-                                        <td>{selectedProject.purpose}</td>
-                                    </tr>
-                                    {selectedProject.bathrooms !== null && (
                                         <tr>
-                                            <td>Количество санузлов</td>
-                                            <td>{selectedProject.bathrooms}</td>
+                                            <td>Этажей</td>
+                                            <td>{selectedProject.floors}</td>
                                         </tr>
-                                    )}
-                                    <tr>
-                                        <td>Срок строительства, дней</td>
-                                        <td>от {selectedProject.construction_time}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Гарантия, лет</td>
-                                        <td>{selectedProject.warranty}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>Количество комнат</td>
+                                            <td>{selectedProject.rooms}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Жилая площадь, м²</td>
+                                            <td>{formatNumber(selectedProject.living_area)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Площадь кухни, м²</td>
+                                            <td>{formatNumber(selectedProject.kitchen_area)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Количество спален</td>
+                                            <td>{selectedProject.bedrooms}</td>
+                                        </tr>
+                                        {selectedProject.garage  !== null && selectedProject.garage_capacity !== null &&(
+                                            <tr>
+                                                <td>Гараж</td>
+                                                <td>
+                                                    {selectedProject.garage
+                                                    ? selectedProject.garage_capacity  : "Отсутсвует"}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        <tr>
+                                            <td>Назначение</td>
+                                            <td>{selectedProject.purpose}</td>
+                                        </tr>
+                                        {selectedProject.bathrooms !== null && (
+                                            <tr>
+                                                <td>Количество санузлов</td>
+                                                <td>{selectedProject.bathrooms}</td>
+                                            </tr>
+                                        )}
+                                        <tr>
+                                            <td>Срок строительства, дней</td>
+                                            <td>от {selectedProject.construction_time}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Гарантия, лет</td>
+                                            <td>{selectedProject.warranty}</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </section>

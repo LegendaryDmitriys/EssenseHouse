@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchFilters } from "../../redux/features/filter/filterSlice.ts";
 import { Range, getTrackBackground } from 'react-range';
 import {setSelectedFilters} from "../../redux/features/house/houseProjectsSlice.ts";
+import {AppDispatch, RootState} from "../../redux/store.ts";
 
 
 const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
-    const dispatch = useDispatch();
-    const { filterOptions } = useSelector((state: any) => state.filters);
+    const dispatch = useDispatch<AppDispatch>();
+    const { filterOptions } = useSelector((state: RootState) => state.filters);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [rangeValues, setRangeValues] = useState<{ [key: string]: number[] }>({});
     const [defaultRangeValues, setDefaultRangeValues] = useState<{ [key: string]: number[] }>({});
@@ -31,12 +32,14 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
 
         filterOptions.forEach(filter => {
             if (filter.filter_type === 'range') {
-                const range = [filter.options.min, filter.options.max];
+                const min = filter.options?.min ?? 0;
+                const max = filter.options?.max ?? 0;
+                const range: number[] = [min, max];
                 initialRangeValues[filter.field_name] = range;
-                defaultRangeVals[filter.field_name] = range; // Заполняем значения по умолчанию
+                defaultRangeVals[filter.field_name] = range;
             } else if (filter.filter_type === 'exact') {
-                exactVals[filter.field_name] = filter.options.default || 0;
-                defaultExactVals[filter.field_name] = filter.options.default || 0;
+                exactVals[filter.field_name] = filter.options?.default ?? 0;
+                defaultExactVals[filter.field_name] = filter.options?.default ?? 0;
             }
         });
 
@@ -227,8 +230,16 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
                         {openDropdown === filter.field_name && (
                             <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                 <div className="dropdown-content">
-                                    {filter.filter_type === 'range' && renderRangeSlider(filter.name, filter.field_name, filter.options.min, filter.options.max)}
-                                    {filter.filter_type === 'exact' && renderExactSelector(filter.field_name, filter.options.choices)}
+                                    {filter.filter_type === 'range' && filter.options && renderRangeSlider(
+                                        filter.name,
+                                        filter.field_name,
+                                        filter.options.min ?? 0,
+                                        filter.options.max ?? 0
+                                    )}
+                                    {filter.filter_type === 'exact' && filter.options && renderExactSelector(
+                                        filter.field_name,
+                                        filter.options.choices ?? []
+                                    )}
                                 </div>
                             </div>
                         )}

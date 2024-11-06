@@ -37,7 +37,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsAuthenticated(true);
             console.log("Состояние аутентификации после входа:", { isAuthenticated: true });
         } catch (error) {
-            console.error("Ошибка при авторизации:", error.response?.data || error.message);
+            if (axios.isAxiosError(error)) {
+                console.error("Ошибка при авторизации:", error.response?.data || error.message);
+            } else {
+                console.error("Неизвестная ошибка:", error);
+            }
         }
     };
 

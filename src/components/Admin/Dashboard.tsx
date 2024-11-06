@@ -31,7 +31,6 @@ const Dashboard: React.FC = () => {
         ]
     };
 
-    // Настройки для линейного графика
     const lineChartOptions = {
         responsive: true,
         plugins: {
@@ -42,7 +41,6 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    // Данные для кругового графика
     const doughnutChartData = {
         labels: ['Пользователи', 'Активные задачи', 'Новые сообщения', 'Ошибки'],
         datasets: [
@@ -55,7 +53,6 @@ const Dashboard: React.FC = () => {
         ]
     };
 
-    // Настройки для кругового графика
     const doughnutChartOptions = {
         responsive: true,
         plugins: {

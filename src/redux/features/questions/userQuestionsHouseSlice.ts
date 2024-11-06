@@ -19,7 +19,7 @@ export const fetchUserQuestionHouseById = createAsyncThunk(
     }
 );
 
-type UserQuestionHouse = {
+export type UserQuestionHouse = {
     id: number;
     name: string;
     phone: string;

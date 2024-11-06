@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import { motion } from "framer-motion";
 import useOnScreen from '../../src/hooks/useOnScreen';
-// @ts-ignore
-import {ROUTES} from "../utils/routes.js";
+import {ROUTES} from "../utils/routes.ts";
 import {Link} from "react-router-dom";
 import config from "../api/api.ts";
 
@@ -30,18 +29,20 @@ const ProjectSection: React.FC = () => {
   const [houses, setHouses] = useState<House[]>([]);
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const isVisible = useOnScreen(sectionRef);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHouses = async () => {
       try {
         const response = await fetch(`${config.API_URL}houses/`);
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          setError('Network response was not ok');
+          return;
         }
         const data = await response.json();
         setHouses(data);
       } catch (error) {
-        console.error('Error fetching houses:', error);
+        setError('Error fetching houses');
       }
     };
 
@@ -53,6 +54,7 @@ const ProjectSection: React.FC = () => {
     <section className="section block-content" ref={sectionRef}>
       <div className="container">
         <h2 className="title-main">КАЖДЫЙ НАШ ПРОЕКТ УНИКАЛЕН</h2>
+        {error && <div className="error-message">{error}</div>}
         <div className="columns is-multiline">
           {houses.map((house, index) => (
             <motion.div
