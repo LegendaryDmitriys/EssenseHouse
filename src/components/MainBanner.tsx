@@ -11,7 +11,7 @@ const MainBanner: React.FC = () => {
         transition={{ duration: 0.5 }} 
       >
         <motion.img
-          src="/../../public/banner-logo.png"
+          src="/banner-logo.png"
           alt="banner-logo"
           initial={{ scale: 0 }} 
           animate={{ scale: 1 }} 

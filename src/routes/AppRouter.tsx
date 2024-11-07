@@ -18,13 +18,14 @@ import CommentsList from "../components/Admin/CommentsList.tsx";
 import AdminOrders from "../components/Admin/AdminOrders.tsx";
 import AdminPurchasedHouses from "../components/Admin/AdminPurchasedHouses.tsx";
 import AdminQuestion from "../components/Admin/AdminQuestion.tsx";
+import DataTable from "../components/Admin/DataTable.tsx";
 
 
 const AppRoutes: React.FC = () => {
     const location = useLocation();
 
 
-    const noHeaderPaths = [ROUTES.AdminLogin, ROUTES.AdminDashboard, ROUTES.AdminComment, ROUTES.AdminOrders, ROUTES.AdminPurchaseHouse, ROUTES.AdminQuestions];
+    const noHeaderPaths = [ROUTES.AdminLogin, ROUTES.AdminDashboard, ROUTES.AdminComment, ROUTES.AdminOrders, ROUTES.AdminPurchaseHouse, ROUTES.AdminQuestions, ROUTES.AdminTable];
     const shouldShowHeader = !noHeaderPaths.includes(location.pathname);
 
     return (
@@ -48,6 +49,7 @@ const AppRoutes: React.FC = () => {
                         <Route path={ROUTES.AdminOrders} element={<AdminOrders />} />
                         <Route path={ROUTES.AdminPurchaseHouse} element={<AdminPurchasedHouses/>} />
                         <Route path={ROUTES.AdminQuestions} element={<AdminQuestion/>} />
+                        <Route path={ROUTES.AdminTable} element={<DataTable/>} />
                     </Route>
                 </Routes>
         </div>

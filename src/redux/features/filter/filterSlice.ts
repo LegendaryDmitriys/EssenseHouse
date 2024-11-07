@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import config from "../../../api/api.ts";
 
-interface FilterOption {
+export interface FilterOption {
     id: number;
     name: string;
     field_name: string;

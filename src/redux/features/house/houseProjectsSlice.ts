@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import config from "../../../api/api.ts";
 
-interface HouseProject {
+export interface HouseProject {
     id: number;
     title: string;
     images: { id: number; image: string }[];
@@ -30,6 +30,7 @@ interface HouseProject {
     construction_time?: number;
     warranty?: number;
     description?: string;
+    category: Category;
 
 }
 
@@ -47,7 +48,7 @@ interface HouseProjectsState {
     loading: boolean;
     error: string | null;
     selectedProject: HouseProject | null;
-    selectedFilters: Record<string, any>;
+    selectedFilters: Record<string, null>;
 }
 
 const initialState: HouseProjectsState = {
@@ -65,7 +66,7 @@ export const fetchCategoryInfo = createAsyncThunk(
         try {
             const response = await axios.get(`${config.API_URL}categories/${categorySlug}`);
             return response.data;
-        } catch (err) {
+        } catch {
             return rejectWithValue('Ошибка при загрузке информации о категории.');
         }
     }
@@ -74,20 +75,20 @@ export const fetchCategoryInfo = createAsyncThunk(
 
 export const fetchProjectsByCategory = createAsyncThunk(
     'houseProjects/fetchProjectsByCategory',
-    async ({ category, filters }: { category: string; filters: Record<string, any> }, { rejectWithValue }) => {
+    async ({ category, filters }: { category: string; filters: Record<string, null> }, { rejectWithValue }) => {
         try {
             const params = new URLSearchParams({ category });
             addFiltersToParams(filters, params);
 
             const response = await axios.get(`${config.API_URL}houses?${params.toString()}`);
             return response.data;
-        } catch (err) {
+        } catch {
             return rejectWithValue('Ошибка при загрузке данных проектов.');
         }
     }
 );
 
-const addFiltersToParams = (filters: Record<string, any>, params: URLSearchParams) => {
+const addFiltersToParams = (filters: Record<string, null>, params: URLSearchParams) => {
     Object.entries(filters).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
             params.append(key, value);
@@ -101,7 +102,7 @@ export const fetchProjectById = createAsyncThunk(
         try {
             const response = await axios.get(`${config.API_URL}houses/${id}`);
             return response.data;
-        } catch (err) {
+        } catch {
             return rejectWithValue('Ошибка при загрузке данных проекта.');
         }
     }

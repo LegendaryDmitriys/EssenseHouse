@@ -14,5 +14,6 @@ export const ROUTES = {
     AdminOrders: "/admin/orders",
     AdminPurchaseHouse: "/admin/purchase/",
     AdminQuestions: "/admin/questions/",
+    AdminTable: "/admin/tables/"
 } ;
 

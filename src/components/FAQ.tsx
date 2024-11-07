@@ -19,7 +19,6 @@ const FAQItem: React.FC<{ faq: FAQ }> = ({ faq }) => {
                 <h4 className='text-main'>{faq.question}</h4>
                 <span className='signs'>{isOpen ? '-' : '+'}</span>
             </div>
-            {/* Используем AnimatePresence для плавного появления/исчезновения */}
             <AnimatePresence initial={false}>
                 {isOpen && (
                     <motion.div

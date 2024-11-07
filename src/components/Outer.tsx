@@ -18,7 +18,7 @@ const Outer: React.FC = () => {
               animate={isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.5 }} 
             >
-              <img src="../../public/house514x514.png" alt="Дом" />
+              <img src="/house514x514.png" alt="Дом" />
             </motion.figure>
           </div>
           <div className="column is-half">

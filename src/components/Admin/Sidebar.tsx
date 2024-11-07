@@ -60,6 +60,12 @@ const Sidebar: React.FC = () => {
                             <span className="menu-text">Вопросы</span>
                         </Link>
                     </li>
+                    <li>
+                        <Link to={ROUTES.AdminTable}>
+                            <i className="fa-solid fa-database"></i>
+                            <span className="menu-text">База-данных</span>
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </aside>
