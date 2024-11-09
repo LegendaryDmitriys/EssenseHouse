@@ -60,6 +60,59 @@ const initialState: HouseProjectsState = {
     selectedFilters: {},
 };
 
+
+export const addHouse = createAsyncThunk(
+    'houseProjects/addHouse',
+    async (newHouse: HouseProject, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${config.API_URL}houses/`, newHouse);
+            return response.data;
+        } catch {
+            return rejectWithValue('Ошибка при добавлении проекта.');
+        }
+    }
+);
+
+
+export const deleteHouse = createAsyncThunk(
+    'houseProjects/deleteHouse',
+    async (id: number, { rejectWithValue }) => {
+        try {
+            await axios.delete(`${config.API_URL}houses/${id}/`);
+            return id;
+        } catch {
+            return rejectWithValue('Ошибка при удалении проекта.');
+        }
+    }
+);
+
+
+export const fetchHouses = createAsyncThunk(
+    'houseProjects/fetchHouses',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${config.API_URL}houses/`);
+            return response.data;
+        } catch {
+            return rejectWithValue('Ошибка при загрузке проектов.');
+        }
+    }
+);
+
+
+export const updateHouse = createAsyncThunk(
+    'houseProjects/updateHouse',
+    async (updatedHouse: HouseProject, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${config.API_URL}houses/${updatedHouse.id}/`, updatedHouse);
+            return response.data;
+        } catch {
+            return rejectWithValue('Ошибка при обновлении проекта.');
+        }
+    }
+);
+
+
 export const fetchCategoryInfo = createAsyncThunk(
     'houseProjects/fetchCategoryInfo',
     async (categorySlug: string, { rejectWithValue }) => {
@@ -159,6 +212,57 @@ const houseProjectsSlice = createSlice({
                 state.loading = false;
             })
             .addCase(fetchProjectById.rejected, (state, action) => {
+                state.error = action.payload as string;
+                state.loading = false;
+            })
+            .addCase(addHouse.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addHouse.fulfilled, (state, action) => {
+                state.houseProjects.push(action.payload);
+                state.loading = false;
+            })
+            .addCase(addHouse.rejected, (state, action) => {
+                state.error = action.payload as string;
+                state.loading = false;
+            })
+            .addCase(deleteHouse.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteHouse.fulfilled, (state, action) => {
+                state.houseProjects = state.houseProjects.filter((project) => project.id !== action.payload);
+                state.loading = false;
+            })
+            .addCase(deleteHouse.rejected, (state, action) => {
+                state.error = action.payload as string;
+                state.loading = false;
+            })
+            .addCase(fetchHouses.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchHouses.fulfilled, (state, action) => {
+                state.houseProjects = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetchHouses.rejected, (state, action) => {
+                state.error = action.payload as string;
+                state.loading = false;
+            })
+            .addCase(updateHouse.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateHouse.fulfilled, (state, action) => {
+                const index = state.houseProjects.findIndex((project) => project.id === action.payload.id);
+                if (index !== -1) {
+                    state.houseProjects[index] = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(updateHouse.rejected, (state, action) => {
                 state.error = action.payload as string;
                 state.loading = false;
             });

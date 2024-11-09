@@ -6,6 +6,7 @@ import reviewsReducer from '../redux/features/reviews/reviewsSlice.ts'
 import orderReducer from '../redux/features/orders/ordersSlice.ts'
 import questionHouseReducer from './features/questions/userQuestionsHouseSlice.ts'
 import questionReducer from '../redux/features/questions/userQuestionsSlice.ts'
+import finishingOptionsReducer from  '../redux/features/finishingOption/finishingOptionSlice.ts'
 
 export const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
         reviews: reviewsReducer,
         orders: orderReducer,
         questionsHouse: questionHouseReducer,
-        question: questionReducer
+        question: questionReducer,
+        finishingOptions: finishingOptionsReducer
     },
 });
 
