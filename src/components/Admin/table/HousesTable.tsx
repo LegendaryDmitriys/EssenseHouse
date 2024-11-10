@@ -85,7 +85,6 @@ const HousesTable = ({ houses, setHouses }) => {
     const handleSubmitHouse = async () => {
         const formData = new FormData();
 
-        // Добавление данных дома
         Object.keys(houseData).forEach((key) => {
             if (Array.isArray(houseData[key])) {
                 houseData[key].forEach((item) => {
@@ -98,7 +97,7 @@ const HousesTable = ({ houses, setHouses }) => {
             }
         });
 
-        // Добавление файлов изображений
+
         Object.keys(selectedFiles).forEach((field) => {
             selectedFiles[field]?.forEach((file) => {
                 formData.append(field, file);
@@ -247,8 +246,6 @@ const HousesTable = ({ houses, setHouses }) => {
                         <input placeholder="Этажи" name="floors" value={houseData.floors || ''} onChange={handleChange} />
                         <input placeholder="Площадь кухни" name="kitchen_area" value={houseData.kitchen_area || ''} onChange={handleChange} />
                         <input placeholder="Живая площадь" name="living_area" value={houseData.living_area || ''} onChange={handleChange} />
-
-                        {/* Добавление изображений */}
                         <div>
                             <label>Изображения</label>
                             <input type="file" multiple onChange={(e) => handleFileChange(e, 'images')} />
