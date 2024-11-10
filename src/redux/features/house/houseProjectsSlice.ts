@@ -11,6 +11,7 @@ export interface HouseProject {
     facade_images: { id : number; image: string }[];
     finishing_options: { id : number; image: string; title: string; description: string; price_per_sqm: number }[];
     documents: { id : number; image: string; title: string; size: string; file: string}[];
+    construction_technology : { id : number; name: string }[];
     price?: number;
     old_price?: number;
     discount?: number;

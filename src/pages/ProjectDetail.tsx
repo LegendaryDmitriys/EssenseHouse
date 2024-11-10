@@ -45,7 +45,6 @@ const ProjectDetail: React.FC = () => {
         return <></>;
     }
 
-
     const openFullScreenModal = (image: string) => {
         setCurrentImage(image);
         setIsFullScreen(true);
@@ -79,7 +78,7 @@ const ProjectDetail: React.FC = () => {
                 <img
                     className="house-image"
                     src={selectedProject.images[0].image}
-                    alt={`${selectedProject.title}-${selectedProject.images[0].id} ${id}`}
+                    alt={`${selectedProject.title}-${selectedProject.images[0].image} ${id}`}
                 />
                 <div className="house-info">
                     <div className="section-house__title title-main white">
@@ -151,7 +150,7 @@ const ProjectDetail: React.FC = () => {
                             </div>
                         </div>
                     </section>
-                    {selectedProject.layout_images.length > 0 && (
+                    {(selectedProject.layout_images || []).length > 0 && (
                         <section className="layout-block">
                         <h2 className="title-main layout-title">Планировка</h2>
                             <div className="layouts">
@@ -169,7 +168,7 @@ const ProjectDetail: React.FC = () => {
                             </div>
                         </section>
                     )}
-                    {selectedProject.interior_images.length > 0 && (
+                    {(selectedProject.interior_images || []).length > 0 && (
                         <section className="interior-block">
                             <h2 className="title-main interior-title">Интерьер</h2>
                             <div className="interiors">
@@ -187,7 +186,7 @@ const ProjectDetail: React.FC = () => {
                             </div>
                         </section>
                     )}
-                    {selectedProject.facade_images.length > 0 && (
+                    {(selectedProject.facade_images || []).length > 0 && (
                         <section className="facade-block">
                             <h2 className="title-main facade-title">Фасады</h2>
                             <div className="facades">
@@ -221,14 +220,12 @@ const ProjectDetail: React.FC = () => {
                                 >
                                     Описание
                                 </li>
-                                {selectedProject.finishing_options.length > 0 && (
                                     <li
                                         className={activeSection === 'finishing' ? 'active' : ''}
                                         onClick={() => setActiveSection('finishing')}
                                     >
                                         Варианты отделки
                                     </li>
-                                )}
                                 {selectedProject.documents.length > 0 && (
                                     <li
                                         className={activeSection === 'documents' ? 'active' : ''}

@@ -4,116 +4,138 @@ import config from "../../../api/api.ts";
 import Modal from "../../Modal.tsx";
 
 const HousesTable = ({ houses, setHouses }) => {
-    const [selectedFiles, setSelectedFiles] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState({
+        images: null,
+        layout_images: null,
+        interior_images: null,
+        facade_images: null,
+        finishing_options: null,
+        documents: null,
+    });
     const [houseData, setHouseData] = useState({
         id: null,
         title: '',
-        price: '',
-        old_price: '',
-        discount: '',
-        best_seller: '',
-        new: false,
-        short_description: '',
-        area: '',
-        floors: '',
-        rooms: '',
-        living_area: '',
-        kitchen_area: '',
-        bedrooms: '',
-        garage: false,
-        garage_capacity: '',
-        purpose: '',
-        bathrooms: '',
-        construction_time: '',
-        warranty: '',
-        description: '',
-        categoryId: '',
         images: [],
         layout_images: [],
         interior_images: [],
         facade_images: [],
         finishing_options: [],
-        documents: []
+        documents: [],
+        price: 0,
+        old_price: 0,
+        discount: 0,
+        best_seller: '',
+        new: false,
+        short_description: '',
+        area: 0,
+        floors: 1,
+        rooms: 1,
+        living_area: 0,
+        kitchen_area: 0,
+        bedrooms: 1,
+        garage: false,
+        garage_capacity: 0,
+        purpose: '',
+        bathrooms: 1,
+        construction_time: 0,
+        warranty: 0,
+        description: '',
+        category: null,
+        construction_technology: 6
     });
     const [editingHouseId, setEditingHouseId] = useState(null);
     const [categories, setCategories] = useState([]);
-    const [technologies, setTechnologies] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        const fetchCategoriesAndTechnologies = async () => {
+        const fetchCategories = async () => {
             try {
                 const categoryResponse = await axios.get(`${config.API_URL}category/`);
-                const technologyResponse = await axios.get(`${config.API_URL}construction-technologies`);
                 setCategories(categoryResponse.data);
-                setTechnologies(technologyResponse.data);
             } catch (error) {
-                console.error('Ошибка при получении категорий и технологий', error);
+                console.error('Ошибка при получении категорий', error);
             }
         };
-        fetchCategoriesAndTechnologies();
+        fetchCategories();
     }, []);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedFiles(e.target.files);
+    const handleFileChange = (e, field) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles((prevFiles) => ({
+            ...prevFiles,
+            [field]: files,
+        }));
     };
 
-    const handleUpload = async () => {
-        const formData = new FormData();
-        if (selectedFiles && selectedFiles.length > 0) {
-            Array.from(selectedFiles).forEach((file) => {
-                formData.append('houses', file);
-            });
-        }
+    const handleDeleteImage = (field, imageIndex) => {
+        setHouseData((prevData) => {
+            const newImages = prevData[field].filter((_, index) => index !== imageIndex);
+            return { ...prevData, [field]: newImages };
+        });
+    };
 
-        try {
-            const response = await axios.post(`${config.API_URL}houses/${editingHouseId}/images/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            if (response.data && response.data.message) {
-                alert('Изображения успешно загружены');
-            } else {
-                alert('Не удалось загрузить изображения');
-            }
-        } catch (error) {
-            console.error('Ошибка при загрузке изображений', error.response?.data || error.message);
-            alert('Ошибка при загрузке изображений');
-        }
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setHouseData((prevData) => ({
+            ...prevData,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
     };
 
     const handleSubmitHouse = async () => {
-        const updatedData = {};
+        const formData = new FormData();
 
-        // Добавляем только измененные поля в объект updatedData
+        // Добавление данных дома
         Object.keys(houseData).forEach((key) => {
-            // Сравниваем значения текущего состояния с теми, что были до редактирования
-            if (houseData[key] !== houses.find((house) => house.id === editingHouseId)[key]) {
-                updatedData[key] = houseData[key];
+            if (Array.isArray(houseData[key])) {
+                houseData[key].forEach((item) => {
+                    if (item instanceof File) {
+                        formData.append(key, item); // Добавляем файл напрямую
+                    }
+                });
+            } else {
+                formData.append(key, houseData[key]);
             }
         });
 
+        // Добавление файлов изображений
+        Object.keys(selectedFiles).forEach((field) => {
+            selectedFiles[field]?.forEach((file) => {
+                formData.append(field, file);
+            });
+        });
+
         try {
-            const response = await axios.patch(`${config.API_URL}houses/${editingHouseId}/`, updatedData);
-            setHouses(houses.map(house => (house.id === editingHouseId ? response.data : house)));
-            await handleUpload();
+            if (editingHouseId) {
+                const response = await axios.patch(`${config.API_URL}houses/update/${editingHouseId}/`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+
+                setHouses(houses.map(house => (house.id === editingHouseId ? { ...house, ...houseData } : house)));
+            } else {
+                const response = await axios.post(`${config.API_URL}houses/`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+
+                setHouses([...houses, response.data]);
+            }
+
             setIsModalOpen(false);
             resetHouseData();
         } catch (error) {
-            console.error('Ошибка при сохранении дома', error);
+            console.error('Ошибка при сохранении дома:', error);
         }
+    };
+
+    const handleAddNewHouse = () => {
+        resetHouseData();
+        setEditingHouseId(null);
+        setIsModalOpen(true);
     };
 
     const handleEditClick = (house) => {
         setEditingHouseId(house.id);
-        setHouseData({
-            ...house,
-            categoryId: house.category.id.toString(),
-            new: house.new || false,
-            garage: house.garage || false
-        });
+        setHouseData({ ...house });
         setIsModalOpen(true);
     };
 
@@ -127,37 +149,58 @@ const HousesTable = ({ houses, setHouses }) => {
         setHouseData({
             id: null,
             title: '',
-            price: '',
-            old_price: '',
-            discount: '',
-            best_seller: '',
-            new: false,
-            short_description: '',
-            area: '',
-            floors: '',
-            rooms: '',
-            living_area: '',
-            kitchen_area: '',
-            bedrooms: '',
-            garage: false,
-            garage_capacity: '',
-            purpose: '',
-            bathrooms: '',
-            construction_time: '',
-            warranty: '',
-            description: '',
-            categoryId: '',
             images: [],
             layout_images: [],
             interior_images: [],
             facade_images: [],
             finishing_options: [],
-            documents: []
+            documents: [],
+            price: null,
+            old_price: null,
+            discount: null,
+            best_seller: '',
+            new: false,
+            short_description: '',
+            area: null,
+            floors: null,
+            rooms: null,
+            living_area: null,
+            kitchen_area: null,
+            bedrooms: null,
+            garage: false,
+            garage_capacity: null,
+            purpose: '',
+            bathrooms: null,
+            construction_time: null,
+            warranty: null,
+            description: '',
+            category: null
         });
+        setSelectedFiles({
+            images: null,
+            layout_images: null,
+            interior_images: null,
+            facade_images: null,
+            finishing_options: null,
+            documents: null,
+        });
+    };
+
+    const handleDeleteHouse = async (houseId) => {
+        try {
+            await axios.delete(`${config.API_URL}houses/${houseId}/`);
+            setHouses(houses.filter(house => house.id !== houseId));
+        } catch (error) {
+            console.error('Ошибка при удалении дома:', error);
+        }
     };
 
     return (
         <div>
+            <button className="button is-primary" onClick={handleAddNewHouse}>
+                Добавить новый дом
+            </button>
+
             <table className="table is-fullwidth is-striped">
                 <thead>
                 <tr>
@@ -174,7 +217,7 @@ const HousesTable = ({ houses, setHouses }) => {
                         <td>{house.id}</td>
                         <td>{house.title}</td>
                         <td>{house.price} ₽</td>
-                        <td>{house.category.name}</td>
+                        <td>{house.category?.name}</td>
                         <td>
                             <button className="button is-small is-info" onClick={() => handleEditClick(house)}>
                                 Редактировать
@@ -192,86 +235,35 @@ const HousesTable = ({ houses, setHouses }) => {
                 <Modal onClose={handleCancelEdit}>
                     <div className="modal-content">
                         <h3>{editingHouseId ? 'Редактировать дом' : 'Добавить новый дом'}</h3>
-                        <input
-                            placeholder="Название"
-                            value={houseData.title}
-                            onChange={(e) => setHouseData({...houseData, title: e.target.value})}
-                        />
-                        <input
-                            placeholder="Цена"
-                            value={houseData.price}
-                            onChange={(e) => setHouseData({...houseData, price: e.target.value})}
-                        />
-                        <input
-                            placeholder="Старая цена"
-                            value={houseData.old_price}
-                            onChange={(e) => setHouseData({...houseData, old_price: e.target.value})}
-                        />
-                        <input
-                            placeholder="Скидка"
-                            value={houseData.discount}
-                            onChange={(e) => setHouseData({...houseData, discount: e.target.value})}
-                        />
-                        <input
-                            placeholder="Площадь"
-                            value={houseData.area}
-                            onChange={(e) => setHouseData({...houseData, area: e.target.value})}
-                        />
-                        <input
-                            placeholder="Этажи"
-                            value={houseData.floors}
-                            onChange={(e) => setHouseData({...houseData, floors: e.target.value})}
-                        />
-                        <input
-                            placeholder="Количество комнат"
-                            value={houseData.rooms}
-                            onChange={(e) => setHouseData({...houseData, rooms: e.target.value})}
-                        />
-                        <input
-                            placeholder="Жилая площадь"
-                            value={houseData.living_area}
-                            onChange={(e) => setHouseData({...houseData, living_area: e.target.value})}
-                        />
-                        <input
-                            placeholder="Кухня"
-                            value={houseData.kitchen_area}
-                            onChange={(e) => setHouseData({...houseData, kitchen_area: e.target.value})}
-                        />
-                        <input
-                            placeholder="Спальни"
-                            value={houseData.bedrooms}
-                            onChange={(e) => setHouseData({...houseData, bedrooms: e.target.value})}
-                        />
-                        <input
-                            placeholder="Гараж"
-                            value={houseData.garage ? 'Да' : 'Нет'}
-                            onChange={(e) => setHouseData({...houseData, garage: e.target.value === 'Да'})}
-                        />
-                        <input
-                            placeholder="Цель"
-                            value={houseData.purpose}
-                            onChange={(e) => setHouseData({...houseData, purpose: e.target.value})}
-                        />
-                        <textarea
-                            placeholder="Описание"
-                            value={houseData.description}
-                            onChange={(e) => setHouseData({...houseData, description: e.target.value})}
-                        />
-                        <div className="image-gallery">
-                            {houseData.images.length > 0 && houseData.images.map((image, index) => (
-                                <img key={index} src={`${config.API_URL}${image.image}`} alt={`House Image ${index + 1}`}
-                                     className="image-preview"/>
+
+                        <input placeholder="Название" name="title" value={houseData.title} onChange={handleChange} />
+                        <input placeholder="Цена" name="price" type="number" value={houseData.price || ''} onChange={handleChange} />
+                        <input placeholder="Старая цена" name="old_price" type="number" value={houseData.old_price || ''} onChange={handleChange} />
+                        <input placeholder="Скидка" name="discount" type="number" value={houseData.discount || ''} onChange={handleChange} />
+                        <input placeholder="Категория" name="category" value={houseData.category || ''} onChange={handleChange} />
+                        <input placeholder="Количество ванных комнат" name="bathrooms" value={houseData.bathrooms || ''} onChange={handleChange} />
+                        <input placeholder="Количество спален" name="bedrooms" value={houseData.bedrooms || ''} onChange={handleChange} />
+                        <input placeholder="Время строительства" name="construction_time" value={houseData.construction_time || ''} onChange={handleChange} />
+                        <input placeholder="Этажи" name="floors" value={houseData.floors || ''} onChange={handleChange} />
+                        <input placeholder="Площадь кухни" name="kitchen_area" value={houseData.kitchen_area || ''} onChange={handleChange} />
+                        <input placeholder="Живая площадь" name="living_area" value={houseData.living_area || ''} onChange={handleChange} />
+
+                        {/* Добавление изображений */}
+                        <div>
+                            <label>Изображения</label>
+                            <input type="file" multiple onChange={(e) => handleFileChange(e, 'images')} />
+                            {houseData.images.map((image, index) => (
+                                <div key={index}>
+                                    <img src={image} alt={`Image ${index}`} width={100} />
+                                    <button type="button" onClick={() => handleDeleteImage('images', index)}>
+                                        Удалить
+                                    </button>
+                                </div>
                             ))}
                         </div>
-                        <label>
-                            Добавить изображения:
-                            <input type="file" multiple onChange={handleFileChange}/>
-                        </label>
+
                         <button className="button is-primary" onClick={handleSubmitHouse}>
-                            Сохранить
-                        </button>
-                        <button className="button is-secondary" onClick={handleUpload}>
-                            Загрузить изображения
+                            {editingHouseId ? 'Обновить дом' : 'Добавить дом'}
                         </button>
                     </div>
                 </Modal>
