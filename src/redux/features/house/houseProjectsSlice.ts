@@ -5,10 +5,10 @@ import config from "../../../api/api.ts";
 export interface HouseProject {
     id: number;
     title: string;
-    images: { id: number; image: string }[];
-    layout_images: { id : number; image: string }[];
-    interior_images: { id : number; image: string }[];
-    facade_images: { id : number; image: string }[];
+    images: Image;
+    layout_images: Image;
+    interior_images: Image;
+    facade_images: Image;
     finishing_options: { id : number; image: string; title: string; description: string; price_per_sqm: number }[];
     documents: { id : number; image: string; title: string; size: string; file: string}[];
     construction_technology : { id : number; name: string }[];
@@ -35,6 +35,11 @@ export interface HouseProject {
 
 }
 
+interface Image {
+    id: number;
+    image: string;
+}
+
 interface Category {
     id: number;
     name: string;
@@ -43,9 +48,12 @@ interface Category {
     long_description: string;
 }
 
-interface HouseProjectsState {
+export interface HouseProjectsState {
     houseProjects: HouseProject[];
     categoryInfo: Category | null;
+    count: number;
+    next: string | null;
+    previous: string | null;
     loading: boolean;
     error: string | null;
     selectedProject: HouseProject | null;
@@ -55,12 +63,14 @@ interface HouseProjectsState {
 const initialState: HouseProjectsState = {
     houseProjects: [],
     categoryInfo: null,
+    count: 0,
+    next: null,
+    previous: null,
     loading: false,
     error: null,
     selectedProject: null,
     selectedFilters: {},
 };
-
 
 export const addHouse = createAsyncThunk(
     'houseProjects/addHouse',
@@ -134,7 +144,7 @@ export const fetchProjectsByCategory = createAsyncThunk(
             const params = new URLSearchParams({ category });
             addFiltersToParams(filters, params);
 
-            const response = await axios.get(`${config.API_URL}houses?${params.toString()}`);
+            const response = await axios.get(`${config.API_URL}houses?${params.toString()}&page_size=6`);
             return response.data;
         } catch {
             return rejectWithValue('Ошибка при загрузке данных проектов.');
@@ -245,7 +255,10 @@ const houseProjectsSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchHouses.fulfilled, (state, action) => {
-                state.houseProjects = action.payload;
+                state.houseProjects = action.payload.results;
+                state.count = action.payload.count;
+                state.next = action.payload.next;
+                state.previous = action.payload.previous;
                 state.loading = false;
             })
             .addCase(fetchHouses.rejected, (state, action) => {

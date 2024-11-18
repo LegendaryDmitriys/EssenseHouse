@@ -34,13 +34,13 @@ const ProjectSection: React.FC = () => {
   useEffect(() => {
     const fetchHouses = async () => {
       try {
-        const response = await fetch(`${config.API_URL}houses/`);
+        const response = await fetch(`${config.API_URL}houses/?page_size=6`);
         if (!response.ok) {
           setError('Network response was not ok');
           return;
         }
         const data = await response.json();
-        setHouses(data);
+        setHouses(data.results);
       } catch (error) {
         setError('Error fetching houses');
       }

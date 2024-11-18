@@ -11,7 +11,7 @@ import Skeleton from "react-loading-skeleton";
 
 const CatalogPage: React.FC = () => {
     const [filters, setFilters] = useState<Record<string, string>>({});
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { houseProjects, categoryInfo, loading, error } = useSelector((state: RootState) => state.houseProjects);
     const { category } = useParams();
 
@@ -32,6 +32,7 @@ const CatalogPage: React.FC = () => {
         setFilters(newFilters);
     };
 
+    console.log(houseProjects.results)
 
     if (loading) {
         // return <CatalogPageSkeleton />;
@@ -63,7 +64,7 @@ const CatalogPage: React.FC = () => {
                 </aside>
                 <div className="column is-three-quarters">
                     <FilterBar onFilterChange={handleFilterChange} />
-                    {houseProjects.length === 0 ? (
+                    {houseProjects.results.length === 0 ? (
                         <div className="no-results">
                             <div className="icon-result">
                                 <i className="fa-regular fa-circle-xmark fa-shake fa-4x" style={{color: '#000'}}></i>
@@ -74,7 +75,7 @@ const CatalogPage: React.FC = () => {
                             </article>
                         </div>
                     ) : (
-                        <HouseProjectList houseProjects={houseProjects} />
+                        <HouseProjectList houseProjects={houseProjects.results} />
                     )}
                     <p className="mt-5 text-main grey">{categoryInfo.long_description}</p>
                 </div>

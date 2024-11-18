@@ -59,7 +59,11 @@ const AdminQuestion: React.FC = () => {
             <Sidebar />
             <main className="main-content">
                 <h2 className="subtitle-main">Вопросы пользователей о домах</h2>
-
+                <div className="buttons">
+                    <a href={`${config.API_URL}export_user_questions_and_houses/`} className="button is-info" download>
+                        Экспортировать в Excel
+                    </a>
+                </div>
                 {loading && <p>Загрузка...</p>}
                 {error && <p className="has-text-danger">{error}</p>}
 

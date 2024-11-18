@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPurchasedHouses, updatePurchasedHouseStatus } from "../../redux/features/orders/ordersSlice.ts";
 import {AppDispatch, RootState} from "../../redux/store.ts";
 import Sidebar from "./Sidebar.tsx";
+import config from "../../api/api.ts";
 
 const AdminPurchasedHouses: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,9 +22,12 @@ const AdminPurchasedHouses: React.FC = () => {
             <Sidebar/>
             <main className="main-content">
                 <h1 className="title-main">Строительство домов</h1>
+                <a href={`${config.API_URL}export_purchased_houses/`} className="button is-info" download>
+                    Экспортировать в Excel
+                </a>
                 {loading ? (
                     <div className="has-text-centered">
-                       <i className="fa spinner"></i>
+                        <i className="fa spinner"></i>
                     </div>
                 ) : error ? (
                     <p className="has-text-danger">{error}</p>
