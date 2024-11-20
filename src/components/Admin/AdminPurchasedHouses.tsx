@@ -22,7 +22,7 @@ const AdminPurchasedHouses: React.FC = () => {
             <Sidebar/>
             <main className="main-content">
                 <h1 className="title-main">Строительство домов</h1>
-                <a href={`${config.API_URL}export_purchased_houses/`} className="button is-info" download>
+                <a href={`${config.API_URL}export_purchased_houses/`} className="button is-small is-primary" download style={{marginBottom: "20px"}}>
                     Экспортировать в Excel
                 </a>
                 {loading ? (
@@ -32,7 +32,7 @@ const AdminPurchasedHouses: React.FC = () => {
                 ) : error ? (
                     <p className="has-text-danger">{error}</p>
                 ) : (
-                    <table className="table is-fullwidth is-striped">
+                    <table className="table is-fullwidth is-striped is-white" style={{color: "#000"}}>
                         <thead>
                         <tr>
                             <th>Дом</th>
@@ -46,7 +46,7 @@ const AdminPurchasedHouses: React.FC = () => {
                         <tbody>
                         {purchasedHouses.map((house) => (
                             <tr key={house.id}>
-                                <td>{house.house.id}</td>
+                                <td>{house.house.title}</td>
                                 <td>{house.buyer_name}</td>
                                 <td>{house.buyer_phone}</td>
                                 <td>{house.buyer_email}</td>

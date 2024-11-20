@@ -15,6 +15,7 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
     const [exactValues, setExactValues] = useState<{ [key: string]: number }>({});
     const [defaultExactValues, setDefaultExactValues] = useState<{ [key: string]: number }>({});
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [sortValue, setSortValue] = useState<string>('priceAsc');
 
     useEffect(() => {
         dispatch(fetchFilters());
@@ -75,7 +76,9 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
     };
 
     const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        onFilterChange({ sort: event.target.value });
+        const newSortValue = event.target.value;
+        setSortValue(newSortValue);
+        onFilterChange({ sort: newSortValue });
     };
 
     const sendFiltersToServer = async () => {
@@ -99,6 +102,10 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
                 params.append(filterKey, currentExactValue.toString());
             }
         });
+
+        if (sortValue) {
+            params.append("sort", sortValue);
+        }
 
         if (params.toString()) {
             onFilterChange(Object.fromEntries(params));
@@ -202,11 +209,9 @@ const FilterBar: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFil
         <div className="filter-container" ref={dropdownRef}>
             <div className="sort-by">
                 <div className="select text-main">
-                    <select id="sort" onChange={handleSortChange}>
+                    <select id="sort" value={sortValue} onChange={handleSortChange}>
                         <option value="priceAsc">По цене (сначала дешевые)</option>
                         <option value="priceDesc">По цене (сначала дорогие)</option>
-                        <option value="popularityAsc">Популярность ↑</option>
-                        <option value="popularityDesc">Популярность ↓</option>
                     </select>
                 </div>
             </div>

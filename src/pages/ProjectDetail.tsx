@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/store.ts";
 import {fetchProjectById} from "../redux/features/house/houseProjectsSlice.ts";
 import ProjectDetailSkeleton from "../components/Skeleton/ProjectDetailSkeleton.tsx";
+import config from "../api/api.ts";
 
 
 
@@ -56,6 +57,11 @@ const ProjectDetail: React.FC = () => {
     const addToComparison = () => {
         const existingComparison = JSON.parse(localStorage.getItem('comparisonProjects') || '[]');
 
+        if (existingComparison.length >= 6) {
+            alert('Нельзя добавить больше 6 проектов для сравнения.');
+            return;
+        }
+
         if (!existingComparison.some((project: any) => project.id === selectedProject.id)) {
             existingComparison.push(selectedProject);
             localStorage.setItem('comparisonProjects', JSON.stringify(existingComparison));
@@ -64,6 +70,10 @@ const ProjectDetail: React.FC = () => {
             alert('Проект уже добавлен для сравнения.');
         }
     };
+
+
+    console.log(selectedProject)
+
 
     return (
         <div className="container">
@@ -77,8 +87,13 @@ const ProjectDetail: React.FC = () => {
             <section className="main-image-section">
                 <img
                     className="house-image"
-                    src={selectedProject.images[0].image}
-                    alt={`${selectedProject.title}-${selectedProject.images[0].image} ${id}`}
+                    src={
+                        selectedProject.images?.length > 0
+                            ? `${config.API_URL}${selectedProject.images[0].image}`
+                            : "/house.jpg"
+                    }
+                    alt={`${selectedProject.title || "house"} ${id}`}
+                    style={{filter: "brightness(0.6)"}}
                 />
                 <div className="house-info">
                     <div className="section-house__title title-main white">
@@ -105,19 +120,21 @@ const ProjectDetail: React.FC = () => {
             </section>
             <section className="info-house">
                 <div className="info-house__content">
-                    <section className="gallery-section">
-                        {selectedProject.images.map((image, index) => (
-                            <div key={index} className="gallery-item">
-                                <LazyLoadImage
-                                    src={image.image}
-                                    alt={`House-images-${image.id}`}
-                                    onClick={() => openFullScreenModal(image.image)}
-                                    style={{ cursor: 'pointer' }}
-                                    effect="blur"
-                                />
-                            </div>
-                        ))}
-                    </section>
+                    {selectedProject.images?.length > 0 && (
+                        <section className="gallery-section">
+                            {selectedProject.images.map((image, index) => (
+                                <div key={index} className="gallery-item">
+                                    <LazyLoadImage
+                                        src={`${config.API_URL}${image.image}`}
+                                        alt={`House-images-${image.id}`}
+                                        onClick={() => openFullScreenModal(`${config.API_URL}${image.image}`)}
+                                        style={{ cursor: 'pointer' }}
+                                        effect="blur"
+                                    />
+                                </div>
+                            ))}
+                        </section>
+                    )}
                     <section className="tizer-block">
                         <div className="tizer-list">
                             <div className="tizer-list__item">
@@ -157,9 +174,9 @@ const ProjectDetail: React.FC = () => {
                                 {selectedProject.layout_images.map((layout, index) => (
                                     <div key={index} className="layout">
                                         <LazyLoadImage
-                                            src={layout.image}
+                                            src={`${config.API_URL}${layout.image}`}
                                             alt={`House-images-layout${layout.id}`}
-                                            onClick={() => openFullScreenModal(layout.image)}
+                                            onClick={() => openFullScreenModal(`${config.API_URL}${layout.image}`)}
                                             style={{ cursor: 'pointer' }}
                                             effect="blur"
                                         />
@@ -175,9 +192,9 @@ const ProjectDetail: React.FC = () => {
                                 {selectedProject.interior_images.map((interior, index) => (
                                     <div key={index} className="interior">
                                         <LazyLoadImage
-                                            src={interior.image}
+                                            src={`${config.API_URL}${interior.image}`}
                                             alt={`House-images-interior${interior.id}`}
-                                            onClick={() => openFullScreenModal(interior.image)}
+                                            onClick={() => openFullScreenModal(`${config.API_URL}${interior.image}`)}
                                             style={{ cursor: 'pointer' }}
                                             effect="blur"
                                         />
@@ -193,9 +210,9 @@ const ProjectDetail: React.FC = () => {
                                 {selectedProject.facade_images.map((facade, index) => (
                                     <div key={index} className="facade">
                                         <LazyLoadImage
-                                            src={facade.image}
+                                            src={`${config.API_URL}${facade.image}`}
                                             alt={`House-images-facades${facade.id}`}
-                                            onClick={() => openFullScreenModal(facade.image)}
+                                            onClick={() => openFullScreenModal(`${config.API_URL}${facade.image}`)}
                                             style={{ cursor: 'pointer' }}
                                             effect="blur"
                                         />
@@ -214,18 +231,22 @@ const ProjectDetail: React.FC = () => {
                                 >
                                     Характеристика
                                 </li>
-                                <li
-                                    className={activeSection === 'description' ? 'active' : ''}
-                                    onClick={() => setActiveSection('description')}
-                                >
-                                    Описание
-                                </li>
+                                {selectedProject.description && (
+                                    <li
+                                        className={activeSection === 'description' ? 'active' : ''}
+                                        onClick={() => setActiveSection('description')}
+                                    >
+                                        Описание
+                                    </li>
+                                )}
+                                {selectedProject.finishing_options_details.length > 0 && (
                                     <li
                                         className={activeSection === 'finishing' ? 'active' : ''}
                                         onClick={() => setActiveSection('finishing')}
                                     >
                                         Варианты отделки
                                     </li>
+                                )}
                                 {selectedProject.documents.length > 0 && (
                                     <li
                                         className={activeSection === 'documents' ? 'active' : ''}
@@ -300,14 +321,14 @@ const ProjectDetail: React.FC = () => {
                             </div>
                         </section>
                     )}
-                    {activeSection === 'description' && (
+                    {activeSection === 'description' && selectedProject.description && (
                         <section className='description-block all-section'>
                             <h2 className='description-title'>Описание</h2>
                             <p>
                                 {selectedProject.description}
                             </p>
                             <p>
-                                <br/><strong className='subtitle-main'>Отличительные особенности :</strong>
+                                <br /><strong className='subtitle-main'>Отличительные особенности :</strong>
                                 <ul>
                                     <li>
                                         Эксклюзивный дизайн, разработанный конструкторским бюро в Италии.
@@ -325,14 +346,18 @@ const ProjectDetail: React.FC = () => {
                             </p>
                         </section>
                     )}
-                    {activeSection === 'finishing' && (
+                    {activeSection === 'finishing' && selectedProject.finishing_options_details?.length > 0 && (
                         <section className="finishing-block all-section">
                             <h2 className='tariff-title'>Варианты отделки</h2>
                             <div className='tarrif-list'>
-                                {selectedProject.finishing_options.map((finishingOption, index) => (
+                                {(selectedProject.finishing_options_details || []).map((finishingOption, index) => (
                                     <div key={index} className='tarrif-list__item'>
                                         <div className='tarrif-list__head'>
-                                            <img src={finishingOption.image} alt={`finishingOption-image${finishingOption.id}`} className="tarrif-img"/>
+                                            <img
+                                                src={`${config.API_URL}${finishingOption.image}`}
+                                                alt={`finishingOption-image${finishingOption.id}`}
+                                                className="tarrif-img"
+                                            />
                                             <h3 className='subtitle'>{finishingOption.title}</h3>
                                         </div>
                                         <div>
@@ -362,7 +387,7 @@ const ProjectDetail: React.FC = () => {
                                                 <p>{document.title}</p>
                                                 <p>{document.size} MB</p>
                                             </article>
-                                            <a href={document.file} download={document.title}>
+                                            <a href={`${config.API_URL}${document.file}`} download={document.title}>
                                                 <i className="fas fa-download download-icon"></i>
                                             </a>
                                         </div>
@@ -376,13 +401,18 @@ const ProjectDetail: React.FC = () => {
                 <div className="price-section">
                     <div className="project-price">
                         <h2 className="text-main project-info__title">{selectedProject.title}</h2>
-                        <span className="new-price text-main">{formatNumber(selectedProject.price)} ₽</span>
-                        {selectedProject.old_price && selectedProject.discount ? (
-                            <div className="discount">
-                                <span className="old-price text-main">{formatNumber(selectedProject.old_price)} ₽</span>
-                                <span className="discount-price">- {formatNumber(selectedProject.discount)} ₽</span>
-                            </div>
-                        ) : null}
+                        {selectedProject.new_price ? (
+                            <>
+                                <span className="old-price text-main">{formatNumber(selectedProject.price)} ₽</span>
+                                <span className="new-price text-main">{formatNumber(selectedProject.new_price)} ₽</span>
+                                <div className="discount">
+                                    <span
+                                        className="discount-price">{formatNumber(selectedProject.discount_percentage)}%</span>
+                                </div>
+                            </>
+                        ) : (
+                            <span className="new-price text-main">{formatNumber(selectedProject.price)} ₽</span>
+                        )}
                     </div>
                     <button className="order-button" onClick={openModal}>
                         Заказать
@@ -413,7 +443,7 @@ const ProjectDetail: React.FC = () => {
             {isModalOpen && <OrderFormModal
                 onClose={closeModal}
                 projectName={selectedProject.title}
-                finishOptions={selectedProject.finishing_options}
+                finishOptions={selectedProject.finishing_options_details }
                 houseId={selectedProject.id}
             />}
             {isQuestionModalOpen && (

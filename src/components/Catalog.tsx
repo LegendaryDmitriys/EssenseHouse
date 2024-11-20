@@ -18,7 +18,7 @@ const Catalog: React.FC = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get(`${config.API_URL}category/`);
+                const response = await axios.get(`${config.API_URL}category/?page_size=6`);
                 setCategories(response.data);
             } catch (err) {
                 setError('Ошибка загрузки категорий.');
@@ -61,9 +61,13 @@ const Catalog: React.FC = () => {
                         строительстве.
                     </p>
 
-                    <div className="columns mt-5">
+                    <div className="columns mt-5"  style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '1rem',
+                    }}>
                         {categories.map((category) => (
-                            <div className="column" key={category.id}>
+                            <div className="column" key={category.id} style={{ textAlign: 'center' }}>
                                 <Link to={`/catalog/${category.slug}`}>
                                     <figure className="">
                                         <img src={`${config.API_URL}${category.random_image_url}`} alt={category.name} className="category-img" />

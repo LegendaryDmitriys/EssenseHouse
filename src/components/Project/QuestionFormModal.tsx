@@ -16,7 +16,7 @@ const QuestionFormModal: React.FC<QuestionFormModalProps> = ({ onClose, projectN
         formData.append('house', houseId.toString());
 
         try {
-            const response = await fetch(`${config.API_URL}user-questions/`, {
+            const response = await fetch(`${config.API_URL}user-questions/house/`, {
                 method: 'POST',
                 body: formData,
             });

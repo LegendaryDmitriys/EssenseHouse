@@ -6,18 +6,29 @@ import config from "../../../api/api.ts";
 export const updateUserQuestionStatus = createAsyncThunk(
     "userQuestions/updateUserQuestionStatus",
     async ({ id, status }: { id: number; status: string }) => {
-        const response = await axios.patch(`${config.API_URL}user-question/${id}/`, {
-            status,
-        });
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.patch(
+            `${config.API_URL}user-question/${id}/`,
+            { status },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
         return response.data;
     }
 );
 
-
 export const fetchUserQuestions = createAsyncThunk(
     "userQuestions/fetchUserQuestions",
     async () => {
-        const response = await axios.get(`${config.API_URL}user-questions/`);
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${config.API_URL}user-questions/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data;
     }
 );
@@ -25,7 +36,12 @@ export const fetchUserQuestions = createAsyncThunk(
 export const fetchUserQuestionById = createAsyncThunk(
     "userQuestions/fetchUserQuestionById",
     async (id: number) => {
-        const response = await axios.get(`${config.API_URL}user-question/${id}/`);
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${config.API_URL}user-question/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data;
     }
 );

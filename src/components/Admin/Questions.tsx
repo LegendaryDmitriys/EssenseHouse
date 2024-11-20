@@ -39,7 +39,7 @@ const Questions: React.FC = () => {
 
     return (
         <div className="table-container">
-            <table className="table is-fullwidth is-striped">
+            <table className="table is-fullwidth is-striped is-white">
                 <thead>
                 <tr>
                     <th>Имя</th>
@@ -55,31 +55,35 @@ const Questions: React.FC = () => {
                         <td>{question.name}</td>
                         <td>{question.phone}</td>
                         <td>{new Date(question.created_at).toLocaleDateString()}</td>
-                        <td className={`tag ${statusLabels[question.status as StatusType]?.className}`}>
-                            {statusLabels[question.status as StatusType]?.label}
+                        <td>
+                           <span className={`tag ${statusLabels[question.status as StatusType]?.className}`}>
+                               {statusLabels[question.status as StatusType]?.label}
+                           </span>
                         </td>
                         <td>
-                            <button
-                                className="button is-small is-warning"
-                                onClick={() => handleStatusChange(question.id, "waiting")}
-                                disabled={question.status === "waiting"}
-                            >
-                                Ожидает ответа
-                            </button>
-                            <button
-                                className="button is-small is-success"
-                                onClick={() => handleStatusChange(question.id, "answered")}
-                                disabled={question.status === "answered"}
-                            >
-                                Ответ предоставлен
-                            </button>
-                            <button
-                                className="button is-small is-danger"
-                                onClick={() => handleStatusChange(question.id, "closed")}
-                                disabled={question.status === "closed"}
-                            >
-                                Закрыт
-                            </button>
+                            <div className="buttons">
+                                <button
+                                    className="button is-small is-warning"
+                                    onClick={() => handleStatusChange(question.id, "waiting")}
+                                    disabled={question.status === "waiting"}
+                                >
+                                    Ожидает ответа
+                                </button>
+                                <button
+                                    className="button is-small is-success"
+                                    onClick={() => handleStatusChange(question.id, "answered")}
+                                    disabled={question.status === "answered"}
+                                >
+                                    Ответ предоставлен
+                                </button>
+                                <button
+                                    className="button is-small is-danger"
+                                    onClick={() => handleStatusChange(question.id, "closed")}
+                                    disabled={question.status === "closed"}
+                                >
+                                    Закрыт
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 ))}

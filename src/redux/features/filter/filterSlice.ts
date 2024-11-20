@@ -32,26 +32,58 @@ export const fetchFilterOptions = createAsyncThunk<FilterOption[]>(
     }
 );
 
+
 export const addFilterOption = createAsyncThunk<FilterOption, FilterOption>(
-    'filterOptions/addFilterOption',
+    "filterOptions/addFilterOption",
     async (newOption) => {
-        const response = await axios.post(`${config.API_URL}filter-options/`, newOption);
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.post(
+            `${config.API_URL}filter-options/`,
+            newOption,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
         return response.data;
     }
 );
 
 export const updateFilterOption = createAsyncThunk<FilterOption, FilterOption>(
-    'filterOptions/updateFilterOption',
+    "filterOptions/updateFilterOption",
     async (updatedOption) => {
-        const response = await axios.put(`${config.API_URL}filter-options/${updatedOption.id}/`, updatedOption);
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.put(
+            `${config.API_URL}filter-options/${updatedOption.id}/`,
+            updatedOption,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
         return response.data;
     }
 );
 
+
 export const deleteFilterOption = createAsyncThunk<number, number>(
-    'filterOptions/deleteFilterOption',
+    "filterOptions/deleteFilterOption",
     async (id) => {
-        await axios.delete(`${config.API_URL}filter-options/${id}/`);
+        const token = localStorage.getItem("accessToken");
+
+
+        await axios.delete(`${config.API_URL}filter-options/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
         return id;
     }
 );

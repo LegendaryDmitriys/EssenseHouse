@@ -39,7 +39,7 @@ const DataTable: React.FC = () => {
             <main className="main-content">
                 <h2 className="subtitle-main">Таблица данных</h2>
                 <div className="table-header">
-                    <h3>
+                    <h3 className="subtitle">
                         {currentTable === 'houses' && 'Таблица домов'}
                         {currentTable === 'categories' && 'Таблица категорий'}
                         {currentTable === 'finishingOptions' && 'Таблица вариантов отделки'}
@@ -48,7 +48,7 @@ const DataTable: React.FC = () => {
                         <div style={{ display: "inline-flex", marginLeft: "10px" }}>
                             {currentTable !== 'houses' && (
                                 <button
-                                    className="button is-small is-info"
+                                    className="button is-small is-white"
                                     onClick={goToPreviousTable}
                                 >
                                     <i className="fa fa-arrow-left"></i>
@@ -56,7 +56,7 @@ const DataTable: React.FC = () => {
                             )}
                             {currentTable !== 'filterOptions' && (
                                 <button
-                                    className="button is-small is-info"
+                                    className="button is-small is-white"
                                     onClick={goToNextTable}
                                     style={{ marginLeft: "5px" }}
                                 >

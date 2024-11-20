@@ -32,8 +32,6 @@ const CatalogPage: React.FC = () => {
         setFilters(newFilters);
     };
 
-    console.log(houseProjects.results)
-
     if (loading) {
         // return <CatalogPageSkeleton />;
     }
@@ -50,12 +48,14 @@ const CatalogPage: React.FC = () => {
         </article>
     }
 
+    console.log(houseProjects)
+
     return (
         <div className="container">
             <article className="catalog-href">
-                <span className="text-main grey">Главная - Типовые проекты - {categoryInfo.name}</span>
-                <h1 className='title-main black'>{categoryInfo.name}</h1>
-                <p>{categoryInfo.short_description}</p>
+                <span className="text-main grey">Главная - Типовые проекты - {categoryInfo.category.name}</span>
+                <h1 className='title-main black'>{categoryInfo.category.name}</h1>
+                <p>{categoryInfo.category.short_description}</p>
             </article>
 
             <div className="columns">

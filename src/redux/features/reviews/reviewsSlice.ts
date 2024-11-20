@@ -56,24 +56,27 @@ export const addReview = createAsyncThunk(
     }
 );
 
-
 export const updateReviewStatus = createAsyncThunk(
     'reviews/updateReviewStatus',
     async ({ id, status }: { id: number; status: "published" | "rejected" | "pending" }) => {
+        const token = localStorage.getItem('accessToken')
+
         const response = await fetch(`${config.API_URL}reviews/${id}/`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ status }),
         });
+
         if (!response.ok) {
             throw new Error('Ошибка при обновлении статуса отзыва');
         }
+
         return await response.json() as Review;
     }
 );
-
 
 
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {formatNumber} from "../utils/formatNumber.ts";
 import {Link} from "react-router-dom";
+import config from "../api/api.ts";
 
 interface ConstructionTechnology {
     id: number;
@@ -73,6 +74,8 @@ const ComparisonList: React.FC = () => {
         window.dispatchEvent(new Event("comparisonUpdated"));
     };
 
+    console.log(comparisonProjects)
+
     return (
         <div className="section">
             <div className="container">
@@ -84,23 +87,24 @@ const ComparisonList: React.FC = () => {
                         {comparisonProjects.map((project) => (
                             <div key={project.id} className="comparison-project">
                                 <div className="comparison-head">
-                                    <button onClick={() => removeFromComparison(project.id)} className="remove-comparison-button">
+                                    <button onClick={() => removeFromComparison(project.id)}
+                                            className="remove-comparison-button">
                                         <i className="fa-solid fa-trash fa-1x"></i>
                                     </button>
-                                    <img src={project.images[0]?.image} alt={project.title}
-                                         style={{width: "200px", height: "140px"}}/>
+                                    <img
+                                        src={project.images?.[0]?.image ? `${config.API_URL}${project.images[0].image}` : "/house.jpg"}
+                                        alt={project.title || "house"}
+                                        style={{width: "200px", height: "100px"}}
+                                    />
                                     <h3 className="text-span comparison-header">{project.title}</h3>
                                     <div className="price-container">
-                                        <span className="new-price text-span">{formatNumber(project.price)} ₽</span>
-                                        <article>
-                                             <span
-                                                 className="old-price">{project.old_price ? `${formatNumber(project.old_price)} ₽` : ''}
-                                            </span>
-                                            {project.discount &&
-                                                <span className="discount-price ">
-                                                    {formatNumber(project.discount)} ₽
-                                                </span>}
-                                        </article>
+                                        {project.new_price ? (
+                                            <>
+                                               <span className="old-price text-span">{formatNumber(project.new_price)} ₽</span>
+                                            </>
+                                        ) : (
+                                            <span className="new-price text-span">{formatNumber(project.price)} ₽</span>
+                                        )}
                                     </div>
                                     <Link to={`/project/details/${project.id}`}>
                                         <button className="order-button">Заказать</button>
@@ -110,24 +114,28 @@ const ComparisonList: React.FC = () => {
                                     <tbody className="text-span">
                                     <tr>
                                         <td className="span-text grey">Площадь, м²</td>
-                                        <td>{project.area}</td>
+                                        <td>{project.area || '—'}</td>
                                     </tr>
                                     <tr>
                                         <td>Этажей</td>
-                                        <td>{project.floors}</td>
+                                        <td>{project.floors || '—'}</td>
                                     </tr>
                                     <tr>
-                                    <td>Количество комнат</td>
-                                            <td>{project.rooms}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Жилая площадь, м²</td>
-                                            <td>{project.living_area}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Площадь кухни, м²</td>
-                                            <td>{project.kitchen_area}</td>
-                                        </tr>
+                                        <td>Количество комнат</td>
+                                        <td>{project.rooms || '—'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Жилая площадь, м²</td>
+                                        <td>{project.living_area || '—'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Площадь кухни, м²</td>
+                                        <td>{project.kitchen_area || '—'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Стоимость</td>
+                                        <td>{project.price ? `${formatNumber(project.price)} ₽` : '—'}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>

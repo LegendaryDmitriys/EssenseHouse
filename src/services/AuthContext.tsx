@@ -6,6 +6,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
+    refreshToken: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,25 +18,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         const isAuth = accessToken !== null;
-        console.log("Проверка токена при инициализации:", { accessToken, isAuth });
         setIsAuthenticated(isAuth);
         setLoading(false);
     }, []);
 
-    if (loading) {
-        return null;
-    }
-
     const login = async (email: string, password: string) => {
-        console.log("Попытка входа:", { email, password });
         try {
             const response = await axios.post(`${config.API_URL}auth/login/`, { email, password });
-            console.log("Успешный вход:", response.data);
-
             localStorage.setItem('accessToken', response.data.access);
             localStorage.setItem('refreshToken', response.data.refresh);
             setIsAuthenticated(true);
-            console.log("Состояние аутентификации после входа:", { isAuthenticated: true });
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error("Ошибка при авторизации:", error.response?.data || error.message);
@@ -51,8 +43,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthenticated(false);
     };
 
+    const refreshToken = async () => {
+        try {
+            const refresh = localStorage.getItem('refreshToken');
+            if (!refresh) throw new Error("Refresh token отсутствует");
+
+            const response = await axios.post(`${config.API_URL}auth/token/refresh/`, { refresh });
+            localStorage.setItem('accessToken', response.data.access);
+            console.log("Токен обновлен");
+        } catch (error) {
+            console.error("Ошибка обновления токена:", error);
+            logout();
+        }
+    };
+
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            if (accessToken) {
+                const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
+                const isExpiringSoon = tokenPayload.exp * 1000 - Date.now() < 60000; // 1 минута до истечения
+                if (isExpiringSoon) {
+                    await refreshToken();
+                }
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    if (loading) {
+        return null;
+    }
+
     return (
-        <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
+        <AuthContext.Provider value={{ login, logout, isAuthenticated, refreshToken }}>
             {children}
         </AuthContext.Provider>
     );

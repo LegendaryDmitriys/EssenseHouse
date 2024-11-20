@@ -7,24 +7,20 @@ import {
     fetchFinishingOptions,
     updateFinishingOption
 } from "../../../redux/features/finishingOption/finishingOptionSlice.ts";
-import Modal from "../../Modal.tsx";  // Предположительно, у вас есть компонент Modal
+import Modal from "../../Modal.tsx";
 
 const FinishingOptionsTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { items, status, error } = useSelector((state: RootState) => state.finishingOptions);
 
     const [editingOptionId, setEditingOptionId] = useState<number | null>(null);
-    const [newOptionTitle, setNewOptionTitle] = useState<string>("");
-    const [newOptionDescription, setNewOptionDescription] = useState<string>("");
-    const [newOptionPrice, setNewOptionPrice] = useState<string>("");
-    const [newOptionImage, setNewOptionImage] = useState<File | null>(null);
-
-    const [editOptionTitle, setEditOptionTitle] = useState<string>("");
-    const [editOptionDescription, setEditOptionDescription] = useState<string>("");
-    const [editOptionPrice, setEditOptionPrice] = useState<string>("");
-    const [editOptionImage, setEditOptionImage] = useState<File | null>(null);
+    const [newOptionTitle, setNewOptionTitle] = useState("");
+    const [newOptionDescription, setNewOptionDescription] = useState("");
+    const [newOptionPrice, setNewOptionPrice] = useState("");
+    const [newOptionImage, setNewOptionImage] = useState(null);
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [addModalVisible, setAddModalVisible] = useState(false);
 
     useEffect(() => {
         if (status === "idle") {
@@ -44,23 +40,23 @@ const FinishingOptionsTable: React.FC = () => {
         setEditingOptionId(optionId);
         const option = items.find((opt) => opt.id === optionId);
         if (option) {
-            setEditOptionTitle(option.title);
-            setEditOptionDescription(option.description);
-            setEditOptionPrice(option.price_per_sqm.toString());
-            setEditOptionImage(null);
+            setNewOptionTitle(option.title);
+            setNewOptionDescription(option.description);
+            setNewOptionPrice(option.price_per_sqm.toString());
+            setNewOptionImage(null);
         }
         setModalVisible(true);
     };
 
     const handleSaveOption = async (optionId: number) => {
         const formData = new FormData();
-        formData.append('id', optionId.toString());
-        formData.append('title', editOptionTitle);
-        formData.append('description', editOptionDescription);
-        formData.append('price_per_sqm', editOptionPrice);
+        formData.append("id", optionId.toString());
+        formData.append("title", newOptionTitle);
+        formData.append("description", newOptionDescription);
+        formData.append("price_per_sqm", newOptionPrice);
 
-        if (editOptionImage) {
-            formData.append('image', editOptionImage);
+        if (newOptionImage) {
+            formData.append("image", newOptionImage);
         }
 
         dispatch(updateFinishingOption(formData));
@@ -68,31 +64,38 @@ const FinishingOptionsTable: React.FC = () => {
         setModalVisible(false);
     };
 
-
-    const handleDeleteOption = (optionId: number) => {
-        dispatch(deleteFinishingOption(optionId));
-    };
-
     const handleAddOption = () => {
+        console.log('Добавление опции вызвано');
+
         if (!newOptionTitle || !newOptionDescription || !newOptionPrice) {
             alert("Все поля должны быть заполнены");
             return;
         }
-        dispatch(addFinishingOption({
+
+        const optionData = {
             title: newOptionTitle,
             description: newOptionDescription,
             price_per_sqm: parseFloat(newOptionPrice),
             image: newOptionImage
-        }));
+        };
+
+        dispatch(addFinishingOption(optionData));
+        console.log('Форма отправлена', optionData);
+
+        setAddModalVisible(false);
         setNewOptionTitle("");
         setNewOptionDescription("");
         setNewOptionPrice("");
         setNewOptionImage(null);
     };
 
+    const handleDeleteOption = (optionId: number) => {
+        dispatch(deleteFinishingOption(optionId));
+    };
+
     return (
         <div>
-            <table className="table is-fullwidth is-striped">
+            <table className="table is-fullwidth is-striped is-white">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -115,7 +118,7 @@ const FinishingOptionsTable: React.FC = () => {
                                 <img
                                     src={option.image}
                                     alt={option.title}
-                                    style={{ maxWidth: "100px", height: "auto" }}
+                                    style={{maxWidth: "100px", height: "auto"}}
                                 />
                             ) : (
                                 <span>Нет изображения</span>
@@ -139,65 +142,109 @@ const FinishingOptionsTable: React.FC = () => {
                 ))}
                 </tbody>
             </table>
+            <button
+                className="button is-small is-primary"
+                onClick={() => setAddModalVisible(true)}
+            >
+                Добавить новую отделку
+            </button>
 
-            <div style={{ marginTop: "20px" }}>
-                <h3>Добавить новый вариант отделки</h3>
-                <input
-                    type="text"
-                    placeholder="Заголовок"
-                    value={newOptionTitle}
-                    onChange={(e) => setNewOptionTitle(e.target.value)}
-                />
-                <textarea
-                    placeholder="Описание"
-                    value={newOptionDescription}
-                    onChange={(e) => setNewOptionDescription(e.target.value)}
-                />
-                <input
-                    type="number"
-                    placeholder="Цена за м²"
-                    value={newOptionPrice}
-                    onChange={(e) => setNewOptionPrice(e.target.value)}
-                />
-                <input
-                    type="file"
-                    onChange={(e) => setNewOptionImage(e.target.files ? e.target.files[0] : null)}
-                />
-                <button className="button is-small is-primary" onClick={handleAddOption}>
-                    Добавить
-                </button>
-            </div>
+            {addModalVisible && (
+                <Modal onClose={() => setAddModalVisible(false)}>
+                    <h3 className="subtitle">Добавить новый вариант отделки</h3>
+                    <input
+                        className="input is-small white-input text-main"
+                        type="text"
+                        placeholder="Заголовок"
+                        value={newOptionTitle}
+                        onChange={(e) => setNewOptionTitle(e.target.value)}
+                    />
+                    <textarea
+                        className="input is-small white-textarea text-main"
+                        placeholder="Описание"
+                        value={newOptionDescription}
+                        onChange={(e) => setNewOptionDescription(e.target.value)}
+                    />
+                    <input
+                        className="input is-small white-input text-main"
+                        type="number"
+                        placeholder="Цена за м²"
+                        value={newOptionPrice}
+                        onChange={(e) => setNewOptionPrice(e.target.value)}
+                    />
+                    <div className="file is-small is-white">
+                        <label className="file-label">
+                            <input
+                                className="file-input input is-small white-input"
+                                type="file"
+                                onChange={(e) => setNewOptionImage(e.target.files ? e.target.files[0] : null)}
+                            />
+                            <span className="file-cta">
+                                <span className="file-icon">
+                                    <i className="fas fa-upload"></i>
+                                </span>
+                                <span className="file-label">Выберите файл...</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div>
+                        <button className="button is-primary" onClick={handleAddOption}>
+                            Добавить
+                        </button>
+                        <button
+                            className="button"
+                            onClick={() => setAddModalVisible(false)}
+                        >
+                            Отмена
+                        </button>
+                    </div>
+                </Modal>
+            )}
 
             {modalVisible && (
                 <Modal onClose={() => setModalVisible(false)}>
-                    <h3>Редактировать вариант отделки</h3>
+                    <h3 className="subtitle">Редактировать вариант отделки</h3>
                     <input
+                        className="input is-small white-input text-main"
                         type="text"
-                        value={editOptionTitle}
-                        onChange={(e) => setEditOptionTitle(e.target.value)}
+                        value={newOptionTitle}
+                        onChange={(e) => setNewOptionTitle(e.target.value)}
                     />
                     <textarea
-                        value={editOptionDescription}
-                        onChange={(e) => setEditOptionDescription(e.target.value)}
+                        className="input is-small white-textarea text-main"
+                        value={newOptionDescription}
+                        onChange={(e) => setNewOptionDescription(e.target.value)}
                     />
                     <input
+                        className="input is-small white-input text-main"
                         type="number"
-                        value={editOptionPrice}
-                        onChange={(e) => setEditOptionPrice(e.target.value)}
+                        value={newOptionPrice}
+                        onChange={(e) => setNewOptionPrice(e.target.value)}
                     />
-                    <input
-                        type="file"
-                        onChange={(e) => setEditOptionImage(e.target.files ? e.target.files[0] : null)}
-                    />
+                    <div className="file is-small is-white">
+                        <label className="file-label">
+                            <input
+                                className="file-input input is-small white-input"
+                                type="file"
+                                onChange={(e) => setNewOptionImage(e.target.files ? e.target.files[0] : null)}
+                            />
+                            <span className="file-cta">
+                                <span className="file-icon">
+                                    <i className="fas fa-upload"></i>
+                                </span>
+                                <span className="file-label">Выберите файл...</span>
+                            </span>
+                        </label>
+                    </div>
                     <div>
                         <button
-                            className="button is-small is-success"
+                            className="button is-success"
                             onClick={() => handleSaveOption(editingOptionId!)}
                         >
                             Сохранить
                         </button>
                         <button
-                            className="button is-small"
+                            className="button"
                             onClick={() => setModalVisible(false)}
                         >
                             Отмена

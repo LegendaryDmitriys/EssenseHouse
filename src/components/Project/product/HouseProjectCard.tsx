@@ -53,15 +53,18 @@ const HouseProjectCard: React.FC<HouseProjectCardProps> = ({ project }) => {
         }
     };
 
+    console.log(project)
+
     return (
         <div className="card project-card">
             <div className="card-image">
                 <Link to={ROUTES.ProjectDetail.replace(':id', project.id.toString())}>
                     <figure className="image is-4by3" onMouseMove={handleMouseMove}>
                         <img
-                            src={cachedImages[currentImageIndex] || ''}
+                            src={cachedImages[currentImageIndex] || '/house.jpg'}
                             alt={project.title}
                             className="project-image"
+                            style={{width: '500px', height: '100%'}}
                         />
                     </figure>
                 </Link>
@@ -73,11 +76,11 @@ const HouseProjectCard: React.FC<HouseProjectCardProps> = ({ project }) => {
             <div className="card-content">
                 <p className="project-title">{project.title}</p>
                 <div className="project-price">
-                    {project.price && <span className="new-price text-main">{formatNumber(project.price)} ₽</span>}
-                    {project.discount && (
+                    {project.price && <span className="new-price text-main">{formatNumber(project.new_price)} ₽</span>}
+                    {project.new_price && (
                         <div className="discount">
-                            <span className="old-price text-main">{formatNumber(project.old_price!)} ₽</span>
-                            <span className="discount-price">- {formatNumber(project.discount)} ₽</span>
+                            <span className="old-price text-main">{formatNumber(project.price!)} ₽</span>
+                            <span className="discount-price">- {formatNumber(project.discount)} %</span>
                         </div>
                     )}
                 </div>

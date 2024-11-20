@@ -3,29 +3,76 @@ import axios from "axios";
 import config from "../../../api/api.ts";
 
 
-export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
-    const response = await axios.get(`${config.API_URL}orders/`);
-    return response.data;
+export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (_, { rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${config.API_URL}orders/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error.response?.data || "Ошибка при загрузке заказов");
+    }
 });
 
 export const updateOrderStatus = createAsyncThunk(
     "orders/updateOrderStatus",
-    async ({ id, status }: { id: number; status: string }) => {
-        const response = await axios.patch(`${config.API_URL}order/${id}/`, { status });
-        return response.data;
+    async ({ id, status }: { id: number; status: string }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const response = await axios.patch(
+                `${config.API_URL}order/${id}/`,
+                { status },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || "Ошибка при обновлении статуса заказа");
+        }
     }
 );
 
-export const fetchPurchasedHouses = createAsyncThunk("orders/fetchPurchasedHouses", async () => {
-    const response = await axios.get(`${config.API_URL}houses/purchase/`);
-    return response.data;
-});
+export const fetchPurchasedHouses = createAsyncThunk(
+    "orders/fetchPurchasedHouses",
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const response = await axios.get(`${config.API_URL}houses/purchase/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || "Ошибка при загрузке домов");
+        }
+    }
+);
 
 export const updatePurchasedHouseStatus = createAsyncThunk(
     "orders/updatePurchasedHouseStatus",
-    async ({ id, construction_status }: { id: number; construction_status: string }) => {
-        const response = await axios.patch(`${config.API_URL}houses/purchase/${id}/`, { construction_status });
-        return response.data;
+    async ({ id, construction_status }: { id: number; construction_status: string }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const response = await axios.patch(
+                `${config.API_URL}houses/purchase/${id}/`,
+                { construction_status },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || "Ошибка при обновлении статуса");
+        }
     }
 );
 

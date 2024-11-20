@@ -33,7 +33,6 @@ const AdminQuestion: React.FC = () => {
 
     const handleSendAnswer = async () => {
         if (selectedQuestion) {
-            console.log("Selected Question ID:", selectedQuestion.id);
             try {
                 await axios.post(
                     `${config.API_URL}mail/send-answer/`,
@@ -60,7 +59,7 @@ const AdminQuestion: React.FC = () => {
             <main className="main-content">
                 <h2 className="subtitle-main">Вопросы пользователей о домах</h2>
                 <div className="buttons">
-                    <a href={`${config.API_URL}export_user_questions_and_houses/`} className="button is-info" download>
+                    <a href={`${config.API_URL}export_user_questions_and_houses/`} className="button is-small is-primary" download>
                         Экспортировать в Excel
                     </a>
                 </div>
@@ -74,14 +73,18 @@ const AdminQuestion: React.FC = () => {
             {selectedQuestion && (
                 <Modal onClose={handleCloseModal}>
                     <div>
-                        <h3>Ответить на вопрос</h3>
-                        <p><strong>Вопрос:</strong> {selectedQuestion.question}</p>
+                        <h3 className="subtitle">Ответить на вопрос</h3>
+                        <p className="text-main" style={{marginBottom: "20px"}}>Вопрос:  <br></br>
+                            {selectedQuestion.question}
+                        </p>
                         <textarea
+                            className="input is-small white-textarea text-main"
                             value={answer}
                             onChange={(e) => setAnswer(e.target.value)}
                             placeholder="Введите ваш ответ"
                             rows={5}
-                            style={{ width: "100%" }}
+                            style={{minHeight: "150px", minWidth: "100%"}}
+
                         />
                         <button className="button is-primary" onClick={handleSendAnswer}>
                             Отправить ответ

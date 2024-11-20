@@ -43,7 +43,11 @@ const UserCompletedHouseMap: React.FC<UserCompletedHouseMapProps> = ({ purchases
                                                 style={{ width: '300px', height: '120px' }}
                                             />
                                         ) : (
-                                            <div className="no-image">Нет изображения</div>
+                                            <img
+                                                src="/house.jpg"
+                                                alt={`Project ${purchase.house.title}`}
+                                                style={{width: '300px', height: '110px'}}
+                                            />
                                         )}
                                     </div>
                                     <article>

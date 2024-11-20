@@ -9,7 +9,7 @@ import {
     updateFilterOption
 } from "../../../redux/features/filter/filterSlice.ts";
 
-const FinishingOptionsTable: React.FC = () => {
+const FilterOptionsTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { filterOptions, status, error } = useSelector((state: RootState) => state.filters);
 
@@ -18,17 +18,18 @@ const FinishingOptionsTable: React.FC = () => {
         name: "",
         field_name: "",
         filter_type: "exact" as 'exact' | 'range' | 'contains',
-        options: {} as { [key: string]: any }
+        options: "{}"
     });
 
     const [editOption, setEditOption] = useState({
         name: "",
         field_name: "",
         filter_type: "exact" as 'exact' | 'range' | 'contains',
-        options: {} as { [key: string]: any }
+        options: "{}"
     });
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
 
     useEffect(() => {
         if (status === "idle") {
@@ -52,14 +53,33 @@ const FinishingOptionsTable: React.FC = () => {
                 name: option.name,
                 field_name: option.field_name,
                 filter_type: option.filter_type,
-                options: option.options || {}
+                options: JSON.stringify(option.options || {})
             });
         }
         setModalVisible(true);
+        setIsEditMode(true);
     };
 
-    const handleSaveOption = async (optionId: number) => {
-        dispatch(updateFilterOption({ id: optionId, ...editOption }));
+    const handleSaveOption = async () => {
+        let parsedOptions = {};
+        try {
+            parsedOptions = JSON.parse(isEditMode ? editOption.options : newOption.options);
+        } catch (error) {
+            alert("Некорректный JSON в опциях");
+            return;
+        }
+
+        if (isEditMode && editingOptionId !== null) {
+            dispatch(updateFilterOption({ id: editingOptionId, ...editOption, options: parsedOptions }));
+        } else {
+            const { name, field_name, filter_type } = newOption;
+            if (!name || !field_name || !filter_type) {
+                alert("Все поля должны быть заполнены");
+                return;
+            }
+            dispatch(addFilterOption({ ...newOption, options: parsedOptions }));
+            setNewOption({ name: "", field_name: "", filter_type: "exact", options: "{}" });
+        }
         setEditingOptionId(null);
         setModalVisible(false);
     };
@@ -68,19 +88,20 @@ const FinishingOptionsTable: React.FC = () => {
         dispatch(deleteFilterOption(optionId));
     };
 
-    const handleAddOption = () => {
-        const { name, field_name, filter_type } = newOption;
-        if (!name || !field_name || !filter_type) {
-            alert("Все поля должны быть заполнены");
-            return;
-        }
-        dispatch(addFilterOption(newOption));
-        setNewOption({ name: "", field_name: "", filter_type: "exact", options: {} });
+    const handleAddNewOption = () => {
+        setModalVisible(true);
+        setIsEditMode(false);
+        setNewOption({
+            name: "",
+            field_name: "",
+            filter_type: "exact",
+            options: "{}"
+        });
     };
 
     return (
         <div>
-            <table className="table is-fullwidth is-striped">
+            <table className="table is-fullwidth is-striped is-white" style={{marginTop: "20px"}}>
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -117,70 +138,73 @@ const FinishingOptionsTable: React.FC = () => {
                 ))}
                 </tbody>
             </table>
-
-            <div style={{ marginTop: "20px" }}>
-                <h3>Добавить новый вариант отделки</h3>
-                <input
-                    type="text"
-                    placeholder="Название"
-                    value={newOption.name}
-                    onChange={(e) => setNewOption({ ...newOption, name: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Поле"
-                    value={newOption.field_name}
-                    onChange={(e) => setNewOption({ ...newOption, field_name: e.target.value })}
-                />
-                <select
-                    value={newOption.filter_type}
-                    onChange={(e) => setNewOption({ ...newOption, filter_type: e.target.value as 'exact' | 'range' | 'contains' })}
-                >
-                    <option value="exact">Exact</option>
-                    <option value="range">Range</option>
-                    <option value="contains">Contains</option>
-                </select>
-                <textarea
-                    placeholder="Опции (JSON)"
-                    value={JSON.stringify(newOption.options)}
-                    onChange={(e) => setNewOption({ ...newOption, options: JSON.parse(e.target.value) })}
-                />
-                <button className="button is-small is-primary" onClick={handleAddOption}>
-                    Добавить
-                </button>
-            </div>
+            <button className="button is-small is-primary" onClick={handleAddNewOption}>
+                Добавить новый фильтр
+            </button>
 
             {modalVisible && (
                 <Modal onClose={() => setModalVisible(false)}>
-                    <h3>Редактировать вариант отделки</h3>
+                    <h3 className="subtitle">{isEditMode ? "Редактировать фильтр" : "Добавить фильтр"}</h3>
                     <input
+                        className="input is-small white-input text-main"
                         type="text"
-                        value={editOption.name}
-                        onChange={(e) => setEditOption({ ...editOption, name: e.target.value })}
+                        placeholder="Название"
+                        value={isEditMode ? editOption.name : newOption.name}
+                        onChange={(e) =>
+                            isEditMode
+                                ? setEditOption({ ...editOption, name: e.target.value })
+                                : setNewOption({ ...newOption, name: e.target.value })
+                        }
                     />
                     <input
+                        className="input is-small white-input text-main"
                         type="text"
-                        value={editOption.field_name}
-                        onChange={(e) => setEditOption({ ...editOption, field_name: e.target.value })}
+                        placeholder="Поле"
+                        value={isEditMode ? editOption.field_name : newOption.field_name}
+                        onChange={(e) =>
+                            isEditMode
+                                ? setEditOption({ ...editOption, field_name: e.target.value })
+                                : setNewOption({ ...newOption, field_name: e.target.value })
+                        }
                     />
                     <select
-                        value={editOption.filter_type}
-                        onChange={(e) => setEditOption({ ...editOption, filter_type: e.target.value as 'exact' | 'range' | 'contains' })}
+                        className="select is-small white-input text-main"
+                        value={isEditMode ? editOption.filter_type : newOption.filter_type}
+                        onChange={(e) =>
+                            isEditMode
+                                ? setEditOption({
+                                    ...editOption,
+                                    filter_type: e.target.value as 'exact' | 'range' | 'contains'
+                                })
+                                : setNewOption({
+                                    ...newOption,
+                                    filter_type: e.target.value as 'exact' | 'range' | 'contains'
+                                })
+                        }
                     >
                         <option value="exact">Exact</option>
                         <option value="range">Range</option>
                         <option value="contains">Contains</option>
                     </select>
                     <textarea
-                        value={JSON.stringify(editOption.options)}
-                        onChange={(e) => setEditOption({ ...editOption, options: JSON.parse(e.target.value) })}
+                        className="input is-small white-textarea text-main"
+                        placeholder="Опции (JSON)"
+                        value={isEditMode ? editOption.options : newOption.options}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (isEditMode) {
+                                setEditOption({ ...editOption, options: value });
+                            } else {
+                                setNewOption({ ...newOption, options: value });
+                            }
+                        }}
                     />
                     <div>
                         <button
                             className="button is-small is-success"
-                            onClick={() => handleSaveOption(editingOptionId!)}
+                            onClick={handleSaveOption}
                         >
-                            Сохранить
+                            {isEditMode ? "Сохранить" : "Добавить"}
                         </button>
                         <button
                             className="button is-small"
@@ -195,4 +219,4 @@ const FinishingOptionsTable: React.FC = () => {
     );
 };
 
-export default FinishingOptionsTable;
+export default FilterOptionsTable;

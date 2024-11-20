@@ -16,7 +16,7 @@ const QuestionsHouse: React.FC<QuestionsHouseProps> = ({ questions, onOpenModal 
     };
 
     return (
-        <table className="table is-fullwidth is-striped">
+        <table className="table is-fullwidth is-striped is-white">
             <thead>
             <tr>
                 <th>Имя</th>
@@ -44,8 +44,10 @@ const QuestionsHouse: React.FC<QuestionsHouseProps> = ({ questions, onOpenModal 
                             Ответить
                         </button>
                     </td>
-                    <td className={`tag ${statusLabels[question.status as StatusType]?.className}`}>
-                        {statusLabels[question.status as StatusType]?.label}
+                    <td>
+                        <span className={`tag ${statusLabels[question.status as StatusType]?.className}`}>
+                            {statusLabels[question.status as StatusType]?.label}
+                        </span>
                     </td>
                 </tr>
             ))}

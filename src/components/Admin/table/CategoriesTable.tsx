@@ -7,84 +7,73 @@ import {
     addCategory,
     deleteCategory,
     fetchCategories,
-    updateCategory
+    updateCategory,
 } from "../../../redux/features/category/categorySlice.ts";
 
 const CategoriesTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const categories = useSelector((state: RootState) => state.categories.items);
     const status = useSelector((state: RootState) => state.categories.status);
-    const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
-    const [newCategoryName, setNewCategoryName] = useState<string>("");
-    const [newCategorySlug, setNewCategorySlug] = useState<string>("");
-    const [newCategoryLongDescription, setNewCategoryLongDescription] = useState<string>("");
-    const [newCategoryDescription, setNewCategoryDescription] = useState<string>("");
-    const [editCategoryName, setEditCategoryName] = useState<string>("");
-    const [editCategorySlug, setEditCategorySlug] = useState<string>("");
-    const [editCategoryLongDescription, setEditCategoryLongDescription] = useState<string>("");
-    const [editCategoryDescription, setEditCategoryDescription] = useState<string>("");
+
     const [modalVisible, setModalVisible] = useState(false);
+    const [currentCategory, setCurrentCategory] = useState({
+        id: null as number | null,
+        name: "",
+        slug: "",
+        long_description: "",
+        short_description: "",
+    });
 
     useEffect(() => {
-        if (status === 'idle') {
+        if (status === "idle") {
             dispatch(fetchCategories());
         }
     }, [status, dispatch]);
 
-    const handleEditCategory = (categoryId: number) => {
-        setEditingCategoryId(categoryId);
-        const category = categories.find((cat) => cat.id === categoryId);
-        if (category) {
-            setEditCategoryName(category.name);
-            setEditCategorySlug(category.slug);
-            setEditCategoryLongDescription(category.long_description);
-            setEditCategoryDescription(category.short_description);
-        }
+    const handleEditCategory = (category: typeof currentCategory) => {
+        setCurrentCategory(category);
         setModalVisible(true);
     };
 
-    const handleSaveCategory = async (categoryId: number) => {
-        dispatch(updateCategory({
-            id: categoryId,
-            name: editCategoryName,
-            slug: editCategorySlug,
-            long_description: editCategoryLongDescription,
-            short_description: editCategoryDescription
-        }));
-        setEditingCategoryId(null);
-        setModalVisible(false);
-    };
-
-    const handleCancelEdit = () => {
-        setEditingCategoryId(null);
-        setModalVisible(false);
-    };
-
     const handleDeleteCategory = (categoryId: number, event: React.MouseEvent) => {
-        event.stopPropagation(); // Prevent modal from opening
+        event.stopPropagation();
         dispatch(deleteCategory(categoryId));
     };
 
-    const handleAddCategory = () => {
-        if (!newCategoryName) {
-            alert("Название категории не может быть пустым");
-            return;
+    const handleChange = (field: string, value: string) => {
+        setCurrentCategory((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSaveCategory = () => {
+        if (currentCategory.id) {
+            dispatch(updateCategory(currentCategory));
+        } else {
+            dispatch(addCategory(currentCategory));
         }
-        dispatch(addCategory({
-            name: newCategoryName,
-            slug: newCategorySlug,
-            long_description: newCategoryLongDescription,
-            short_description: newCategoryDescription
-        }));
-        setNewCategoryName("");
-        setNewCategorySlug("");
-        setNewCategoryLongDescription("");
-        setNewCategoryDescription("");
+        setModalVisible(false);
+        setCurrentCategory({
+            id: null,
+            name: "",
+            slug: "",
+            long_description: "",
+            short_description: "",
+        });
+    };
+
+    const handleCancelEdit = () => {
+        setModalVisible(false);
+        setCurrentCategory({
+            id: null,
+            name: "",
+            slug: "",
+            long_description: "",
+            short_description: "",
+        });
     };
 
     return (
         <div>
-            <table className="table is-fullwidth is-striped">
+            <table className="table is-fullwidth is-striped is-white">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -94,50 +83,30 @@ const CategoriesTable: React.FC = () => {
                 </thead>
                 <tbody>
                 {categories.map((category) => (
-                    <tr
-                        key={category.id}
-                        onClick={() => handleEditCategory(category.id)}
-                        style={{
-                            cursor: "pointer",
-                            backgroundColor: editingCategoryId === category.id ? "#f0f0f0" : "transparent",
-                        }}
-                    >
+                    <tr key={category.id}>
                         <td>{category.id}</td>
+                        <td>{category.name}</td>
                         <td>
-                            {editingCategoryId === category.id ? (
-                                <input
-                                    type="text"
-                                    value={editCategoryName}
-                                    onChange={(e) => setEditCategoryName(e.target.value)}
-                                />
-                            ) : (
-                                category.name
-                            )}
-                        </td>
-                        <td>
-                            {editingCategoryId === category.id ? (
-                                <>
-                                    <button
-                                        className="button is-small is-success"
-                                        onClick={() => handleSaveCategory(category.id)}
-                                    >
-                                        Сохранить
-                                    </button>
-                                    <button
-                                        className="button is-small"
-                                        onClick={handleCancelEdit}
-                                    >
-                                        Отмена
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    className="button is-small is-danger"
-                                    onClick={(e) => handleDeleteCategory(category.id, e)}
-                                >
-                                    Удалить
-                                </button>
-                            )}
+                            <button
+                                className="button is-small is-success"
+                                onClick={() =>
+                                    handleEditCategory({
+                                        id: category.id,
+                                        name: category.name,
+                                        slug: category.slug,
+                                        long_description: category.long_description,
+                                        short_description: category.short_description,
+                                    })
+                                }
+                            >
+                                Редактировать
+                            </button>
+                            <button
+                                className="button is-small is-danger"
+                                onClick={(e) => handleDeleteCategory(category.id, e)}
+                            >
+                                Удалить
+                            </button>
                         </td>
                     </tr>
                 ))}
@@ -145,66 +114,51 @@ const CategoriesTable: React.FC = () => {
             </table>
 
             <div style={{ marginTop: "20px" }}>
-                <h3>Добавить новую категорию</h3>
-                <input
-                    type="text"
-                    placeholder="Название категории"
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Slug"
-                    value={newCategorySlug}
-                    onChange={(e) => setNewCategorySlug(e.target.value)}
-                />
-                <textarea
-                    placeholder="Долгое описание"
-                    value={newCategoryLongDescription}
-                    onChange={(e) => setNewCategoryLongDescription(e.target.value)}
-                />
-                <textarea
-                    placeholder="Описание"
-                    value={newCategoryDescription}
-                    onChange={(e) => setNewCategoryDescription(e.target.value)}
-                />
-                <button className="button is-small is-primary" onClick={handleAddCategory}>
-                    Добавить
+                <button
+                    className="button is-small is-primary"
+                    onClick={() => setModalVisible(true)}
+                >
+                    Добавить новую категорию
                 </button>
             </div>
 
             {modalVisible && (
                 <Modal onClose={handleCancelEdit}>
-                    <h3>Редактирование категории</h3>
+                    <h3 className="subtitle">{currentCategory.id ? "Редактировать категорию" : "Добавить категорию"}</h3>
                     <input
+                        className="input is-small white-input text-main"
                         type="text"
-                        value={editCategoryName}
-                        onChange={(e) => setEditCategoryName(e.target.value)}
+                        placeholder="Название категории"
+                        value={currentCategory.name}
+                        onChange={(e) => handleChange("name", e.target.value)}
                     />
                     <input
+                        className="input is-small white-input text-main"
                         type="text"
-                        value={editCategorySlug}
-                        onChange={(e) => setEditCategorySlug(e.target.value)}
+                        placeholder="Slug"
+                        value={currentCategory.slug}
+                        onChange={(e) => handleChange("slug", e.target.value)}
                     />
                     <textarea
-                        value={editCategoryLongDescription}
-                        onChange={(e) => setEditCategoryLongDescription(e.target.value)}
+                        className="textarea is-small white-textarea text-main"
+                        placeholder="Долгое описание"
+                        value={currentCategory.long_description}
+                        onChange={(e) => handleChange("long_description", e.target.value)}
                     />
                     <textarea
-                        value={editCategoryDescription}
-                        onChange={(e) => setEditCategoryDescription(e.target.value)}
+                        className="textarea is-small white-textarea text-main"
+                        placeholder="Краткое описание"
+                        value={currentCategory.short_description}
+                        onChange={(e) => handleChange("short_description", e.target.value)}
                     />
-                    <div>
+                    <div style={{paddingTop:"10px"}}>
                         <button
                             className="button is-small is-success"
-                            onClick={() => handleSaveCategory(editingCategoryId!)}
+                            onClick={handleSaveCategory}
                         >
-                            Сохранить
+                            {currentCategory.id ? "Сохранить изменения" : "Добавить"}
                         </button>
-                        <button
-                            className="button is-small"
-                            onClick={handleCancelEdit}
-                        >
+                        <button className="button is-small" onClick={handleCancelEdit}>
                             Отмена
                         </button>
                     </div>

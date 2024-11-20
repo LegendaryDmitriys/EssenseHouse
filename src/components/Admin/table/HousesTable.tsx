@@ -19,7 +19,12 @@ const HousesTable: React.FC = () => {
     const fetchHouses = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get<HouseProjectsResponse[]>(`${config.API_URL}houses/`);
+            const token = localStorage.getItem("accessToken");
+            const response = await axios.get<HouseProjectsResponse[]>(`${config.API_URL}houses/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setHouses(response.data.results);
         } catch {
             setError("Ошибка загрузки данных домов");
@@ -50,8 +55,7 @@ const HousesTable: React.FC = () => {
         finishing_options: [],
         documents: [],
         price: 0,
-        old_price: 0,
-        discount: 0,
+        discount_percentage: 0,
         best_seller: '',
         new: false,
         short_description: '',
@@ -61,8 +65,7 @@ const HousesTable: React.FC = () => {
         living_area: 0,
         kitchen_area: 0,
         bedrooms: 1,
-        garage: false,
-        garage_capacity: 0,
+        garage: 0,
         purpose: '',
         bathrooms: 1,
         construction_time: 0,
@@ -73,6 +76,7 @@ const HousesTable: React.FC = () => {
     });
     const [editingHouseId, setEditingHouseId] = useState(null);
     const [categories, setCategories] = useState([]);
+    const [finishingOptions, setFinishingOptions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -84,6 +88,15 @@ const HousesTable: React.FC = () => {
                 console.error('Ошибка при получении категорий', error);
             }
         };
+        const fetchFinishingOptions = async () => {
+            try {
+                const finishingResponse = await axios.get(`${config.API_URL}finishing-options/`);
+                setFinishingOptions(finishingResponse.data);
+            } catch (error) {
+                console.error('Ошибка при получении отделок', error);
+            }
+        };
+        fetchFinishingOptions();
         fetchCategories();
     }, []);
 
@@ -98,9 +111,12 @@ const HousesTable: React.FC = () => {
 
     const handleDeleteImage = async (houseId: number, imageId: number, imageType: ImageType) => {
         try {
-
-            await axios.delete(`${config.API_URL}houses/${houseId}/images/${imageId}/delete/${imageType}/`);
-
+            const token = localStorage.getItem("accessToken");
+            await axios.delete(`${config.API_URL}houses/${houseId}/images/${imageId}/delete/${imageType}/`,{
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
             setHouseData((prevData) => {
                 const newImages = prevData[imageType].filter((image) => image.id !== imageId);
                 return { ...prevData, [imageType]: newImages };
@@ -109,6 +125,27 @@ const HousesTable: React.FC = () => {
             console.error('Error deleting image:', error);
         }
     };
+
+    const handleDeleteDocument = async (houseId: number, documentId: number) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            await axios.delete(`${config.API_URL}houses/${houseId}/documents/${documentId}/delete/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setHouseData((prevData) => {
+                const newDocuments = prevData.documents.filter((doc) => doc.id !== documentId);
+                return { ...prevData, documents: newDocuments };
+            });
+
+        } catch (error) {
+            console.error('Ошибка при удалении документа:', error);
+        }
+    };
+
+
 
 
     const handleChange = (e) => {
@@ -142,16 +179,22 @@ const HousesTable: React.FC = () => {
         });
 
         try {
-            console.log('Sending FormData:', formData);
+            const token = localStorage.getItem('accessToken')
 
             if (editingHouseId) {
                 const response = await axios.patch(`${config.API_URL}houses/update/${editingHouseId}/`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
                 setHouses(houses.map(house => (house.id === editingHouseId ? { ...house, ...houseData } : house)));
             } else {
                 const response = await axios.post(`${config.API_URL}houses/create`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
                 setHouses([...houses, response.data]);
             }
@@ -192,8 +235,7 @@ const HousesTable: React.FC = () => {
             finishing_options: [],
             documents: [],
             price: null,
-            old_price: null,
-            discount: null,
+            discount_percentage: null,
             best_seller: '',
             new: false,
             short_description: '',
@@ -203,8 +245,7 @@ const HousesTable: React.FC = () => {
             living_area: null,
             kitchen_area: null,
             bedrooms: null,
-            garage: false,
-            garage_capacity: null,
+            garage: null,
             purpose: '',
             bathrooms: null,
             construction_time: null,
@@ -225,7 +266,12 @@ const HousesTable: React.FC = () => {
 
     const handleDeleteHouse = async (houseId) => {
         try {
-            await axios.delete(`${config.API_URL}houses/${houseId}/`);
+            const token = localStorage.getItem('accessToken');
+            await axios.delete(`${config.API_URL}houses/${houseId}/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setHouses(houses.filter(house => house.id !== houseId));
         } catch (error) {
             console.error('Ошибка при удалении дома:', error);
@@ -240,14 +286,11 @@ const HousesTable: React.FC = () => {
         return <div className="notification is-danger">{error}</div>;
     }
 
+    console.log(houseData)
 
     return (
         <div>
-            <button className="button is-primary" onClick={handleAddNewHouse}>
-                Добавить новый дом
-            </button>
-
-            <table className="table is-fullwidth is-striped">
+            <table className="table is-fullwidth is-stripedv is-white">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -263,7 +306,7 @@ const HousesTable: React.FC = () => {
                         <td>{house.id}</td>
                         <td>{house.title}</td>
                         <td>{house.price} ₽</td>
-                        <td>{house.category?.name}</td>
+                        <td>{house.category_details?.name}</td>
                         <td>
                             <button className="button is-small is-info" onClick={() => handleEditClick(house)}>
                                 Редактировать
@@ -276,58 +319,77 @@ const HousesTable: React.FC = () => {
                 ))}
                 </tbody>
             </table>
+            <button className="button is-small is-primary" onClick={handleAddNewHouse}>
+                Добавить новый дом
+            </button>
 
             {isModalOpen && (
                 <Modal onClose={handleCancelEdit}>
-                    <div className="modal-content">
-                        <h3>{editingHouseId ? 'Редактировать дом' : 'Добавить новый дом'}</h3>
+                        <h3 className="subtitle">{editingHouseId ? 'Редактировать дом' : 'Добавить новый дом'}</h3>
 
-                        <input placeholder="Название" name="title" value={houseData.title} onChange={handleChange}/>
+                        <input placeholder="Название" name="title" value={houseData.title} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <input placeholder="Цена" name="price" type="number" value={houseData.price || ''}
-                               onChange={handleChange}/>
-                        <input placeholder="Старая цена" name="old_price" type="number"
-                               value={houseData.old_price || ''} onChange={handleChange}/>
-                        <input placeholder="Скидка" name="discount" type="number" value={houseData.discount || ''}
-                               onChange={handleChange}/>
+                               onChange={handleChange} className="input is-small white-input text-main"/>
+                        <input placeholder="Скидка" name="discount_percentage" type="number" value={houseData.discount_percentage || ''}
+                               onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Площадь" name="area" type="number" value={houseData.area || ''}
-                               onChange={handleChange}/>
+                               onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Этажи" name="floors" type="number" value={houseData.floors || ''}
-                               onChange={handleChange}/>
+                               onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Комнаты" name="rooms" type="number" value={houseData.rooms || ''}
-                               onChange={handleChange}/>
+                               onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Жилая площадь" name="living_area" type="number"
-                               value={houseData.living_area || ''} onChange={handleChange}/>
+                               value={houseData.living_area || ''} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <input placeholder="Кухонная площадь" name="kitchen_area" type="number"
-                               value={houseData.kitchen_area || ''} onChange={handleChange}/>
+                               value={houseData.kitchen_area || ''} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <input placeholder="Спальни" name="bedrooms" type="number" value={houseData.bedrooms || ''}
-                               onChange={handleChange}/>
-                        <input placeholder="Тип сторительства" name="construction_technology" type="number" value={houseData.construction_technology || ''}
-                               onChange={handleChange}/>
-                        <label>
-                            <input type="checkbox" name="garage" checked={houseData.garage}
-                                   onChange={handleChange}/> Есть гараж
-                        </label>
-                        <input placeholder="Вместимость гаража" name="garage_capacity" type="number"
-                               value={houseData.garage_capacity || ''} onChange={handleChange}/>
+                               onChange={handleChange} className="input is-small white-input text-main"/>
+                        <input placeholder="Тип сторительства" name="construction_technology" type="number"
+                               value={houseData.construction_technology || ''}
+                               onChange={handleChange} className="input is-small white-input text-main"/>
+                        <input placeholder="Вместимость гаража" name="garage" type="number"
+                               value={houseData.garage || ''} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <input placeholder="Цель использования" name="purpose" value={houseData.purpose || ''}
-                               onChange={handleChange}/>
+                               onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Ванные комнаты" name="bathrooms" type="number"
-                               value={houseData.bathrooms || ''} onChange={handleChange}/>
+                               value={houseData.bathrooms || ''} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <input placeholder="Время строительства (в днях)" name="construction_time" type="number"
-                               value={houseData.construction_time || ''} onChange={handleChange}/>
+                               value={houseData.construction_time || ''} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <input placeholder="Гарантия (в годах)" name="warranty" type="number"
-                               value={houseData.warranty || ''} onChange={handleChange}/>
+                               value={houseData.warranty || ''} onChange={handleChange}
+                               className="input is-small white-input text-main"/>
                         <textarea placeholder="Описание" name="description" value={houseData.description || ''}
-                                  onChange={handleChange}/>
-                        <select name="category" value={houseData.category || ''} onChange={handleChange}>
+                                  onChange={handleChange} className="input is-small white-textarea text-main"/>
+                        <select name="category" value={houseData.category || ''} onChange={handleChange}
+                                className="select is-small white-textarea text-main">
                             <option value="">Выберите категорию</option>
                             {categories.map((cat) => (
                                 <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
+                        <select name="finishing_options" value={houseData.finishing_options || ''}
+                                onChange={handleChange}
+                                className="select is-small white-textarea text-main">
+                            <option value="">Выберите отделку</option>
+                            {finishingOptions.map((finishingOption) => (
+                                <option key={finishingOption.id}
+                                        value={finishingOption.id}>{finishingOption.title}</option>
+                            ))}
+                        </select>
                         <div>
-                            <label>Изображения</label>
-                            <input type="file" multiple onChange={(e) => handleFileChange(e, 'images')}/>
+                            <label className="text-main is-small">Изображения</label>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={(e) => handleFileChange(e, 'images')}
+                                className="input is-small white-input text-main"
+                            />
                             {houseData.images.map((image) => (
                                 <div key={image.id}>
                                     <img src={`${config.API_URL}${image.image}`} alt={`Image ${image.id}`} width={100}/>
@@ -340,8 +402,12 @@ const HousesTable: React.FC = () => {
                         </div>
 
                         <div>
-                            <label>Планировка</label>
-                            <input type="file" multiple onChange={(e) => handleFileChange(e, 'layout_images')}/>
+                            <label className="text-main is-small">Планировка</label>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={(e) => handleFileChange(e, 'layout_images')}
+                                className="input is-small white-input text-main"/>
                             {houseData.layout_images.map((image) => (
                                 <div key={image.id}>
                                     <img src={`${config.API_URL}${image.image}`} alt={`Layout Image ${image.id}`}
@@ -355,8 +421,13 @@ const HousesTable: React.FC = () => {
                         </div>
 
                         <div>
-                            <label>Интерьер</label>
-                            <input type="file" multiple onChange={(e) => handleFileChange(e, 'interior_images')}/>
+                            <label className="text-main is-small">Интерьер</label>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={(e) => handleFileChange(e, 'interior_images')}
+                                className="input is-small white-input text-main"
+                            />
                             {houseData.interior_images.map((image) => (
                                 <div key={image.id}>
                                     <img src={`${config.API_URL}${image.image}`} alt={`Interior Image ${image.id}`}
@@ -370,8 +441,13 @@ const HousesTable: React.FC = () => {
                         </div>
 
                         <div>
-                            <label>Фасад</label>
-                            <input type="file" multiple onChange={(e) => handleFileChange(e, 'facade_images')}/>
+                            <label className="text-main is-small">Фасад</label>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={(e) => handleFileChange(e, 'facade_images')}
+                                className="input is-small white-input text-main"
+                            />
                             {houseData.facade_images.map((image) => (
                                 <div key={image.id}>
                                     <img src={`${config.API_URL}${image.image}`} alt={`Facade Image ${image.id}`}
@@ -383,15 +459,42 @@ const HousesTable: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-
+                        <label className="text-main is-small">Документы</label>
+                        <input
+                            type="file"
+                            name="documents"
+                            accept=".pdf, .doc, .docx, .txt"
+                            onChange={(e) => handleFileChange(e, 'documents')}
+                            multiple
+                            className="input is-small white-input text-main"
+                        />
+                        {houseData.documents && houseData.documents.length > 0 && (
+                            <div>
+                                <h4 className="text-main is-small">Загруженные документы:</h4>
+                                <ul>
+                                    {houseData.documents.map((doc) => (
+                                        <li key={doc.id}>
+                                            <a href={`${config.API_URL}${doc.file}`} target="_blank"
+                                               rel="noopener noreferrer">
+                                                {doc.title}
+                                            </a>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteDocument(houseData.id, doc.id)}>
+                                                Удалить
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         <button className="button is-primary" onClick={handleSubmitHouse}>
                             {editingHouseId ? 'Обновить дом' : 'Добавить дом'}
                         </button>
-                    </div>
                 </Modal>
             )}
         </div>
     );
 };
 
-    export default HousesTable;
+export default HousesTable;

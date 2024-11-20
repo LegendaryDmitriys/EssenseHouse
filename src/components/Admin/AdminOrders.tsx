@@ -24,14 +24,14 @@ const AdminOrders: React.FC = () => {
         return new Date(dateString).toLocaleDateString('ru-RU', options);
     };
 
-
+    console.log(orders);
     return (
         <div className="dashboard-container">
             <Sidebar />
             <main className="main-content">
                 <h2 className="subtitle-main">Управление заказами домов</h2>
                 <div className="buttons">
-                    <a href={`${config.API_URL}export_orders/`} className="button is-info" download>
+                    <a href={`${config.API_URL}export_orders/`} className="button is-small is-primary" download>
                         Экспортировать в Excel
                     </a>
                 </div>
@@ -46,11 +46,11 @@ const AdminOrders: React.FC = () => {
                         {orders.map((order: Order) => (
                             <div key={order.id} className="box order-item mb-5"
                                  style={{height: "auto", border: "1px solid #e5e5e5"}}>
-                                {order.house && order.finishing_option ? (
+                                {order.house_details  ? (
                                     <div className="order-details">
                                         <Link to={`/project/details/${order.house.id}`}>
                                             <h3 className="subtitle is-5">
-                                                {order.house.title} #{order.house.id}
+                                                {order.house_details.title} #{order.house_details.id}
                                             </h3>
                                         </Link>
                                         <div className="content">
@@ -63,8 +63,13 @@ const AdminOrders: React.FC = () => {
                                             <p>Место строительства: <span
                                                 className="has-text-weight-medium">{order.construction_place} ({order.latitude}, {order.longitude})</span>
                                             </p>
-                                            <p>Отделка: <span
-                                                className="has-text-weight-medium">{order.finishing_option.title}</span>
+                                            <p>
+                                                {order.finishing_option ? (
+                                                    <span
+                                                        className="has-text-weight-medium">{order.finishing_option.title}</span>
+                                                ) : (
+                                                    null
+                                                )}
                                             </p>
                                             <p>Дата заказа: <span
                                                 className="has-text-weight-medium">{formatDate(order.data_created)}</span>

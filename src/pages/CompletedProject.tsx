@@ -52,9 +52,7 @@ const CompletedProject: React.FC = () => {
     return (
         <>
             {loading ? (
-                <>
-                    <CompletedProjectSkeleton />
-                </>
+                <CompletedProjectSkeleton />
             ) : (
                 <div className="container">
                     <h1 className="title-main">ГОТОВЫЕ ДОМА</h1>
@@ -66,33 +64,47 @@ const CompletedProject: React.FC = () => {
                         <p>Готовые дома</p>
                     </div>
                     <div className="completed-house">
-                        <div className="columns is-multiline">
-                            {purchases.map((purchase) => (
-                                <div className="card-white card-margin" key={purchase.id}>
-                                    <Link to={`${ROUTES.ProjectDetail.replace(':id', purchase.house.id.toString())}`}>
-                                        <div className="card-image">
-                                            {purchase.house.images.length > 0 ? (
-                                                <img
-                                                    src={purchase.house.images[0].image}
-                                                    alt={`Project ${purchase.house.title}`}
-                                                    className="completed-house__image"
-                                                    style={{ width: "425px", height: '350px' }}
-                                                />
-                                            ) : (
-                                                <div className="no-image">Нет изображения</div>
-                                            )}
-                                            <div
-                                                className="has-text-white is-size-4 has-text-weight-bold"
-                                                style={{ position: 'absolute', bottom: '10px', left: '10px' }}
-                                            >
-                                                <span className="completed-house__span text-main white">Готовые дома</span>
-                                                <p className="completed-house__text white">{purchase.house.title}, {purchase.house.area}</p>
+                        {purchases.length === 0 ? (
+                            <div className="no-houses-message" style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                <i className="fa-solid fa-house fa-bounce" style={{ fontSize: "80px", color: "#331958", marginBottom: "20px" }}></i>
+                                <p className="subtitle">
+                                    Дома еще не построены.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="columns is-multiline">
+                                {purchases.map((purchase) => (
+                                    <div className="card-white card-margin" key={purchase.id}>
+                                        <Link to={`${ROUTES.ProjectDetail.replace(':id', purchase.house.id.toString())}`}>
+                                            <div className="card-image">
+                                                {purchase.house.images.length > 0 ? (
+                                                    <img
+                                                        src={purchase.house.images[0].image}
+                                                        alt={`Project ${purchase.house.title}`}
+                                                        className="completed-house__image"
+                                                        style={{ width: "425px", height: '350px' }}
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src="/house.jpg"
+                                                        alt="No Image"
+                                                        className="completed-house__image"
+                                                        style={{ width: "425px", height: '300px' }}
+                                                    />
+                                                )}
+                                                <div
+                                                    className="has-text-white is-size-4 has-text-weight-bold"
+                                                    style={{ position: 'absolute', bottom: '10px', left: '10px' }}
+                                                >
+                                                    <span className="completed-house__span text-main white">Готовые дома</span>
+                                                    <p className="completed-house__text white">{purchase.house.title}, {purchase.house.area}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

@@ -65,14 +65,18 @@ const OrderFormModal: React.FC<OrderFormModalProps> = ({ onClose, projectName, f
                     <label className="text-main">Проект</label>
                     <input type="text" value={projectName} name="house" disabled />
 
-                    <label className="text-main">Вариант отделки</label>
-                    <select name="finishing_option">
-                        {finishOptions.map((option) => (
-                            <option key={option.id} value={option.id}>
-                                {option.title}
-                            </option>
-                        ))}
-                    </select>
+                    {finishOptions.length > 0 && (
+                        <>
+                        <label className="text-main">Вариант отделки</label>
+                        <select name="finishing_option">
+                            {finishOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.title}
+                                </option>
+                            ))}
+                        </select>
+                        </>
+                    )}
 
                     <label className="text-main">Место строительства</label>
                     <input type="text" name="construction_place" />

@@ -27,8 +27,10 @@ export const fetchFinishingOptions = createAsyncThunk<FinishingOption[]>(
 );
 
 export const addFinishingOption = createAsyncThunk(
-    'finishingOptions/addFinishingOption',
-    async (data: { title: string, description: string, price_per_sqm: number, image: File | null }) => {
+    "finishingOptions/addFinishingOption",
+    async (data: { title: string; description: string; price_per_sqm: number; image: File | null }) => {
+        const token = localStorage.getItem("accessToken");
+
         const formData = new FormData();
         formData.append("title", data.title);
         formData.append("description", data.description);
@@ -39,12 +41,15 @@ export const addFinishingOption = createAsyncThunk(
         }
 
         const response = await fetch(`${config.API_URL}finishing-options/`, {
-            method: 'POST',
-            body: formData
+            method: "POST",
+            body: formData,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
 
         if (!response.ok) {
-            throw new Error('Ошибка при добавлении варианта отделки');
+            throw new Error("Ошибка при добавлении варианта отделки");
         }
 
         return await response.json();
@@ -52,22 +57,37 @@ export const addFinishingOption = createAsyncThunk(
 );
 
 export const updateFinishingOption = createAsyncThunk<FinishingOption, FormData>(
-    'finishingOptions/updateFinishingOption',
+    "finishingOptions/updateFinishingOption",
     async (formData) => {
-        const response = await axios.put(`${config.API_URL}finishing-options/${formData.get('id')}/`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.put(
+            `${config.API_URL}finishing-options/${formData.get("id")}/`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
         return response.data;
     }
 );
 
 
 export const deleteFinishingOption = createAsyncThunk<number, number>(
-    'finishingOptions/deleteFinishingOption',
+    "finishingOptions/deleteFinishingOption",
     async (id) => {
-        await axios.delete(`${config.API_URL}finishing-options/${id}/`);
+        const token = localStorage.getItem("accessToken");
+
+        await axios.delete(`${config.API_URL}finishing-options/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
         return id;
     }
 );

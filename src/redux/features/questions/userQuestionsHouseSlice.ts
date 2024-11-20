@@ -6,7 +6,14 @@ import config from "../../../api/api.ts";
 export const fetchUserQuestionsHouse = createAsyncThunk(
     "userQuestions/fetchUserQuestionsHouse",
     async () => {
-        const response = await axios.get(`${config.API_URL}user-questions/house/`);
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.get(`${config.API_URL}user-questions/house/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
         return response.data;
     }
 );
@@ -14,7 +21,15 @@ export const fetchUserQuestionsHouse = createAsyncThunk(
 export const fetchUserQuestionHouseById = createAsyncThunk(
     "userQuestions/fetchUserQuestionHouseById",
     async (id: number) => {
-        const response = await axios.get(`${config.API_URL}user-questions/house/${id}/`);
+        const token = localStorage.getItem("accessToken");
+
+
+        const response = await axios.get(`${config.API_URL}user-questions/house/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
         return response.data;
     }
 );

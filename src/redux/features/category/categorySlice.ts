@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import config from "../../../api/api.ts";
 
 interface Category {
     id: number;
@@ -16,30 +17,60 @@ interface CategoryState {
 }
 
 export const fetchCategories = createAsyncThunk<Category[]>('categories/fetchCategories', async () => {
-    const response = await axios.get('http://192.168.0.103:8000/category/');
+    const response = await axios.get(`${config.API_URL}category/`);
     return response.data;
 });
 
 export const addCategory = createAsyncThunk<Category, Omit<Category, 'id'>>(
-    'categories/addCategory',
+    "categories/addCategory",
     async (categoryData) => {
-        const response = await axios.post('http://192.168.0.103:8000/category/', categoryData);
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.post(
+            `${config.API_URL}category/`,
+            categoryData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
         return response.data;
     }
 );
 
 export const updateCategory = createAsyncThunk<Category, Category>(
-    'categories/updateCategory',
+    "categories/updateCategory",
     async (category) => {
-        const response = await axios.put(`http://192.168.0.103:8000/category/${category.id}/`, category);
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.put(
+            `${config.API_URL}category/${category.id}/`,
+            category,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
         return response.data;
     }
 );
 
+
 export const deleteCategory = createAsyncThunk<number, number>(
-    'categories/deleteCategory',
+    "categories/deleteCategory",
     async (id) => {
-        await axios.delete(`http://192.168.0.103:8000/category/${id}/`);
+        const token = localStorage.getItem("accessToken");
+
+        await axios.delete(`${config.API_URL}category/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
         return id;
     }
 );

@@ -40,6 +40,7 @@ const Reviews: React.FC = () => {
 
         try {
             await dispatch(addReview(formData)).unwrap();
+            await dispatch(fetchReviews('published'));
         } catch (error) {
             console.error('Ошибка при отправке отзыва:', error);
         }
