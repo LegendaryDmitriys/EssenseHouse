@@ -16,7 +16,8 @@ export interface HouseProject {
     best_seller?: string;
     new?: boolean;
     images: ProjectImage[];
-    results: []
+    results: any[];
+    new_price?: number;
 }
 
 interface HouseProjectCardProps {

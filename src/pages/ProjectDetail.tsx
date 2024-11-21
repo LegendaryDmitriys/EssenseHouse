@@ -289,12 +289,11 @@ const ProjectDetail: React.FC = () => {
                                             <td>Количество спален</td>
                                             <td>{selectedProject.bedrooms}</td>
                                         </tr>
-                                        {selectedProject.garage  !== null && selectedProject.garage_capacity !== null &&(
+                                        {selectedProject.garage &&(
                                             <tr>
                                                 <td>Гараж</td>
                                                 <td>
-                                                    {selectedProject.garage
-                                                    ? selectedProject.garage_capacity  : "Отсутсвует"}
+                                                    {selectedProject.garage ? selectedProject.garage : "Отсутствует"}
                                                 </td>
                                             </tr>
                                         )}

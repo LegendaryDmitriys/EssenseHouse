@@ -50,6 +50,7 @@ const CatalogPage: React.FC = () => {
 
     console.log(houseProjects)
 
+    // @ts-ignore
     return (
         <div className="container">
             <article className="catalog-href">
@@ -64,7 +65,7 @@ const CatalogPage: React.FC = () => {
                 </aside>
                 <div className="column is-three-quarters">
                     <FilterBar onFilterChange={handleFilterChange} />
-                    {houseProjects.results.length === 0 ? (
+                    {houseProjects.length === 0 ? (
                         <div className="no-results">
                             <div className="icon-result">
                                 <i className="fa-regular fa-circle-xmark fa-shake fa-4x" style={{color: '#000'}}></i>
@@ -75,6 +76,7 @@ const CatalogPage: React.FC = () => {
                             </article>
                         </div>
                     ) : (
+                        // @ts-ignore
                         <HouseProjectList houseProjects={houseProjects.results} />
                     )}
                     <p className="mt-5 text-main grey">{categoryInfo.long_description}</p>

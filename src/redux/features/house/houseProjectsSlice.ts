@@ -5,12 +5,12 @@ import config from "../../../api/api.ts";
 export interface HouseProject {
     id: number;
     title: string;
-    images: Image;
-    layout_images: Image;
-    interior_images: Image;
-    facade_images: Image;
-    finishing_options: { id : number; image: string; title: string; description: string; price_per_sqm: number }[];
-    documents: { id : number; image: string; title: string; size: string; file: string}[];
+    images: Image[];
+    layout_images: Image[];
+    interior_images: Image[];
+    facade_images: Image[];
+    finishing_options_details : { id : number; image: string; title: string; description: string; price_per_sqm: number }[];
+    documents: Document[];
     construction_technology : { id : number; name: string }[];
     price?: number;
     old_price?: number;
@@ -24,14 +24,15 @@ export interface HouseProject {
     living_area?: number;
     kitchen_area?: number;
     bedrooms?: number;
-    garage?: boolean;
-    garage_capacity?: number;
+    garage?: number;
     purpose: string;
     bathrooms?: number;
     construction_time?: number;
     warranty?: number;
     description?: string;
-    category: Category;
+    category_details: Category;
+    new_price?: number;
+    discount_percentage: number;
 
 }
 
@@ -39,6 +40,12 @@ interface Image {
     id: number;
     image: string;
 }
+
+interface CategoryInfo {
+    long_description: string;
+    category: Category;
+}
+
 
 interface Category {
     id: number;
@@ -48,10 +55,19 @@ interface Category {
     long_description: string;
 }
 
+interface Document {
+    id: number;
+    image: string;
+    title: string;
+    size: string;
+    file: string;
+}
+
 export interface HouseProjectsState {
     houseProjects: HouseProject[];
-    categoryInfo: Category | null;
+    categoryInfo: CategoryInfo | null;
     count: number;
+    results: HouseProject[];
     next: string | null;
     previous: string | null;
     loading: boolean;
@@ -60,6 +76,8 @@ export interface HouseProjectsState {
     selectedFilters: Record<string, null>;
 }
 
+
+
 const initialState: HouseProjectsState = {
     houseProjects: [],
     categoryInfo: null,
@@ -67,6 +85,7 @@ const initialState: HouseProjectsState = {
     next: null,
     previous: null,
     loading: false,
+    results: [],
     error: null,
     selectedProject: null,
     selectedFilters: {},
@@ -139,7 +158,7 @@ export const fetchCategoryInfo = createAsyncThunk(
 
 export const fetchProjectsByCategory = createAsyncThunk(
     'houseProjects/fetchProjectsByCategory',
-    async ({ category, filters }: { category: string; filters: Record<string, null> }, { rejectWithValue }) => {
+    async ({ category, filters }: { category: string; filters: Record<string, string> }, { rejectWithValue }) => {
         try {
             const params = new URLSearchParams({ category });
             addFiltersToParams(filters, params);
@@ -152,13 +171,14 @@ export const fetchProjectsByCategory = createAsyncThunk(
     }
 );
 
-const addFiltersToParams = (filters: Record<string, null>, params: URLSearchParams) => {
-    Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+function addFiltersToParams(filters: Record<string, string>, params: URLSearchParams) {
+    Object.keys(filters).forEach(key => {
+        const value = filters[key];
+        if (value) {
             params.append(key, value);
         }
-    })
-};
+    });
+}
 
 export const fetchProjectById = createAsyncThunk(
     'houseProjects/fetchProjectById',
@@ -255,7 +275,7 @@ const houseProjectsSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchHouses.fulfilled, (state, action) => {
-                state.houseProjects = action.payload.results;
+                state.houseProjects = action.payload.results || [];
                 state.count = action.payload.count;
                 state.next = action.payload.next;
                 state.previous = action.payload.previous;

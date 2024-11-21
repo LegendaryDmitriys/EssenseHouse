@@ -81,6 +81,11 @@ type House = {
     title: string;
 }
 
+type HouseDetails = {
+    id: number;
+    title: string;
+};
+
 type finishingOption = {
     id: number;
     title: string;
@@ -92,6 +97,7 @@ export type Order = {
     phone: string;
     email: string;
     house: House;
+    house_details: HouseDetails;
     finishing_option: finishingOption;
     construction_place: string;
     message: string;

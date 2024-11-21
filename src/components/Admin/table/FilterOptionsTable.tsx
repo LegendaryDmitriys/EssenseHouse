@@ -77,7 +77,11 @@ const FilterOptionsTable: React.FC = () => {
                 alert("Все поля должны быть заполнены");
                 return;
             }
-            dispatch(addFilterOption({ ...newOption, options: parsedOptions }));
+            dispatch(addFilterOption({
+                id: editingOptionId !== null ? editingOptionId : Date.now(),
+                ...newOption,
+                options: parsedOptions
+            }));
             setNewOption({ name: "", field_name: "", filter_type: "exact", options: "{}" });
         }
         setEditingOptionId(null);

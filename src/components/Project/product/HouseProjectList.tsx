@@ -14,6 +14,7 @@ export interface HouseProject {
     best_seller?: string;
     new?: boolean;
     images: ProjectImage[];
+    results: any[];
 }
 
 

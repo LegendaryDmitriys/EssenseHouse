@@ -70,7 +70,13 @@ const Catalog: React.FC = () => {
                             <div className="column" key={category.id} style={{ textAlign: 'center' }}>
                                 <Link to={`/catalog/${category.slug}`}>
                                     <figure className="">
-                                        <img src={`${config.API_URL}${category.random_image_url}`} alt={category.name} className="category-img" />
+                                        <img
+                                            src={category.random_image_url
+                                                ? `${config.API_URL}${category.random_image_url}`
+                                                : '/house.jpg'}
+                                            alt={category.name}
+                                            className="category-img"
+                                        />
                                     </figure>
                                 </Link>
                                 <p className="has-text-centered grey">{category.name}</p>

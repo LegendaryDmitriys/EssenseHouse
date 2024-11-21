@@ -17,7 +17,7 @@ const FinishingOptionsTable: React.FC = () => {
     const [newOptionTitle, setNewOptionTitle] = useState("");
     const [newOptionDescription, setNewOptionDescription] = useState("");
     const [newOptionPrice, setNewOptionPrice] = useState("");
-    const [newOptionImage, setNewOptionImage] = useState(null);
+    const [newOptionImage, setNewOptionImage] = useState<File | null>(null);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [addModalVisible, setAddModalVisible] = useState(false);
@@ -65,8 +65,6 @@ const FinishingOptionsTable: React.FC = () => {
     };
 
     const handleAddOption = () => {
-        console.log('Добавление опции вызвано');
-
         if (!newOptionTitle || !newOptionDescription || !newOptionPrice) {
             alert("Все поля должны быть заполнены");
             return;
@@ -80,7 +78,6 @@ const FinishingOptionsTable: React.FC = () => {
         };
 
         dispatch(addFinishingOption(optionData));
-        console.log('Форма отправлена', optionData);
 
         setAddModalVisible(false);
         setNewOptionTitle("");

@@ -36,7 +36,7 @@ interface Project {
     layout_images: Image[];
     living_area: string;
     new: boolean;
-    old_price: string | null;
+    new_price?: number;
     price: string;
     purpose: string;
     rooms: number;
