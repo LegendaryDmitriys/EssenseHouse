@@ -236,7 +236,7 @@ const HousesTable: React.FC = () => {
             construction_time: null,
             warranty: null,
             description: '',
-            category_details: null,
+            category: null,
             construction_technology: null
         });
         setSelectedFiles({
@@ -271,8 +271,8 @@ const HousesTable: React.FC = () => {
         return <div className="notification is-danger">{error}</div>;
     }
 
-    console.log(houseData)
 
+    // @ts-ignore
     return (
         <div>
             <table className="table is-fullwidth is-stripedv is-white">
@@ -333,7 +333,7 @@ const HousesTable: React.FC = () => {
                         <input placeholder="Спальни" name="bedrooms" type="number" value={houseData.bedrooms || ''}
                                onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Тип сторительства" name="construction_technology" type="number"
-                               value={houseData.construction_technology[0]?.id || ''}
+                               value={houseData.construction_technology || ''}
                                onChange={handleChange} className="input is-small white-input text-main"/>
                         <input placeholder="Вместимость гаража" name="garage" type="number"
                                value={houseData.garage || ''} onChange={handleChange}
@@ -351,14 +351,14 @@ const HousesTable: React.FC = () => {
                                className="input is-small white-input text-main"/>
                         <textarea placeholder="Описание" name="description" value={houseData.description || ''}
                                   onChange={handleChange} className="input is-small white-textarea text-main"/>
-                        <select name="category_details" value={houseData.category_details?.id || ''}  onChange={handleChange}
+                        <select name="category" value={houseData.category || ''}  onChange={handleChange}
                                 className="select is-small white-textarea text-main">
                             <option value="">Выберите категорию</option>
                             {categories.map((cat) => (
                                 <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
-                        <select name="finishing_options_details" value={houseData.finishing_options_details[0]?.id || ''}
+                        <select name="finishing_options_details" value={houseData.finishing_options_details || ''}
                                 onChange={handleChange}
                                 className="select is-small white-textarea text-main">
                             <option value="">Выберите отделку</option>
