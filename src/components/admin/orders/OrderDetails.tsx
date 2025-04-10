@@ -181,9 +181,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onUpdateStatus }) =>
                                 <Home className="h-4 w-4 mr-2 text-gray-500 mt-0.5" />
                                 <div>
                                     <div className="font-medium">{order.house_details.title}</div>
-                                    {order.finishingOption && (
+                                    {order.finishing_option && (
                                         <div className="text-sm text-gray-600">
-                                            Отделка: {order.finishingOption.title}
+                                            Отделка: {order.finishing_option.title}
                                         </div>
                                     )}
                                 </div>

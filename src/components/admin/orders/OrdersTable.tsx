@@ -40,7 +40,6 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onSelect, selectedId 
         }
     };
 
-    // Format date for display
     const formatDate = (dateString: string) => {
         try {
             return format(new Date(dateString), 'dd MMM yyyy, HH:mm', { locale: ru });
