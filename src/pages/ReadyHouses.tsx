@@ -22,7 +22,7 @@ const ReadyHouses: React.FC = () => {
         const fetchReadyHouses = async () => {
             setLoading(true)
             try {
-                const response = await fetch(`${config.API_URL}houses/purchase/?construction_status=completed/`);
+                const response = await fetch(`${config.API_URL}purchase/?construction_status=completed/`);
                 if (!response.ok){
                     throw new Error(`Http error! Status: ${response.status}`);
                 }

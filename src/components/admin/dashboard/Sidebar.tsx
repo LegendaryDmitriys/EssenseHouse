@@ -1,161 +1,87 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard,
-    Building,
+    HardHat,
+    MessageSquare,
     Users,
-    FileText,
-    Truck,
+    ScrollText,
+    ClipboardList,
     Settings,
-    Calendar,
-    MessageCircle
+    Menu,
+    X,
+    Home
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface NavItemProps {
-    href: string;
-    icon: React.ElementType;
-    title: string;
-}
-
 interface SidebarProps {
+    isMobile: boolean;
     isOpen: boolean;
+    toggleSidebar: () => void;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ href, icon: Icon, title }) => {
-    return (
-        <NavLink
-            to={href}
-            className={({ isActive }) => cn(
-                "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors",
-                "hover:bg-construction-blue-100 hover:text-construction-blue-800",
-                isActive
-                    ? "bg-construction-blue-100 text-construction-blue-800"
-                    : "text-construction-gray-700"
-            )}
-        >
-            <Icon className="h-5 w-5 mr-3 shrink-0" />
-            <span>{title}</span>
-        </NavLink>
+const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) => {
+    const location = useLocation();
+
+    const sidebarItems = [
+        {
+            name: 'Дашборд',
+            path: '/',
+            icon: <LayoutDashboard className="h-5 w-5" />
+        },
+        {
+            name: 'Проекты',
+            path: '/projects',
+            icon: <HardHat className="h-5 w-5" />
+        },
+        {
+            name: 'Заказы',
+            path: '/admin/orders',
+            icon: <ClipboardList className="h-5 w-5" />
+        },
+        {
+            name: 'Строительство',
+            path: '/admin/construction',
+            icon: <Home className="h-5 w-5" />
+        },
+    ];
+
+    const sidebarClasses = cn(
+        "flex flex-col h-screen w-64 bg-white border-r border-gray-200 transition-all duration-300 z-50",
+        isMobile ? (isOpen ? "fixed inset-y-0 left-0" : "-translate-x-full fixed inset-y-0 left-0") : (isOpen ? "mr-0" : "-ml-64")
     );
-};
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     return (
-        <aside
-            className={cn(
-                "bg-white border-r border-gray-200 z-30 transition-all duration-300 ease-in-out",
-                isOpen ? "w-64" : "w-0 -translate-x-full md:translate-x-0 md:w-16"
+        <>
+            {isMobile && isOpen && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    onClick={toggleSidebar}
+                />
             )}
-        >
-            <div className="flex flex-col h-full">
-                <div className={cn(
-                    "flex items-center h-16 px-4 border-b border-gray-200",
-                    isOpen ? "justify-start" : "justify-center"
-                )}>
-                    {isOpen ? (
-                        <>
-                            <Building size={24} className="text-construction-blue-600" />
-                            <span className="ml-3 text-xl font-semibold text-construction-blue-900">СтройУправление</span>
-                        </>
-                    ) : (
-                        <Building size={24} className="text-construction-blue-600" />
-                    )}
-                </div>
 
-                <div className="flex-1 py-4 overflow-y-auto">
-                    <nav className="px-2 space-y-1">
-                        {isOpen ? (
-                            <>
-                                <NavItem href="/" icon={LayoutDashboard} title="Обзор" />
-                                <NavItem href="/projects" icon={Building} title="Проекты" />
-                                <NavItem href="/clients" icon={Users} title="Клиенты" />
-                                <NavItem href="/materials" icon={Truck} title="Материалы" />
-                                <NavItem href="/documents" icon={FileText} title="Документы" />
-                                <NavItem href="/schedule" icon={Calendar} title="Расписание" />
-                                <NavItem href="/messages" icon={MessageCircle} title="Обращения" />
-                                <NavItem href="/settings" icon={Settings} title="Настройки" />
-                            </>
-                        ) : (
-                            <>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <LayoutDashboard size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/projects" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <Building size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/clients" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <Users size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/materials" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <Truck size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/documents" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <FileText size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/schedule" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <Calendar size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/messages" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <MessageCircle size={20} />
-                                    </NavLink>
-                                </div>
-                                <div className="flex justify-center py-3">
-                                    <NavLink to="/settings" className={({ isActive }) => cn(
-                                        "p-2 rounded-lg transition-colors",
-                                        isActive ? "bg-construction-blue-100 text-construction-blue-800" : "text-construction-gray-700",
-                                        "hover:bg-construction-blue-100 hover:text-construction-blue-800"
-                                    )}>
-                                        <Settings size={20} />
-                                    </NavLink>
-                                </div>
-                            </>
-                        )}
+
+            <div className={sidebarClasses}>
+                <div className="flex-1 overflow-y-auto py-4">
+                    <nav className="px-4 space-y-1">
+                        {sidebarItems.map((item) => (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                className={cn(
+                                    "flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-gray-100",
+                                    location.pathname === item.path && "bg-construction-blue-50 text-construction-blue-700"
+                                )}
+                            >
+                                {item.icon}
+                                <span className="ml-3">{item.name}</span>
+                            </Link>
+                        ))}
                     </nav>
                 </div>
             </div>
-        </aside>
+        </>
     );
 };
 

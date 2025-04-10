@@ -26,6 +26,7 @@ import {ProtectedRoute} from "@/components/ProtectedRoute.tsx";
 import Profile from "@/pages/Profile.tsx";
 import AdminDashboard from "@/pages/Admin.tsx";
 import Orders from "@/pages/Orders.tsx";
+import PurchasedHouses from "@/pages/PurchasedHouses.tsx";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
                 </ProtectedRoute>
               }
           />
+            construction
           <Route
               path="/admin/orders"
               element={
@@ -76,8 +78,15 @@ const App = () => (
                   <Orders />
                 </ProtectedRoute>
               }
-
           />
+           <Route
+               path="/admin/construction"
+               element={
+                <ProtectedRoute adminOnly>
+                   <PurchasedHouses />
+                </ProtectedRoute>
+                }
+            />
         </Routes>
         </main>
           <Footer />
