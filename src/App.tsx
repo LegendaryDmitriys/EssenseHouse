@@ -25,6 +25,7 @@ import { AuthProvider } from "./context/AuthContext";
 import {ProtectedRoute} from "@/components/ProtectedRoute.tsx";
 import Profile from "@/pages/Profile.tsx";
 import AdminDashboard from "@/pages/Admin.tsx";
+import Orders from "@/pages/Orders.tsx";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,15 @@ const App = () => (
                   <AdminDashboard />
                 </ProtectedRoute>
               }
+          />
+          <Route
+              path="/admin/orders"
+              element={
+                <ProtectedRoute adminOnly>
+                  <Orders />
+                </ProtectedRoute>
+              }
+
           />
         </Routes>
         </main>

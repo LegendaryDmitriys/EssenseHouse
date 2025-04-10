@@ -26,7 +26,7 @@ export interface Document {
 
 export interface FinishingOption {
     id: number
-    name: string
+    title: string
     description: string
     price: number
 }
