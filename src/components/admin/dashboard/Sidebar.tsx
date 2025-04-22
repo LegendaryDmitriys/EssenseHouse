@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import {Link, Route, useLocation} from 'react-router-dom';
 import {
     LayoutDashboard,
     HardHat,
@@ -43,6 +43,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
         {
             name: 'Строительство',
             path: '/admin/construction',
+            icon: <Home className="h-5 w-5" />
+        },
+        {
+            name: 'Вопросы пользователей',
+            path: '/admin/user-questions',
+            icon: <Home className="h-5 w-5" />
+        },
+        {
+            name: 'Вопросы пользователей о домах',
+            path: '/admin/house-questions',
+            icon: <Home className="h-5 w-5" />
+        },
+        {
+            name: 'Отзывы пользователей',
+            path: '/admin/reviews',
             icon: <Home className="h-5 w-5" />
         },
     ];

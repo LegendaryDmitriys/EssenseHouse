@@ -17,7 +17,7 @@ const TestimonialsSection = () => {
         const fetchReviews = async () => {
             try
             {
-               const response = await fetch(`${config.API_URL}reviews/`);
+               const response = await fetch(`${config.API_URL}reviews?limit=3`);
                if (!response.ok){
                    throw new Error(`Http error! Status: ${response.status}`);
                }

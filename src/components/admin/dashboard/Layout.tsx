@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
-interface DashboardLayoutProps {
+interface LayoutProps {
     children: React.ReactNode;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -15,7 +25,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50">
-            <Sidebar isOpen={sidebarOpen} />
+            <Sidebar
+                isMobile={isMobile}
+                isOpen={sidebarOpen}
+                toggleSidebar={toggleSidebar}
+            />
 
             <div className="flex flex-col flex-1 w-full overflow-hidden">
                 <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
@@ -28,4 +42,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     );
 };
 
-export default DashboardLayout;
+export default Layout;

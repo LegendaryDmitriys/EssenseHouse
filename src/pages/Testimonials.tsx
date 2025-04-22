@@ -77,7 +77,7 @@ const Testimonials = () => {
         const fetchReviews = async (url?: string) => {
             setLoading(true);
             try {
-                const response = await fetch(url || `${config.API_URL}reviews/`);
+                const response = await fetch(url || `${config.API_URL}reviews/?status=published`);
                 if (!response.ok) {
                     throw new Error(`Http error, Status: ${response.status}`);
                 }

@@ -1,5 +1,3 @@
-import {number, string} from "zod";
-
 export interface HouseCategory {
     id: number
     name: string

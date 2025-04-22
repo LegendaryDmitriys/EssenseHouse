@@ -27,6 +27,9 @@ import Profile from "@/pages/Profile.tsx";
 import AdminDashboard from "@/pages/Admin.tsx";
 import Orders from "@/pages/Orders.tsx";
 import PurchasedHouses from "@/pages/PurchasedHouses.tsx";
+import HouseQuestions from "@/pages/HouseQuestions.tsx";
+import UserQuestions from "@/pages/UserQuestions.tsx";
+import UserReviews from "@/pages/UserReviews.tsx";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +87,30 @@ const App = () => (
                element={
                 <ProtectedRoute adminOnly>
                    <PurchasedHouses />
+                </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin/house-questions"
+                element={
+                    <ProtectedRoute adminOnly>
+                        <HouseQuestions />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin/user-questions"
+                element={
+                    <ProtectedRoute adminOnly>
+                        <UserQuestions />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin/reviews"
+                element={
+                <ProtectedRoute>
+                    <UserReviews/>
                 </ProtectedRoute>
                 }
             />

@@ -1,0 +1,192 @@
+import React, { useState } from 'react';
+import { HelpCircle, CheckCircle, Clock, XCircle, Send, PhoneCall } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
+import { HouseQuestion, QuestionStatus, UserQuestion } from '@/types/question';
+import { useToast } from '@/hooks/use-toast';
+
+interface QuestionDetailsProps {
+    question: HouseQuestion | UserQuestion;
+    onUpdateStatus: (id: string, status: QuestionStatus, answer?: string) => void;
+    type: 'house' | 'user';
+}
+
+const QuestionDetails: React.FC<QuestionDetailsProps> = ({
+                                                             question,
+                                                             onUpdateStatus,
+                                                             type
+                                                         }) => {
+    const [answerText, setAnswerText] = useState('');
+    const { toast } = useToast();
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date);
+    };
+
+
+    const getStatusBadge = (status: QuestionStatus) => {
+        switch(status) {
+            case 'waiting':
+                return (
+                    <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+                        <Clock className="mr-1 h-3 w-3" />
+                        Ожидает ответа
+                    </Badge>
+                );
+            case 'answered':
+                return (
+                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                        <CheckCircle className="mr-1 h-3 w-3" />
+                        Ответ предоставлен
+                    </Badge>
+                );
+            case 'closed':
+                return (
+                    <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                        <XCircle className="mr-1 h-3 w-3" />
+                        Закрыт
+                    </Badge>
+                );
+            default:
+                return null;
+        }
+    };
+
+
+    const isHouseQuestion = (question: HouseQuestion | UserQuestion): question is HouseQuestion => {
+        return 'house' in question && 'question' in question;
+    };
+
+
+    const handleSendAnswer = () => {
+        if (answerText.trim()) {
+            onUpdateStatus(question.id, 'answered', answerText);
+            setAnswerText('');
+        }
+    };
+
+    const handleCall = () => {
+
+        window.location.href = `tel:${question.phone}`;
+        toast({
+            title: "Звонок",
+            description: `Набираем номер ${question.phone}`,
+        });
+    };
+
+    return (
+        <Card className="p-6">
+
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+                <div>
+                    <h3 className="text-lg font-medium text-gray-900">{question.name}</h3>
+                    <div className="text-sm text-gray-600 mt-1">
+                        <p>Телефон: {question.phone}</p>
+                        {isHouseQuestion(question) && question.email && (
+                            <p>Email: {question.email}</p>
+                        )}
+                    </div>
+                </div>
+                <div className="flex flex-col items-end">
+                    {getStatusBadge(question.status)}
+                    <span className="text-xs text-gray-500 mt-2">
+            {formatDate(question.created_at)}
+          </span>
+                </div>
+            </div>
+
+            {isHouseQuestion(question) && (
+                <>
+                    <div className="mb-4">
+                        <h4 className="text-sm font-medium text-gray-700">Интересующий дом</h4>
+                        <p className="text-sm text-gray-900 mt-1">{question.house_details.title}</p>
+                    </div>
+
+                    <div className="mb-6">
+                        <h4 className="text-sm font-medium text-gray-700">Вопрос</h4>
+                        <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap">{question.question}</p>
+                    </div>
+                </>
+            )}
+
+            <Separator className="my-4" />
+
+
+            <div className="mb-4">
+                <Button
+                    onClick={handleCall}
+                    variant="outline"
+                    className="w-full"
+                >
+                    <PhoneCall className="mr-2 h-4 w-4" />
+                    Позвонить {question.phone}
+                </Button>
+            </div>
+
+
+            <div className="mt-4">
+                {type === 'house' && <h4 className="text-sm font-medium text-gray-700 mb-2">Ответ</h4>}
+
+                {question.answer ? (
+                    <div className="bg-gray-50 p-4 rounded-md mb-4">
+                        <p className="text-sm text-gray-900 whitespace-pre-wrap">{question.answer}</p>
+                    </div>
+                ) : question.status === 'waiting' ? (
+                    <div className="space-y-4">
+                        {type === 'house' && (
+                            <Textarea
+                                placeholder="Введите ответ на вопрос..."
+                                value={answerText}
+                                onChange={(e) => setAnswerText(e.target.value)}
+                                className="min-h-[100px]"
+                            />
+                        )}
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => onUpdateStatus(question.id, 'closed')}
+                            >
+                                Закрыть вопрос
+                            </Button>
+                            {type === 'house' && (
+                                <Button
+                                    onClick={handleSendAnswer}
+                                    className="bg-construction-blue-600 hover:bg-construction-blue-700"
+                                    disabled={!answerText.trim()}
+                                >
+                                    <Send className="mr-2 h-4 w-4" />
+                                    Отправить ответ
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-sm text-gray-500 italic">Вопрос закрыт</p>
+                )}
+
+                {question.status === 'answered' && (
+                    <div className="flex justify-end mt-4">
+                        <Button
+                            variant="outline"
+                            onClick={() => onUpdateStatus(question.id, 'closed')}
+                        >
+                            Закрыть вопрос
+                        </Button>
+                    </div>
+                )}
+            </div>
+        </Card>
+    );
+};
+
+export default QuestionDetails;

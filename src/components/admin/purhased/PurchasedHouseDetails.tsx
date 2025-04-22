@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, {useState} from 'react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Phone, Mail, MapPin, Home, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
+import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
 
 
 interface PurchasedHouseDetailsProps {
@@ -16,6 +17,9 @@ interface PurchasedHouseDetailsProps {
 }
 
 const PurchasedHouseDetails: React.FC<PurchasedHouseDetailsProps> = ({ house, onUpdateStatus }) => {
+    const [mapCenter, setMapCenter] = useState<[number, number]>([55.7558, 37.6173]);
+    const [mapZoom, setMapZoom] = useState(2);
+
 
     const formatDate = (dateString?: string) => {
         if (!dateString) return 'Не указано';
@@ -177,10 +181,29 @@ const PurchasedHouseDetails: React.FC<PurchasedHouseDetailsProps> = ({ house, on
                     {house.latitude && house.longitude && (
                         <div>
                             <h3 className="font-medium mb-2 text-sm text-gray-500">Расположение на карте</h3>
-                            <div className="bg-gray-100 rounded-md h-48 flex items-center justify-center">
-                                <div className="text-sm text-gray-500">
-                                    Координаты: {house.latitude}, {house.longitude}
-                                </div>
+                            <div className="text-sm text-gray-600 mb-2">
+                                Координаты: {house.latitude}, {house.longitude}
+                            </div>
+                            <div className="bg-gray-100 rounded-md h-[300px]">
+                                <YMaps>
+                                    <Map
+                                        defaultState={{
+                                            center: mapCenter,
+                                            zoom: mapZoom,
+                                            controls: []
+                                        }}
+                                        width="100%"
+                                        height="100%"
+                                        options={{
+                                            suppressMapOpenBlock: true
+                                        }}
+                                    >
+                                        <ZoomControl options={{position: {right: 10, top: 10}}}/>
+                                        <Placemark
+                                            geometry={[house.latitude, house.longitude]}
+                                        />
+                                    </Map>
+                                </YMaps>
                             </div>
                         </div>
                     )}

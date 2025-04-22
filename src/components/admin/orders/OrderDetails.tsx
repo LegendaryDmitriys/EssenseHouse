@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {Order, OrderStatus} from "@/types/orders.ts";
+import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
 
 
 interface OrderDetailsProps {
@@ -15,6 +16,8 @@ interface OrderDetailsProps {
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onUpdateStatus }) => {
+    const [mapCenter, setMapCenter] = useState<[number, number]>([55.7558, 37.6173]);
+    const [mapZoom, setMapZoom] = useState(2);
     const [isUpdating, setIsUpdating] = useState(false);
     const formatDate = (dateString: string) => {
         try {
@@ -34,15 +37,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onUpdateStatus }) =>
         }
     };
 
-
-    const getProgressIndicatorClassName = (status: OrderStatus) => {
-        switch(status) {
-            case 'pending': return 'bg-yellow-500';
-            case 'approved': return 'bg-green-500';
-            case 'rejected': return 'bg-red-500';
-            default: return '';
-        }
-    };
 
     const handleUpdateStatus = async (status: OrderStatus) => {
         setIsUpdating(true);
@@ -206,13 +200,26 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onUpdateStatus }) =>
                     </div>
 
                     {order.latitude && order.longitude && (
-                        <div>
-                            <h3 className="font-medium mb-2 text-sm text-gray-500">Расположение на карте</h3>
-                            <div className="bg-gray-100 rounded-md h-48 flex items-center justify-center">
-                                <div className="text-sm text-gray-500">
-                                    Координаты: {order.latitude}, {order.longitude}
-                                </div>
-                            </div>
+                        <div className="bg-gray-100 rounded-md h-[300px]">
+                            <YMaps>
+                                <Map
+                                    defaultState={{
+                                        center: mapCenter,
+                                        zoom: mapZoom,
+                                        controls: []
+                                    }}
+                                    width="100%"
+                                    height="100%"
+                                    options={{
+                                        suppressMapOpenBlock: true
+                                    }}
+                                >
+                                    <ZoomControl options={{position: {right: 10, top: 10}}}/>
+                                    <Placemark
+                                        geometry={[order.latitude, order.longitude]}
+                                    />
+                                </Map>
+                            </YMaps>
                         </div>
                     )}
 
