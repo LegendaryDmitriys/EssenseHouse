@@ -1,3 +1,6 @@
+import {PaginatedResponse} from "@/types/paginated.ts";
+import {Review} from "@/types/review.ts";
+
 export interface HouseCategory {
     id: number
     name: string
@@ -19,14 +22,16 @@ export interface Image {
 export interface Document {
     id: number
     file: string
-    name: string
+    title: string
+    size: number
 }
 
 export interface FinishingOption {
     id: number
     title: string
     description: string
-    price: number
+    image: string
+    price_per_sqm: number
 }
 
 export interface House {
@@ -95,3 +100,31 @@ export interface PurchasedHouse {
         area: number;
     };
 }
+
+
+
+export interface HouseFormValues {
+    title: string;
+    price: string;
+    discount_percentage?: string;
+    new: boolean;
+    best_seller?: string;
+    area: string;
+    floors: string;
+    rooms: string;
+    living_area: string;
+    kitchen_area?: string;
+    bedrooms: string;
+    bathrooms?: string;
+    garage?: string;
+    purpose: string;
+    warranty?: string;
+    construction_time?: string;
+    construction_technology: string;
+    category: string;
+    description?: string;
+}
+
+
+
+export type PaginatedHouses = PaginatedResponse<House>;

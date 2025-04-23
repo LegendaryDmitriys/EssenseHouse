@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
-import {Link, Route, useLocation} from 'react-router-dom';
+import React from 'react';
+import {Link, useLocation} from 'react-router-dom';
 import {
     LayoutDashboard,
     HardHat,
-    MessageSquare,
-    Users,
-    ScrollText,
     ClipboardList,
-    Settings,
-    Menu,
-    X,
     Home
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -32,7 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
         },
         {
             name: 'Проекты',
-            path: '/projects',
+            path: '/admin/projects',
             icon: <HardHat className="h-5 w-5" />
         },
         {
