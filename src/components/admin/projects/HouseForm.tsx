@@ -108,7 +108,7 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
         mutationFn: async (data: FormData) => {
             const url = house
                 ? `${config.API_URL}houses/${house.id}/`
-                : `${config.API_URL}houses/`;
+                : `${config.API_URL}houses/create`;
 
             const method = house ? 'PUT' : 'POST';
 

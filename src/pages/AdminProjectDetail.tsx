@@ -32,7 +32,7 @@ import config from "@/api/api.ts";
 import {HouseForm} from "@/components/admin/projects/HouseForm.tsx";
 import Layout from "@/components/admin/dashboard/Layout.tsx";
 
-const AdminHouseDetail = () => {
+const AdminProjectDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -407,4 +407,4 @@ const AdminHouseDetail = () => {
     );
 };
 
-export default AdminHouseDetail;
+export default AdminProjectDetail;

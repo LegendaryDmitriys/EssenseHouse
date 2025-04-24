@@ -31,7 +31,7 @@ import HouseQuestions from "@/pages/HouseQuestions.tsx";
 import UserQuestions from "@/pages/UserQuestions.tsx";
 import UserReviews from "@/pages/UserReviews.tsx";
 import AdminProjects from "@/pages/AdminProject.tsx";
-import AdminHouseDetail from "@/pages/AdminHouseDetail.tsx";
+import AdminProjectDetail from "@/pages/AdminProjectDetail.tsx";
 
 const queryClient = new QueryClient();
 
@@ -128,7 +128,7 @@ const App = () => (
                 path="/admin/projects/:id"
                 element={
                     <ProtectedRoute>
-                        <AdminHouseDetail />
+                        <AdminProjectDetail />
                     </ProtectedRoute>
                 }
             />

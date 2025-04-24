@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -42,14 +42,30 @@ import { House, PaginatedHouses } from "@/types/house";
 import {HouseForm} from "@/components/admin/projects/HouseForm.tsx";
 import Layout from "@/components/admin/dashboard/Layout.tsx";
 import config from "@/api/api.ts";
+import debounce from "lodash.debounce";
 
 const AdminProjects = () => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchInput, setSearchInput] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [showForm, setShowForm] = useState(false);
     const pageSize = 6;
 
     const queryClient = useQueryClient();
+
+    const debouncedSetSearchTerm = useCallback(
+        debounce((value) => {
+            setSearchTerm(value);
+        }, 500),
+        []
+    );
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchInput(value);
+        debouncedSetSearchTerm(value);
+    };
+
 
     const { data: paginatedData, isLoading } = useQuery<PaginatedHouses>({
         queryKey: ["houses", currentPage, searchTerm],
@@ -60,7 +76,7 @@ const AdminProjects = () => {
             }
             const response = await fetch(url);
             if (!response.ok) {
-                throw new Error("Network response was not ok");
+                throw new Error("Ошибка соединения");
             }
             return response.json();
         },
@@ -154,8 +170,8 @@ const AdminProjects = () => {
                             <Input
                                 placeholder="Поиск по названию..."
                                 className="pl-8"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                value={searchInput}
+                                onChange={handleSearchChange}
                             />
                         </div>
                         <Select defaultValue="priceAsc">

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {Order, OrderStatus} from "@/types/orders.ts";
-import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
+// import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
 
 
 interface OrderDetailsProps {
@@ -201,25 +201,25 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onUpdateStatus }) =>
 
                     {order.latitude && order.longitude && (
                         <div className="bg-gray-100 rounded-md h-[300px]">
-                            <YMaps>
-                                <Map
-                                    defaultState={{
-                                        center: mapCenter,
-                                        zoom: mapZoom,
-                                        controls: []
-                                    }}
-                                    width="100%"
-                                    height="100%"
-                                    options={{
-                                        suppressMapOpenBlock: true
-                                    }}
-                                >
-                                    <ZoomControl options={{position: {right: 10, top: 10}}}/>
-                                    <Placemark
-                                        geometry={[order.latitude, order.longitude]}
-                                    />
-                                </Map>
-                            </YMaps>
+                            {/*<YMaps>*/}
+                            {/*    <Map*/}
+                            {/*        defaultState={{*/}
+                            {/*            center: mapCenter,*/}
+                            {/*            zoom: mapZoom,*/}
+                            {/*            controls: []*/}
+                            {/*        }}*/}
+                            {/*        width="100%"*/}
+                            {/*        height="100%"*/}
+                            {/*        options={{*/}
+                            {/*            suppressMapOpenBlock: true*/}
+                            {/*        }}*/}
+                            {/*    >*/}
+                            {/*        <ZoomControl options={{position: {right: 10, top: 10}}}/>*/}
+                            {/*        <Placemark*/}
+                            {/*            geometry={[order.latitude, order.longitude]}*/}
+                            {/*        />*/}
+                            {/*    </Map>*/}
+                            {/*</YMaps>*/}
                         </div>
                     )}
 

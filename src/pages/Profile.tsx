@@ -10,7 +10,7 @@ const Profile = () => {
     const { user, logout, favorites } = useAuth();
 
     return (
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-32">
             <div className="grid gap-6 md:grid-cols-[300px_1fr]">
                 <Card>
                     <CardHeader>
