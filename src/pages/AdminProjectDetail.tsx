@@ -29,8 +29,8 @@ import {
 } from "@/components/ui/tabs";
 import { House } from "@/types/house";
 import config from "@/api/api.ts";
-import {HouseForm} from "@/components/admin/projects/HouseForm.tsx";
 import Layout from "@/components/admin/dashboard/Layout.tsx";
+import HouseForm from "@/components/admin/projects/HouseForm.tsx";
 
 const AdminProjectDetail = () => {
     const { id } = useParams<{ id: string }>();
