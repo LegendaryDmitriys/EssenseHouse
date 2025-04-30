@@ -39,10 +39,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { House, PaginatedHouses } from "@/types/house";
-import {HouseForm} from "@/components/admin/projects/HouseForm.tsx";
 import Layout from "@/components/admin/dashboard/Layout.tsx";
 import config from "@/api/api.ts";
 import debounce from "lodash.debounce";
+import HouseForm from "@/components/admin/projects/HouseForm.tsx";
 
 const AdminProjects = () => {
     const [searchTerm, setSearchTerm] = useState("");
