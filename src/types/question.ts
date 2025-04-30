@@ -7,7 +7,7 @@ export interface HouseQuestion {
     phone: string;
     email?: string;
     house: number;
-    house_details: {
+    house_details?: {
         id: string;
         title: string;
     };

@@ -15,6 +15,8 @@ import ProjectsShowcase from "@/components/home/ProjectsShowcase";
 import Questions from "@/components/home/Questions.tsx";
 import TestimonialsSection from "@/components/home/TestimonialsSection.tsx";
 import HowBuild from "@/components/home/HowBuild.tsx";
+import AdvantagesSection from "@/components/home/AdvantagesSection.tsx";
+import ContactForm from "@/components/home/ContactForm.tsx";
 
 const Index = () => {
   const [isContactVisible, setIsContactVisible] = useState(false);
@@ -168,60 +170,7 @@ const Index = () => {
             animate={{opacity: showMainContent ? 1 : 0}}
             transition={{duration: 0.8}}
         >
-          <section className="py-20 bg-white">
-            <div className="container">
-              <motion.div
-                  initial={{opacity: 0, y: 20}}
-                  whileInView={{opacity: 1, y: 0}}
-                  transition={{duration: 0.5}}
-                  className="text-center max-w-3xl mx-auto mb-16"
-              >
-                <h2 className="font-heading text-4xl md:text-5xl mb-6">
-                  Почему выбирают нас
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  Профессионализм и качество в каждой детали
-                </p>
-              </motion.div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {[
-                  {
-                    icon: <Building2 className="w-8 h-8 text-[#9b87f5]"/>,
-                    title: "Полный цикл работ",
-                    description: "От проекта до отделки",
-                  },
-                  {
-                    icon: <CheckCircle2 className="w-8 h-8 text-[#9b87f5]"/>,
-                    title: "Гарантия качества",
-                    description: "5 лет на все работы",
-                  },
-                  {
-                    icon: <Clock4 className="w-8 h-8 text-[#9b87f5]"/>,
-                    title: "Точные сроки",
-                    description: "Соблюдаем график работ",
-                  },
-                  {
-                    icon: <Wrench className="w-8 h-8 text-[#9b87f5]"/>,
-                    title: "Современные технологии",
-                    description: "Инновационные решения",
-                  },
-                ].map((advantage, index) => (
-                    <motion.div
-                        key={index}
-                        initial={{opacity: 0, y: 20}}
-                        whileInView={{opacity: 1, y: 0}}
-                        transition={{duration: 0.5, delay: index * 0.1}}
-                        className="bg-white p-8 rounded-lg shadow-lg text-center hover:scale-105 transition-transform duration-300"
-                    >
-                      <div className="mb-4 flex justify-center">{advantage.icon}</div>
-                      <h3 className="text-xl font-semibold mb-2">{advantage.title}</h3>
-                      <p className="text-muted-foreground">{advantage.description}</p>
-                    </motion.div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <AdvantagesSection/>
 
           <CompanyHistory/>
 
@@ -243,72 +192,7 @@ const Index = () => {
 
 
         {isContactVisible && (
-            <motion.div
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-                onClick={(e) => {
-                  if (e.target === e.currentTarget) setIsContactVisible(false);
-                }}
-            >
-              <motion.div
-                  initial={{scale: 0.9, opacity: 0}}
-                  animate={{scale: 1, opacity: 1}}
-                  className="bg-white rounded-lg p-8 max-w-md w-full"
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-heading">Связаться с нами</h3>
-                  <button
-                      onClick={() => setIsContactVisible(false)}
-                      className="text-gray-500 hover:text-gray-700"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Ваше имя
-                    </label>
-                    <input
-                        type="text"
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Иван Иванов"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Телефон
-                    </label>
-                    <input
-                        type="tel"
-                        className="w-full p-2 border rounded-md"
-                        placeholder="+7 (999) 999-99-99"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Сообщение
-                    </label>
-                    <textarea
-                        className="w-full p-2 border rounded-md"
-                        rows={4}
-                        placeholder="Ваше сообщение..."
-                    />
-                  </div>
-                  <Button
-                      className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toast.success("Спасибо за обращение! Мы свяжемся с вами в ближайшее время.");
-                        setIsContactVisible(false);
-                      }}
-                  >
-                    Отправить
-                  </Button>
-                </form>
-              </motion.div>
-            </motion.div>
+            <ContactForm onIsContactVisible={setIsContactVisible} />
         )}
 
         <motion.button

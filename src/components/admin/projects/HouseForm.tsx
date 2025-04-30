@@ -22,7 +22,14 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {House, HouseCategory, ConstructionTechnology, HouseFormValues} from "@/types/house";
+import {
+    House,
+    HouseCategory,
+    ConstructionTechnology,
+    HouseFormValues,
+    FinishingOption,
+    PreviewItem
+} from "@/types/house";
 import config from "@/api/api.ts";
 
 interface HouseFormProps {
@@ -30,10 +37,19 @@ interface HouseFormProps {
     onSuccess: () => void;
 }
 
-export function HouseForm({ house, onSuccess }: HouseFormProps) {
+const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [images, setImages] = useState<File[]>([]);
     const [documents, setDocuments] = useState<File[]>([]);
+    const [interiorImages, setInteriorImages] = useState<File[]>([]);
+    const [facadeImages, setFacadeImages] = useState<File[]>([]);
+    const [layoutImages, setLayoutImages] = useState<File[]>([]);
+    const [existingImages, setExistingImages] = useState(house?.images || []);
+    const [existingInteriorImages, setExistingInteriorImages] = useState(house?.interior_images || []);
+    const [existingFacadeImages, setExistingFacadeImages] = useState(house?.facade_images || []);
+    const [existingLayoutImages, setExistingLayoutImages] = useState(house?.layout_images || []);
+    const [existingDocuments, setExistingDocuments] = useState(house?.documents || []);
+
 
     const form = useForm<HouseFormValues>({
         defaultValues: house
@@ -54,6 +70,7 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
                 purpose: house.purpose,
                 warranty: house.warranty?.toString(),
                 construction_time: house.construction_time?.toString(),
+                finishing_options: house.finishing_options_details?.map(f => f.id.toString()) || [],
                 construction_technology: house.construction_technology_details.id.toString(),
                 category: house.category_details.id.toString(),
                 description: house.description,
@@ -75,6 +92,7 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
                 purpose: "Частный дом",
                 warranty: "",
                 construction_time: "",
+                finishing_options: [],
                 construction_technology: "",
                 category: "",
                 description: "",
@@ -84,23 +102,34 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
     const { data: categories } = useQuery<HouseCategory[]>({
         queryKey: ["categories"],
         queryFn: async () => {
-            return [
-                { id: 1, name: "Современные дома", long_description: "Описание", short_description: "Описание ", slug: "modern" },
-                { id: 2, name: "Классические дома", long_description: "Описание", short_description: "Описание ", slug: "classic" },
-                { id: 1, name: "Дачные дома", long_description: "Описание", short_description: "Описание ", slug: "dacha" },
-            ];
-        },
+            const response = await fetch(`${config.API_URL}houses/category/`)
+            if (!response.ok){
+                throw new Error("Не удалось загрузить категории")
+            }
+            return response.json()
+        }
     });
+
 
     const { data: technologies } = useQuery<ConstructionTechnology[]>({
         queryKey: ["technologies"],
         queryFn: async () => {
+            const response = await fetch(`${config.API_URL}houses/construction-technologies`)
+            if (!response.ok){
+                throw new Error("Не удалось загрузить технологии строительства")
+            }
+            return response.json()
+        },
+    });
 
-            return [
-                { id: 1, name: "Каркасное строительство" },
-                { id: 2, name: "Кирпичное строительство" },
-                { id: 3, name: "Блочное строительство" },
-            ];
+    const { data: finishings } = useQuery<FinishingOption[]>({
+        queryKey: ["finishings"],
+        queryFn: async () => {
+            const response = await fetch(`${config.API_URL}houses/finishing-options/`)
+            if (!response.ok){
+                throw new Error("Не удалось загрузить варианты отделки")
+            }
+            return response.json()
         },
     });
 
@@ -134,26 +163,164 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
         },
     });
 
+    // const onSubmit = (values: HouseFormValues) => {
+    //     setIsLoading(true);
+    //
+    //     const formData = new FormData();
+    //
+    //     Object.entries(values).forEach(([key, value]) => {
+    //         if (value === undefined || value === null || value === '') return;
+    //
+    //         if (key === 'finishing_options') {
+    //             if (Array.isArray(value)) {
+    //                 value.forEach(v => {
+    //                     const numValue = parseInt(v);
+    //                     if (!isNaN(numValue)) {
+    //                         formData.append('finishing_options', numValue.toString());
+    //                     }
+    //                 });
+    //             }
+    //         } else {
+    //             formData.append(key, value.toString());
+    //         }
+    //     });
+    //
+    //     images.forEach((image) => {
+    //         formData.append('images', image);
+    //     });
+    //
+    //     documents.forEach((doc) => {
+    //         formData.append('documents', doc);
+    //     });
+    //
+    //     saveMutation.mutate(formData);
+    // };
+
     const onSubmit = (values: HouseFormValues) => {
         setIsLoading(true);
-
         const formData = new FormData();
 
         Object.entries(values).forEach(([key, value]) => {
-            if (value !== undefined && value !== null && value !== '') {
+            if (!value) return;
+
+            if (key === 'finishing_options') {
+                (value as string[]).forEach(v => formData.append('finishing_options', v));
+            } else {
                 formData.append(key, value.toString());
             }
         });
 
-        images.forEach((image) => {
-            formData.append('images', image);
-        });
+        images.forEach(file => formData.append('images', file));
+        interiorImages.forEach(file => formData.append('interior_images', file));
+        facadeImages.forEach(file => formData.append('facade_images', file));
+        layoutImages.forEach(file => formData.append('layout_images', file));
 
-        documents.forEach((doc) => {
-            formData.append('documents', doc);
-        });
+        documents.forEach(file => formData.append('documents', file));
 
-        saveMutation.mutate(formData);
+        const url = house
+            ? `${config.API_URL}houses/update/${house.id}/`
+            : `${config.API_URL}houses/create`;
+        const method = house ? 'PATCH' : 'POST';
+
+        fetch(url, {
+            method,
+            body: formData
+        })
+            .then(async (res) => {
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || "Ошибка при сохранении");
+                }
+                return res.json();
+            })
+            .then(() => {
+                toast.success("Дом сохранён!");
+                onSuccess();
+            })
+            .catch((err) => toast.error(err.message))
+            .finally(() => setIsLoading(false));
+    };
+
+
+    const renderPreviewList = (
+        items: PreviewItem[],
+        category: string,
+        onRemove: (id: number) => void
+    ) => (
+        <ul className="space-y-2">
+            {items.map((item) => {
+                const isImage = "image" in item;
+                const fileName = (isImage ? item.image : item.title) || "Файл";
+
+                return (
+                    <li key={item.id} className="flex items-center justify-between border p-2 rounded">
+                        <a
+                            href={isImage ? item.image : item.file}
+                            target="_blank"
+                            rel="noreferrer"
+                            download
+                            className="truncate"
+                        >
+                            {fileName}
+                        </a>
+                        {isImage && (
+                            <img
+                                src={`${config.API_URL}${item.image}`}
+                                alt=""
+                                className="object-cover w-full h-64"
+                            />
+                        )}
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="lg"
+                            onClick={() => onRemove(item.id)}
+                        >
+                            Удалить
+                        </Button>
+                    </li>
+                );
+            })}
+        </ul>
+    );
+
+    const deleteImage = async (imageId: number, category: string) => {
+        const res = await fetch(`${config.API_URL}houses/${house!.id}/images/${imageId}/delete/${category}/`, {
+            method: 'DELETE',
+        });
+        if (res.ok) {
+            toast.success("Изображение удалено");
+            switch (category) {
+                case 'images': setExistingImages(prev => prev.filter(i => i.id !== imageId)); break;
+                case 'interior_images': setExistingInteriorImages(prev => prev.filter(i => i.id !== imageId)); break;
+                case 'facade_images': setExistingFacadeImages(prev => prev.filter(i => i.id !== imageId)); break;
+                case 'layout_images': setExistingLayoutImages(prev => prev.filter(i => i.id !== imageId)); break;
+            }
+        } else {
+            toast.error("Не удалось удалить изображение");
+        }
+    };
+
+    const deleteDocument = async (docId: number) => {
+        const res = await fetch(`${config.API_URL}houses/${house!.id}/documents/${docId}/delete/`, {
+            method: 'DELETE',
+        });
+        if (res.ok) {
+            toast.success("Документ удалён");
+            setExistingDocuments(prev => prev.filter(d => d.id !== docId));
+        } else {
+            toast.error("Не удалось удалить документ");
+        }
+    };
+
+
+    const handleFileChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        setter: React.Dispatch<React.SetStateAction<File[]>>
+    ) => {
+        if (e.target.files) {
+            setter(Array.from(e.target.files));
+        }
     };
 
     const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -276,6 +443,36 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
                                         </FormItem>
                                     )}
                                 />
+
+                                <FormField
+                                    control={form.control}
+                                    name="finishing_options"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Варианты отделки</FormLabel>
+                                            <FormControl>
+                                                <select
+                                                    multiple
+                                                    className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10"
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        const selected = Array.from(e.target.selectedOptions).map(
+                                                            (option) => option.value
+                                                        );
+                                                        field.onChange(selected);
+                                                    }}
+                                                >
+                                                    {finishings?.map((finish) => (
+                                                        <option key={`finishing-${finish.id}`} value={finish.id.toString()}>
+                                                            {finish.title}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
 
                             <FormField
@@ -378,7 +575,6 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
                             />
                         </div>
 
-                        {/* House dimensions and features */}
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium">Параметры дома</h3>
 
@@ -502,6 +698,22 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
                                 />
                             </div>
 
+                            {house && (
+                                <>
+                                    <h4 className="font-medium">Загруженные изображения</h4>
+                                    {renderPreviewList(existingImages, 'images', (id) => deleteImage(id, 'images'))}
+                                    <h4 className="font-medium">Интерьер</h4>
+                                    {renderPreviewList(existingInteriorImages, 'interior_images', (id) => deleteImage(id, 'interior_images'))}
+                                    <h4 className="font-medium">Фасады</h4>
+                                    {renderPreviewList(existingFacadeImages, 'facade_images', (id) => deleteImage(id, 'facade_images'))}
+                                    <h4 className="font-medium">Планировки</h4>
+                                    {renderPreviewList(existingLayoutImages, 'layout_images', (id) => deleteImage(id, 'layout_images'))}
+
+                                    <h4 className="font-medium mt-4">Загруженные документы</h4>
+                                    {renderPreviewList(existingDocuments, 'documents', deleteDocument)}
+                                </>
+                            )}
+
                             <div className="space-y-4 pt-4">
                                 <h3 className="text-lg font-medium">Файлы</h3>
 
@@ -519,6 +731,39 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
                                             Выбрано {images.length} файлов
                                         </div>
                                     )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="interior_images">Изображения интерьера</Label>
+                                    <Input
+                                        id="interior_images"
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={(e) => handleFileChange(e, setInteriorImages)}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="facade_images">Фасады</Label>
+                                    <Input
+                                        id="facade_images"
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={(e) => handleFileChange(e, setFacadeImages)}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="layout_images">Планировки</Label>
+                                    <Input
+                                        id="layout_images"
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={(e) => handleFileChange(e, setLayoutImages)}
+                                    />
                                 </div>
 
                                 <div className="space-y-2">
@@ -550,3 +795,5 @@ export function HouseForm({ house, onSuccess }: HouseFormProps) {
         </Form>
     );
 }
+
+export default HouseForm

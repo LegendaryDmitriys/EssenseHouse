@@ -2,17 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import {BlogPost} from "@/types/blog.ts";
 
-export interface BlogPost {
-    id: string;
-    title: string;
-    description: string;
-    date: string;
-    image: string;
-    category: {
-        name: string;
-    };
-}
 
 interface BlogCardProps {
     post: BlogPost;

@@ -80,14 +80,6 @@ const AdminProjectDetail = () => {
         toast.success("Дом успешно обновлен");
     };
 
-    const handleDownload = (fileUrl: string, fileName: string) => {
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
 
     if (isLoading) {
         return <div className="container mx-auto py-8 text-center">Загрузка...</div>;
@@ -347,10 +339,11 @@ const AdminProjectDetail = () => {
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
-                                                        onClick={() => handleDownload(doc.file, doc.title)}
                                                     >
                                                         <Download className="h-4 w-4 mr-2" />
-                                                        Скачать
+                                                        <a href={`${config.API_URL}${doc.file}`}>
+                                                            Скачать
+                                                        </a>
                                                     </Button>
                                                 </div>
                                             ))}
@@ -377,9 +370,9 @@ const AdminProjectDetail = () => {
                                         <div key={option.id} className="border rounded-md overflow-hidden">
                                             {option.image && (
                                                 <img
-                                                    src={option.image}
+                                                    src={`${config.API_URL}${option.image}`}
                                                     alt={option.title}
-                                                    className="w-full h-32 object-cover"
+                                                    className="w-full h-64 object-cover"
                                                 />
                                             )}
                                             <div className="p-3">

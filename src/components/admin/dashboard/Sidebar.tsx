@@ -53,6 +53,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
             path: '/admin/reviews',
             icon: <Home className="h-5 w-5" />
         },
+        {
+            name: 'Блоги',
+            path: '/admin/blogs',
+            icon: <Home className="h-5 w-5" />
+        },
     ];
 
     const sidebarClasses = cn(

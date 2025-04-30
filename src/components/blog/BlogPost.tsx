@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {useEffect, useState} from "react";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
+import config from "@/api/api.ts";
 
 const BlogPost = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ const BlogPost = () => {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await fetch(`http://192.168.0.103:8000/blogs/${id}`);
+                const response = await fetch(`${config.API_URL}blogs/${id}`);
                 if (!response.ok) {
                     throw new Error(`Ошибка при загрузке статьи`);
                 }
@@ -87,13 +88,13 @@ const BlogPost = () => {
             <div className="container">
                 <div className="max-w-3xl mx-auto">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
                         className="mb-8"
                     >
                         <Link to="/blog">
                             <Button variant="outline" className="mb-8">
-                                <ArrowLeft className="mr-2" />
+                                <ArrowLeft className="mr-2"/>
                                 Назад к списку статей
                             </Button>
                         </Link>
@@ -110,46 +111,11 @@ const BlogPost = () => {
                             <span>{post.category.name}</span>
                         </div>
                         <h1 className="text-4xl font-heading font-bold mb-8">{post.title}</h1>
-                        <div className="prose prose-lg max-w-none">
+                        <div className="prose [&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-5">
                             <p className="text-muted-foreground">{post.description}</p>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                                nisi ut aliquip ex ea commodo consequat.
-                            </p>
-                            <h2>Основные моменты</h2>
-                            <ul>
-                                <li>
-                                    Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                    cillum dolore eu fugiat nulla pariatur
-                                </li>
-                                <li>
-                                    Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                                    qui officia deserunt mollit anim id est laborum
-                                </li>
-                                <li>
-                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                                    accusantium doloremque laudantium
-                                </li>
-                            </ul>
-                            <p>
-                                Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-                                aut fugit, sed quia consequuntur magni dolores eos qui ratione
-                                voluptatem sequi nesciunt.
-                            </p>
-                            <blockquote>
-                                Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet,
-                                consectetur, adipisci velit, sed quia non numquam eius modi tempora
-                                incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
-                            </blockquote>
-                            <p>
-                                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                                blanditiis praesentium voluptatum deleniti atque corrupti quos
-                                dolores et quas molestias excepturi sint occaecati cupiditate non
-                                provident.
-                            </p>
+                            <div dangerouslySetInnerHTML={{__html: post.content}}/>
                         </div>
+
                     </motion.div>
                 </div>
             </div>

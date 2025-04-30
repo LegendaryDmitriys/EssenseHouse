@@ -18,6 +18,7 @@ const UserQuestions: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [sortBy, setSortBy] = useState<string>('date');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const {
         questions,
@@ -39,6 +40,13 @@ const UserQuestions: React.FC = () => {
 
     const filteredQuestions = filterQuestions(questions, search, statusFilter);
     const sortedQuestions = sortQuestions(filteredQuestions, sortBy, sortOrder);
+
+    const handleCreateUserQuestion = (data: Omit<UserQuestion, 'id' | 'created_at' | 'status'>) => {
+        console.log('Создание нового запроса:', data);
+        // Потом можно закрыть диалог
+        setIsDialogOpen(false);
+    };
+
 
     return (
         <Layout>

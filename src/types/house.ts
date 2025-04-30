@@ -29,8 +29,8 @@ export interface Document {
 export interface FinishingOption {
     id: number
     title: string
-    description: string
-    image: string
+    description?: string
+    image?: string
     price_per_sqm: number
 }
 
@@ -121,10 +121,11 @@ export interface HouseFormValues {
     warranty?: string;
     construction_time?: string;
     construction_technology: string;
+    finishing_options: string[];
     category: string;
     description?: string;
 }
 
-
+export type PreviewItem = Image | Document;
 
 export type PaginatedHouses = PaginatedResponse<House>;
