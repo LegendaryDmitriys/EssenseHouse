@@ -18,7 +18,7 @@ import {
     Heart,
     Share2,
     MessageSquare,
-    ShoppingBag,
+    ShoppingBag, FileText,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -407,7 +407,7 @@ const ProjectDetail = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     <div className="lg:col-span-2 space-y-12">
                         <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="w-full bg-white p-1 rounded-xl shadow-sm grid grid-cols-4">
+                            <TabsList className="w-full bg-white p-1 rounded-xl shadow-sm grid grid-cols-5">
                                 <TabsTrigger
                                     value="overview"
                                     className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
@@ -432,6 +432,12 @@ const ProjectDetail = () => {
                                 >
                                     Фасад
                                 </TabsTrigger>
+                                <TabsTrigger
+                                    value="documents"
+                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
+                                >
+                                    Документы
+                                </TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="overview" className="mt-8 space-y-10">
@@ -443,6 +449,43 @@ const ProjectDetail = () => {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ duration: 0.5 }}
                                     >
+
+                                        <Card className="border-none shadow-md overflow-hidden">
+                                            <CardContent className="pt-6">
+                                                {house.images && house.images.length > 0 ? (
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                        {house.images.map((image) => (
+                                                            <div
+                                                                key={image.id}
+                                                                className="relative rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow"
+                                                                onClick={() => {
+                                                                    window.open(`${config.API_URL}${image.image}`, "_blank")
+                                                                }}
+                                                            >
+                                                                <img
+                                                                    src={`${config.API_URL}${image.image}`}
+                                                                    alt={`Изображение ${house.title}`}
+                                                                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <Card className="border-none shadow-md overflow-hidden">
+                                                        <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                            <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                                <FileText className="w-10 h-10 text-zinc-400" />
+                                                            </div>
+                                                            <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Изображения отсутствуют</h3>
+                                                            <p className="text-zinc-500 text-center max-w-md">
+                                                                Фотографии проекта будут добавлены позже.
+                                                            </p>
+                                                        </CardContent>
+                                                    </Card>
+                                                )}
+                                            </CardContent>
+                                        </Card>
+
                                         <Card className="border-none shadow-md overflow-hidden">
                                             <CardHeader className="bg-zinc-50 pb-4">
                                                 <CardTitle className="text-2xl font-bold">Описание проекта</CardTitle>
@@ -606,18 +649,31 @@ const ProjectDetail = () => {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ duration: 0.5 }}
                                     >
-                                        <Card className="border-none shadow-md overflow-hidden">
-                                            <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                    <Map className="w-10 h-10 text-zinc-400" />
-                                                </div>
-                                                <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Планы этажей</h3>
-                                                <p className="text-zinc-500 text-center max-w-md">
-                                                    Планы этажей находятся в разработке. Скоро здесь появятся детальные планировки всех уровней
-                                                    дома.
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                        {house.layout_images && house.layout_images.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {house.layout_images.map((image) => (
+                                                    <Card key={image.id} className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                        <img
+                                                            src={`${config.API_URL}${image.image}`}
+                                                            alt={`Планировка ${house.title}`}
+                                                            className="w-full h-auto object-cover"
+                                                        />
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <Card className="border-none shadow-md overflow-hidden">
+                                                <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                    <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                        <Map className="w-10 h-10 text-zinc-400" />
+                                                    </div>
+                                                    <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Нет данных о планировке</h3>
+                                                    <p className="text-zinc-500 text-center max-w-md">
+                                                        Планы этажей пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             </TabsContent>
@@ -631,18 +687,31 @@ const ProjectDetail = () => {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ duration: 0.5 }}
                                     >
-                                        <Card className="border-none shadow-md overflow-hidden">
-                                            <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                    <Home className="w-10 h-10 text-zinc-400" />
-                                                </div>
-                                                <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Интерьерные решения</h3>
-                                                <p className="text-zinc-500 text-center max-w-md">
-                                                    Интерьерные решения находятся в разработке. Скоро здесь появятся варианты дизайна внутренних
-                                                    помещений.
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                        {house.interior_images && house.interior_images.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {house.interior_images.map((image) => (
+                                                    <Card key={image.id} className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                        <img
+                                                            src={`${config.API_URL}${image.image}`}
+                                                            alt={`Интерьер ${house.title}`}
+                                                            className="w-full h-auto object-cover"
+                                                        />
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <Card className="border-none shadow-md overflow-hidden">
+                                                <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                    <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                        <Home className="w-10 h-10 text-zinc-400" />
+                                                    </div>
+                                                    <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Нет данных об интерьере</h3>
+                                                    <p className="text-zinc-500 text-center max-w-md">
+                                                        Интерьерные решения пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             </TabsContent>
@@ -656,16 +725,90 @@ const ProjectDetail = () => {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ duration: 0.5 }}
                                     >
+                                        {house.facade_images && house.facade_images.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {house.facade_images.map((image) => (
+                                                    <Card key={image.id} className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                        <img
+                                                            src={`${config.API_URL}${image.image}`}
+                                                            alt={`Фасад ${house.title}`}
+                                                            className="w-full h-auto object-cover"
+                                                        />
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <Card className="border-none shadow-md overflow-hidden">
+                                                <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                    <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                        <Building2 className="w-10 h-10 text-zinc-400" />
+                                                    </div>
+                                                    <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Нет данных о фасадах</h3>
+                                                    <p className="text-zinc-500 text-center max-w-md">
+                                                        Фасады пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </TabsContent>
+
+                            <TabsContent value="documents" className="mt-8">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key="documents"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20 }}
+                                        transition={{ duration: 0.5 }}
+                                    >
                                         <Card className="border-none shadow-md overflow-hidden">
-                                            <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                    <Building2 className="w-10 h-10 text-zinc-400" />
-                                                </div>
-                                                <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Варианты фасадов</h3>
-                                                <p className="text-zinc-500 text-center max-w-md">
-                                                    Варианты фасадов находятся в разработке. Скоро здесь появятся различные варианты внешнего
-                                                    оформления дома.
-                                                </p>
+                                            <CardContent className="pt-6">
+                                                {house.documents && house.documents.length > 0 ? (
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        {house.documents.map((doc, index) => (
+                                                            <Card
+                                                                key={index}
+                                                                className="border-none shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                                                            >
+                                                                <CardContent className="p-4 flex items-center justify-between">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                                                            <FileText className="w-5 h-5 text-primary" />
+                                                                        </div>
+                                                                        <div>
+                                                                            <h4 className="font-medium">{doc.title}</h4>
+                                                                            <p className="text-xs text-zinc-500">{doc.file.split('.').pop().toUpperCase()} файл</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        asChild
+                                                                        className="text-primary hover:text-primary"
+                                                                    >
+                                                                        <a href={`${config.API_URL}${doc.file}`} download>
+                                                                            Скачать
+                                                                        </a>
+                                                                    </Button>
+                                                                </CardContent>
+                                                            </Card>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <Card className="border-none shadow-md overflow-hidden">
+                                                        <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                            <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                                <FileText className="w-10 h-10 text-zinc-400" />
+                                                            </div>
+                                                            <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Документы отсутствуют</h3>
+                                                            <p className="text-zinc-500 text-center max-w-md">
+                                                                Техническая документация по проекту будет доступна позже.
+                                                            </p>
+                                                        </CardContent>
+                                                    </Card>
+                                                )}
                                             </CardContent>
                                         </Card>
                                     </motion.div>
@@ -674,7 +817,6 @@ const ProjectDetail = () => {
                         </Tabs>
                     </div>
 
-                    {/* Sidebar */}
                     <div className="space-y-8">
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                             <Card className="border-none shadow-lg overflow-hidden">

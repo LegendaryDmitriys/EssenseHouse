@@ -10,10 +10,9 @@ import QuestionsTable from '@/components/admin/questions/QuestionsTable';
 import QuestionDetails from '@/components/admin/questions/QuestionDetails';
 import QuestionFilters from '@/components/admin/questions/QuestionFilters';
 import QuestionPlaceholder from '@/components/admin/questions/QuestionPlaceholder';
-import AddQuestionButton from '@/components/admin/questions/AddQuestionButton';
-import { NewUserQuestionDialog } from '@/components/admin/questions/NewQuestionDialog';
 
-const UserQuestions: React.FC = () => {
+
+const UserQuestions = () => {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [sortBy, setSortBy] = useState<string>('date');
@@ -40,13 +39,6 @@ const UserQuestions: React.FC = () => {
 
     const filteredQuestions = filterQuestions(questions, search, statusFilter);
     const sortedQuestions = sortQuestions(filteredQuestions, sortBy, sortOrder);
-
-    const handleCreateUserQuestion = (data: Omit<UserQuestion, 'id' | 'created_at' | 'status'>) => {
-        console.log('Создание нового запроса:', data);
-        // Потом можно закрыть диалог
-        setIsDialogOpen(false);
-    };
-
 
     return (
         <Layout>

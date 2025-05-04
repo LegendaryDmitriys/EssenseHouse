@@ -13,7 +13,7 @@ interface QuestionFiltersProps {
     handleSortChange: (value: string) => void;
 }
 
-const QuestionFilters: React.FC<QuestionFiltersProps> = ({
+const QuestionFilters = ({
                                                              search,
                                                              setSearch,
                                                              statusFilter,
@@ -21,7 +21,7 @@ const QuestionFilters: React.FC<QuestionFiltersProps> = ({
                                                              sortBy,
                                                              sortOrder,
                                                              handleSortChange,
-                                                         }) => {
+                                                         }: QuestionFiltersProps) => {
     return (
         <div className="w-full space-y-4">
             <div className="relative w-full sm:w-96">

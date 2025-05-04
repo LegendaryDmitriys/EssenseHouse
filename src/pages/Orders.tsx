@@ -18,7 +18,7 @@ import {FinishingOption, House} from "@/types/house.ts";
 
 
 
-const Orders: React.FC = () => {
+const Orders = () => {
     const [orders, setOrders] = useState<Order[]>([])
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const Orders: React.FC = () => {
             try {
                 const response = await fetch(`${config.API_URL}/orders`)
                 if (!response.ok){
-                    throw new Error(`HTTP error! Status: ${response.status}`)
+                    throw new Error(`HTTP ошибка, Статус: ${response.status}`)
                 }
                 const result = await response.json();
                 setOrders(result)
@@ -231,7 +231,7 @@ const Orders: React.FC = () => {
             }
             const result = await response.json();
 
-            return result.results.map((house: any) => ({
+            return result.results.map((house: House) => ({
                 id: house.id,
                 title: house.title
             }));

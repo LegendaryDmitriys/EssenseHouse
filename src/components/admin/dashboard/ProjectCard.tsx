@@ -15,7 +15,7 @@ export interface ProjectCardProps {
     imageUrl?: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({
+const ProjectCard = ({
                                                      id,
                                                      name,
                                                      location,
@@ -25,7 +25,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                                                      status,
                                                      client,
                                                      imageUrl
-                                                 }) => {
+                                                 }:ProjectCardProps) => {
     const statusColors = {
         active: {
             bg: 'bg-green-100',

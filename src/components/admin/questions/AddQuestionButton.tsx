@@ -8,7 +8,7 @@ interface AddQuestionButtonProps {
     label?: string;
 }
 
-const AddQuestionButton: React.FC<AddQuestionButtonProps> = ({ onClick, label = "Новый вопрос" }) => {
+const AddQuestionButton = ({ onClick, label = "Новый вопрос" }: AddQuestionButtonProps) => {
     return (
         <div className="flex items-center gap-2">
             <Button

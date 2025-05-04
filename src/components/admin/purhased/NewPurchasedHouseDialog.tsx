@@ -16,12 +16,12 @@ interface NewPurchasedHouseDialogProps {
     houses: House[];
 }
 
-const NewPurchasedHouseDialog: React.FC<NewPurchasedHouseDialogProps> = ({
+const NewPurchasedHouseDialog = ({
                                                                              isOpen,
                                                                              onClose,
                                                                              onCreate,
                                                                              houses
-                                                                         }) => {
+                                                                         }:NewPurchasedHouseDialogProps) => {
     const [selectedHouseId, setSelectedHouseId] = useState('');
     const [purchaseDate, setPurchaseDate] = useState('');
     const [buyerName, setBuyerName] = useState('');

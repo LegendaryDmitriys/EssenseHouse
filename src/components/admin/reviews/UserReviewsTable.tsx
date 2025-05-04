@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/pagination";
 import config from "@/api/api.ts";
 import { Review, ReviewPaginatedResponse } from "@/types/review.ts";
+import {formatDate} from "@/lib/utils.ts";
 
 interface UserReviewsTableProps {
     onReviewSelect: (review: Review) => void;
@@ -48,13 +49,6 @@ const UserReviewsTable = ({ onReviewSelect }: UserReviewsTableProps) => {
         },
     });
 
-    const formatDate = (dateString: string) => {
-        try {
-            return format(new Date(dateString), "dd MMMM yyyy, HH:mm", { locale: ru });
-        } catch (error) {
-            return dateString;
-        }
-    };
 
     const renderStatusBadge = (status: Review["status"]) => {
         switch (status) {
@@ -115,6 +109,10 @@ const UserReviewsTable = ({ onReviewSelect }: UserReviewsTableProps) => {
             </Pagination>
         );
     };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [statusFilter]);
 
     return (
         <>

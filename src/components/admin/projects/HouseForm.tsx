@@ -31,6 +31,7 @@ import {
     PreviewItem
 } from "@/types/house";
 import config from "@/api/api.ts";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 interface HouseFormProps {
     house?: House;
@@ -56,31 +57,31 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
             ? {
                 title: house.title,
                 price: house.price.toString(),
-                discount_percentage: house.discount_percentage?.toString(),
+                discount_percentage: house.discount_percentage?.toString() || "",
                 new: house.new,
-                best_seller: house.best_seller,
-                area: house.area.toString(),
-                floors: house.floors.toString(),
-                rooms: house.rooms.toString(),
-                living_area: house.living_area.toString(),
-                kitchen_area: house.kitchen_area?.toString(),
-                bedrooms: house.bedrooms.toString(),
-                bathrooms: house.bathrooms?.toString(),
-                garage: house.garage?.toString(),
-                purpose: house.purpose,
-                warranty: house.warranty?.toString(),
-                construction_time: house.construction_time?.toString(),
+                best_seller: house.best_seller || "__none__",
+                area: house.area.toString() || "",
+                floors: house.floors.toString() || "",
+                rooms: house.rooms.toString() || "",
+                living_area: house.living_area.toString() || "",
+                kitchen_area: house.kitchen_area?.toString() || "",
+                bedrooms: house.bedrooms.toString() || "",
+                bathrooms: house.bathrooms?.toString() || "",
+                garage: house.garage?.toString() || "",
+                purpose: house.purpose || "Частый дом",
+                warranty: house.warranty?.toString() || "",
+                construction_time: house.construction_time?.toString() || "",
                 finishing_options: house.finishing_options_details?.map(f => f.id.toString()) || [],
-                construction_technology: house.construction_technology_details.id.toString(),
-                category: house.category_details.id.toString(),
-                description: house.description,
+                construction_technology: house.construction_technology_details.id.toString() || "",
+                category: house.category_details.id.toString() || "",
+                description: house.description || "",
             }
             : {
                 title: "",
                 price: "",
                 discount_percentage: "",
                 new: true,
-                best_seller: "",
+                best_seller: "__none__",
                 area: "",
                 floors: "",
                 rooms: "",
@@ -163,51 +164,29 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
         },
     });
 
-    // const onSubmit = (values: HouseFormValues) => {
-    //     setIsLoading(true);
-    //
-    //     const formData = new FormData();
-    //
-    //     Object.entries(values).forEach(([key, value]) => {
-    //         if (value === undefined || value === null || value === '') return;
-    //
-    //         if (key === 'finishing_options') {
-    //             if (Array.isArray(value)) {
-    //                 value.forEach(v => {
-    //                     const numValue = parseInt(v);
-    //                     if (!isNaN(numValue)) {
-    //                         formData.append('finishing_options', numValue.toString());
-    //                     }
-    //                 });
-    //             }
-    //         } else {
-    //             formData.append(key, value.toString());
-    //         }
-    //     });
-    //
-    //     images.forEach((image) => {
-    //         formData.append('images', image);
-    //     });
-    //
-    //     documents.forEach((doc) => {
-    //         formData.append('documents', doc);
-    //     });
-    //
-    //     saveMutation.mutate(formData);
-    // };
 
     const onSubmit = (values: HouseFormValues) => {
         setIsLoading(true);
         const formData = new FormData();
 
         Object.entries(values).forEach(([key, value]) => {
-            if (!value) return;
+
+            if (key === "best_seller" && value === "__none__") {
+                formData.append(key, "");
+                return;
+            }
+
+            if (key === "new") {
+                formData.append(key, Boolean(value).toString());
+                return;
+            }
 
             if (key === 'finishing_options') {
                 (value as string[]).forEach(v => formData.append('finishing_options', v));
             } else {
                 formData.append(key, value.toString());
             }
+
         });
 
         images.forEach(file => formData.append('images', file));
@@ -500,31 +479,52 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
                                 )}
                             />
 
-                            {/*<FormField*/}
-                            {/*    control={form.control}*/}
-                            {/*    name="best_seller"*/}
-                            {/*    render={({ field }) => (*/}
-                            {/*        <FormItem>*/}
-                            {/*            <FormLabel>Маркетинговая метка</FormLabel>*/}
-                            {/*            <Select*/}
-                            {/*                onValueChange={field.onChange}*/}
-                            {/*                defaultValue={field.value}*/}
-                            {/*            >*/}
-                            {/*                <FormControl>*/}
-                            {/*                    <SelectTrigger>*/}
-                            {/*                        <SelectValue placeholder="Выберите метку" />*/}
-                            {/*                    </SelectTrigger>*/}
-                            {/*                </FormControl>*/}
-                            {/*                <SelectContent>*/}
-                            {/*                    <SelectItem value="">Нет</SelectItem>*/}
-                            {/*                    <SelectItem value="Акция">Акция</SelectItem>*/}
-                            {/*                    <SelectItem value="Новинка">Новинка</SelectItem>*/}
-                            {/*                </SelectContent>*/}
-                            {/*            </Select>*/}
-                            {/*            <FormMessage />*/}
-                            {/*        </FormItem>*/}
-                            {/*    )}*/}
-                            {/*/>*/}
+                            <FormField
+                                control={form.control}
+                                name="best_seller"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Маркетинговая метка</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Выберите метку" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="__none__">Нет</SelectItem>
+                                                <SelectItem value="Акция">Акция</SelectItem>
+                                                <SelectItem value="Новинка">Новинка</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="new"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <div className="space-y-1 leading-none">
+                                            <FormLabel>Новый дом</FormLabel>
+                                            <p className="text-sm text-muted-foreground">
+                                                Отметьте, если это новый дом
+                                            </p>
+                                        </div>
+                                    </FormItem>
+                                )}
+                            />
 
                             <div className="grid grid-cols-2 gap-4">
                                 <FormField

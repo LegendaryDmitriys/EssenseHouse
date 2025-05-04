@@ -12,7 +12,7 @@ interface PurchasedHousesTableProps {
     selectedId?: number;
 }
 
-const PurchasedHousesTable: React.FC<PurchasedHousesTableProps> = ({ houses, onSelect, selectedId }) => {
+const PurchasedHousesTable = ({ houses, onSelect, selectedId }: PurchasedHousesTableProps) => {
     const renderStatusBadge = (status: ConstructionStatus) => {
         switch(status) {
             case 'not_started':

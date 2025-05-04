@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 
-const TermsOfUse: React.FC = () => {
+const TermsOfUse = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -10,9 +10,9 @@ const TermsOfUse: React.FC = () => {
         <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
             <div className="animate-fade-up">
                 <div className="text-center mb-10">
-          <span className="inline-block bg-essence/10 text-essence font-medium rounded-full px-3 py-1 text-sm mb-3">
-            Документация
-          </span>
+                    <span className="inline-block bg-essence/10 text-essence font-medium rounded-full px-3 py-1 text-sm mb-3">
+                        Документация
+                    </span>
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
                         Условия использования
                     </h1>
@@ -26,9 +26,9 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <div className="glass-card rounded-xl p-6 sm:p-8 mb-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
-                  1
-                </span>
+                                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
+                                  1
+                                </span>
                                 Принятие условий
                             </h2>
                             <p className="mb-4 leading-relaxed">
@@ -46,9 +46,9 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <div className="glass-card rounded-xl p-6 sm:p-8 mb-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
-                  2
-                </span>
+                                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
+                                  2
+                                </span>
                                 Использование сайта
                             </h2>
                             <p className="mb-4 leading-relaxed">
@@ -71,9 +71,9 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <div className="glass-card rounded-xl p-6 sm:p-8 mb-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
-                  3
-                </span>
+                                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
+                                  3
+                                </span>
                                 Интеллектуальная собственность
                             </h2>
                             <p className="mb-4 leading-relaxed">
@@ -93,9 +93,9 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <div className="glass-card rounded-xl p-6 sm:p-8 mb-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
-                  4
-                </span>
+                                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
+                                  4
+                                </span>
                                 Ограничение ответственности
                             </h2>
                             <p className="mb-4 leading-relaxed">
@@ -114,9 +114,9 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <div className="glass-card rounded-xl p-6 sm:p-8 mb-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
-                  5
-                </span>
+                                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
+                                  5
+                                </span>
                                 Применимое право
                             </h2>
                             <p className="leading-relaxed">
@@ -130,9 +130,9 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <div className="glass-card rounded-xl p-6 sm:p-8">
                             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
-                  6
-                </span>
+                                <span className="bg-essence/10 text-essence rounded-full w-8 h-8 inline-flex items-center justify-center mr-3">
+                                  6
+                                </span>
                                 Контактная информация
                             </h2>
                             <p className="mb-4 leading-relaxed">

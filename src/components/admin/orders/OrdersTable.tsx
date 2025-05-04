@@ -11,7 +11,7 @@ interface OrdersTableProps {
     selectedId?: number;
 }
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onSelect, selectedId }) => {
+const OrdersTable = ({ orders, onSelect, selectedId }:OrdersTableProps) => {
     const renderStatusBadge = (status: OrderStatus) => {
         switch(status) {
             case 'pending':

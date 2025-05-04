@@ -7,7 +7,7 @@ const NotFound: React.FC = () => {
 
   useEffect(() => {
     console.error(
-        "404 Error: User attempted to access non-existent route:",
+        "404 Error: Пользователь попытался получить доступ к несуществующему пути:",
         location.pathname
     );
   }, [location.pathname]);
@@ -66,7 +66,6 @@ const NotFound: React.FC = () => {
               </svg>
             </div>
 
-            {/* 404 overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-7xl font-extrabold text-essence/80 animate-pulse-soft">404</span>
             </div>
@@ -74,10 +73,10 @@ const NotFound: React.FC = () => {
 
           <div className="glass-card rounded-2xl shadow-essence p-8 backdrop-blur-md">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Дом не найден
+              Страница не найдена
             </h1>
             <p className="text-gray-600 mb-8">
-              Похоже, вы пытаетесь найти дом, которого не существует. Возможно, он был перемещен или снесен.
+              Похоже, вы пытаетесь найти страницу, которой не существует. Возможно, она был перемещена или удалена.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -102,7 +101,7 @@ const NotFound: React.FC = () => {
           <div className="mt-8 text-gray-500 text-sm animate-fade-in">
             <p>
               Хотите узнать больше о строительстве дома вашей мечты?{" "}
-              <Link to="/" className="text-essence hover:underline">
+              <Link to="/projects" className="text-essence hover:underline">
                 Посетите наш каталог
               </Link>
             </p>

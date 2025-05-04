@@ -4,7 +4,7 @@ import {
     LayoutDashboard,
     HardHat,
     ClipboardList,
-    Home
+    Home, StickyNote, MessageCircleCode, MessageCircleQuestion, MailQuestion
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -14,7 +14,7 @@ interface SidebarProps {
     toggleSidebar: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) => {
+const Sidebar = ({ isMobile, isOpen, toggleSidebar }: SidebarProps) => {
     const location = useLocation();
 
     const sidebarItems = [
@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
         {
             name: 'Проекты',
             path: '/admin/projects',
-            icon: <HardHat className="h-5 w-5" />
+            icon: <Home className="h-5 w-5" />
         },
         {
             name: 'Заказы',
@@ -36,27 +36,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, toggleSidebar }) =>
         {
             name: 'Строительство',
             path: '/admin/construction',
-            icon: <Home className="h-5 w-5" />
+            icon: <HardHat className="h-5 w-5" />
         },
         {
-            name: 'Вопросы пользователей',
+            name: 'Вопросы',
             path: '/admin/user-questions',
-            icon: <Home className="h-5 w-5" />
+            icon: <MessageCircleQuestion className="h-5 w-5" />
         },
         {
-            name: 'Вопросы пользователей о домах',
+            name: 'Вопросы о домах',
             path: '/admin/house-questions',
-            icon: <Home className="h-5 w-5" />
+            icon: <MailQuestion className="h-5 w-5" />
         },
         {
-            name: 'Отзывы пользователей',
+            name: 'Отзывы',
             path: '/admin/reviews',
-            icon: <Home className="h-5 w-5" />
+            icon: <MessageCircleCode className="h-5 w-5" />
         },
         {
             name: 'Блоги',
             path: '/admin/blogs',
-            icon: <Home className="h-5 w-5" />
+            icon: <StickyNote className="h-5 w-5" />
         },
     ];
 

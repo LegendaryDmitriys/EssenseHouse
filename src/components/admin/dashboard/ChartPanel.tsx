@@ -34,7 +34,7 @@ const budgetData = [
     { name: 'Июн', plan: 5.0, actual: 5.2 },
 ];
 
-export const ProjectsChartPanel: React.FC = () => {
+export const ProjectsChartPanel = () => {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">

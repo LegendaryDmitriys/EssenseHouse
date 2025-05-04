@@ -5,7 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-
 export const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("ru-RU", {
     day: "2-digit",
@@ -15,3 +14,4 @@ export const formatDate = (dateString) => {
     minute: "2-digit",
   })
 }
+

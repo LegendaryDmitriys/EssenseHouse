@@ -14,11 +14,11 @@ import PurchasedHouseDetails from "@/components/admin/purhased/PurchasedHouseDet
 import NewPurchasedHouseDialog from "@/components/admin/purhased/NewPurchasedHouseDialog.tsx";
 import config from "@/api/api.ts";
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
-import {Order} from "@/types/orders.ts";
 
 
 
-const PurchasedHouses: React.FC = () => {
+
+const PurchasedHouses = () => {
     const [purchasedHouses, setPurchasedHouses] = useState<PurchasedHouse[]>([])
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ const PurchasedHouses: React.FC = () => {
             try {
                 const response = await fetch(`${config.API_URL}purchase/`)
                 if (!response.ok){
-                    throw new Error(`HTTP error! Status: ${response.status}`)
+                    throw new Error(`HTTP ошибка, Статус ${response.status}`)
                 }
                 const result = await response.json();
                 setPurchasedHouses(result)
@@ -106,11 +106,11 @@ const PurchasedHouses: React.FC = () => {
                 body: JSON.stringify({ construction_status }),
             });
             if (!response.ok) {
-                throw new Error('Failed to update order status');
+                throw new Error('Не удалось обновить статус заказа');
             }
             return await response.json();
         } catch (error) {
-            console.error('Error updating order status:', error);
+            console.error('Ошибка обновления статуса заказа:', error);
             throw error;
         }
     };

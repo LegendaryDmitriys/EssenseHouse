@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
-// import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
+import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
+import {formatDate} from "@/lib/utils.ts";
 
 
 interface PurchasedHouseDetailsProps {
@@ -16,20 +17,11 @@ interface PurchasedHouseDetailsProps {
     onUpdateStatus: (id: number, construction_status: ConstructionStatus) => void;
 }
 
-const PurchasedHouseDetails: React.FC<PurchasedHouseDetailsProps> = ({ house, onUpdateStatus }) => {
+const PurchasedHouseDetails = ({ house, onUpdateStatus }:PurchasedHouseDetailsProps) => {
     const [mapCenter, setMapCenter] = useState<[number, number]>([55.7558, 37.6173]);
     const [mapZoom, setMapZoom] = useState(2);
 
 
-    const formatDate = (dateString?: string) => {
-        if (!dateString) return 'Не указано';
-
-        try {
-            return format(new Date(dateString), 'dd MMMM yyyy', { locale: ru });
-        } catch (error) {
-            return dateString;
-        }
-    };
 
     const getProgressValue = (construction_status: ConstructionStatus) => {
         switch(construction_status) {
@@ -185,25 +177,25 @@ const PurchasedHouseDetails: React.FC<PurchasedHouseDetailsProps> = ({ house, on
                                 Координаты: {house.latitude}, {house.longitude}
                             </div>
                             <div className="bg-gray-100 rounded-md h-[300px]">
-                                {/*<YMaps>*/}
-                                {/*    <Map*/}
-                                {/*        defaultState={{*/}
-                                {/*            center: mapCenter,*/}
-                                {/*            zoom: mapZoom,*/}
-                                {/*            controls: []*/}
-                                {/*        }}*/}
-                                {/*        width="100%"*/}
-                                {/*        height="100%"*/}
-                                {/*        options={{*/}
-                                {/*            suppressMapOpenBlock: true*/}
-                                {/*        }}*/}
-                                {/*    >*/}
-                                {/*        <ZoomControl options={{position: {right: 10, top: 10}}}/>*/}
-                                {/*        <Placemark*/}
-                                {/*            geometry={[house.latitude, house.longitude]}*/}
-                                {/*        />*/}
-                                {/*    </Map>*/}
-                                {/*</YMaps>*/}
+                                <YMaps>
+                                    <Map
+                                        defaultState={{
+                                            center: mapCenter,
+                                            zoom: mapZoom,
+                                            controls: []
+                                        }}
+                                        width="100%"
+                                        height="100%"
+                                        options={{
+                                            suppressMapOpenBlock: true
+                                        }}
+                                    >
+                                        <ZoomControl options={{position: {right: 10, top: 10}}}/>
+                                        <Placemark
+                                            geometry={[house.latitude, house.longitude]}
+                                        />
+                                    </Map>
+                                </YMaps>
                             </div>
                         </div>
                     )}

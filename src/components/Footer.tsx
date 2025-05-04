@@ -4,7 +4,7 @@ import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-const Footer: React.FC = () => {
+const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (

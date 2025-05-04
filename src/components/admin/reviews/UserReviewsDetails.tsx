@@ -5,6 +5,7 @@ import { Review, ReviewFile } from "@/types/review.ts";
 import {Badge} from "@/components/ui/badge.tsx";
 import {Progress} from "@/components/ui/progress.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {formatDate} from "@/lib/utils.ts";
 
 interface UserReviewsDetailsProps {
     review: Review;
@@ -13,14 +14,6 @@ interface UserReviewsDetailsProps {
 }
 
 const UserReviewsDetails = ({ review, onStatusChange, onDelete }: UserReviewsDetailsProps) => {
-    const formatDate = (dateString: string) => {
-        try {
-            return format(new Date(dateString), "dd MMMM yyyy, HH:mm", { locale: ru });
-        } catch (error) {
-            return dateString;
-        }
-    };
-
     const getProgressValue = (status: Review["status"]) => {
         switch (status) {
             case "pending":

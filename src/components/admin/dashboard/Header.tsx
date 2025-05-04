@@ -9,14 +9,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from '@/lib/utils';
 
 interface HeaderProps {
     toggleSidebar: () => void;
     sidebarOpen: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, sidebarOpen }) => {
+const Header = ({ toggleSidebar, sidebarOpen } :HeaderProps) => {
     return (
         <header className="bg-white border-b border-gray-200 sticky top-0 z-20">
             <div className="px-4 md:px-6 py-4 flex items-center justify-between">

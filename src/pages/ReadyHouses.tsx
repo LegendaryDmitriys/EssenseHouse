@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import { MapPin, Home, Calendar, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-// import { YMaps, Map, Placemark, ZoomControl } from '@pbe/react-yandex-maps';
+import { YMaps, Map, Placemark, ZoomControl } from '@pbe/react-yandex-maps';
 import config from "@/api/api.ts";
 import {House, PurchasedHouse} from "@/types/house.ts";
 
 
-const ReadyHouses: React.FC = () => {
+const ReadyHouses = () => {
     const [readyHouses, setReadyHouses] = useState<PurchasedHouse[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -63,9 +63,9 @@ const ReadyHouses: React.FC = () => {
                         transition={{ duration: 0.5 }}
                         className="text-center mb-16"
                     >
-            <span className="inline-block bg-primary/10 text-primary font-medium rounded-full px-3 py-1 text-sm mb-5">
-              Наши проекты
-            </span>
+                        <span className="inline-block bg-primary/10 text-primary font-medium rounded-full px-3 py-1 text-sm mb-5">
+                          Наши проекты
+                        </span>
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-bold text-secondary mb-6 tracking-tight">
                             Готовые дома
                         </h1>
@@ -129,44 +129,44 @@ const ReadyHouses: React.FC = () => {
                             className="md:col-span-2 relative"
                         >
                             <div className="w-full h-[600px] rounded-xl overflow-hidden shadow-essence-lg">
-                                {/*<YMaps>*/}
-                                {/*    <Map*/}
-                                {/*        defaultState={{*/}
-                                {/*            center: mapCenter,*/}
-                                {/*            zoom: mapZoom,*/}
-                                {/*            controls: []*/}
-                                {/*        }}*/}
-                                {/*        state={{*/}
-                                {/*            center: mapCenter,*/}
-                                {/*            zoom: mapZoom*/}
-                                {/*        }}*/}
-                                {/*        width="100%"*/}
-                                {/*        height="100%"*/}
-                                {/*        options={{*/}
-                                {/*            suppressMapOpenBlock: true*/}
-                                {/*        }}*/}
-                                {/*    >*/}
-                                {/*        <ZoomControl options={{ position: { right: 10, top: 10 } }} />*/}
-                                {/*        {readyHouses.map((house) => (*/}
-                                {/*            <Placemark*/}
-                                {/*                key={house.id}*/}
-                                {/*                geometry={[house.latitude, house.longitude]}*/}
-                                {/*                properties={{*/}
-                                {/*                    balloonContentHeader: house.house.title,*/}
-                                {/*                    balloonContentBody: house.address,*/}
-                                {/*                    hintContent: house.house.title*/}
-                                {/*                }}*/}
-                                {/*                options={{*/}
-                                {/*                    preset: selectedHouse?.id === house.id*/}
-                                {/*                        ? 'islands#redHomeIcon'*/}
-                                {/*                        : 'islands#blueHomeIcon',*/}
-                                {/*                    iconColor: selectedHouse?.id === house.id ? '#ef4444' : '#3b82f6'*/}
-                                {/*                }}*/}
-                                {/*                onClick={() => handleSelectHouse(house)}*/}
-                                {/*            />*/}
-                                {/*        ))}*/}
-                                {/*    </Map>*/}
-                                {/*</YMaps>*/}
+                                <YMaps>
+                                    <Map
+                                        defaultState={{
+                                            center: mapCenter,
+                                            zoom: mapZoom,
+                                            controls: []
+                                        }}
+                                        state={{
+                                            center: mapCenter,
+                                            zoom: mapZoom
+                                        }}
+                                        width="100%"
+                                        height="100%"
+                                        options={{
+                                            suppressMapOpenBlock: true
+                                        }}
+                                    >
+                                        <ZoomControl options={{ position: { right: 10, top: 10 } }} />
+                                        {readyHouses.map((house) => (
+                                            <Placemark
+                                                key={house.id}
+                                                geometry={[house.latitude, house.longitude]}
+                                                properties={{
+                                                    balloonContentHeader: house.house.title,
+                                                    balloonContentBody: house.address,
+                                                    hintContent: house.house.title
+                                                }}
+                                                options={{
+                                                    preset: selectedHouse?.id === house.id
+                                                        ? 'islands#redHomeIcon'
+                                                        : 'islands#blueHomeIcon',
+                                                    iconColor: selectedHouse?.id === house.id ? '#ef4444' : '#3b82f6'
+                                                }}
+                                                onClick={() => handleSelectHouse(house)}
+                                            />
+                                        ))}
+                                    </Map>
+                                </YMaps>
                             </div>
 
                             {selectedHouse && (

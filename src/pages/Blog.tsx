@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import BlogCard, { BlogPost } from "@/components/blog/BlogCard";
+import BlogCard from "@/components/blog/BlogCard";
 import { motion } from "framer-motion";
 import {useEffect, useState} from "react";
 import config from "@/api/api.ts";
@@ -15,7 +15,7 @@ const Blog = () => {
             try {
                 const response = await fetch(`${config.API_URL}blogs/`)
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`)
+                    throw new Error(`HTTP ошибка, Статус: ${response.status}`)
                 }
                 const result = await response.json();
                 setBlogs(result)

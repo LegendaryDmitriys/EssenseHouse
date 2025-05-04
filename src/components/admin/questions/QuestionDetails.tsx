@@ -14,11 +14,11 @@ interface QuestionDetailsProps {
     type: 'house' | 'user';
 }
 
-const QuestionDetails: React.FC<QuestionDetailsProps> = ({
+const QuestionDetails = ({
                                                              question,
                                                              onUpdateStatus,
                                                              type
-                                                         }) => {
+                                                         }:QuestionDetailsProps) => {
     const [answerText, setAnswerText] = useState('');
     const { toast } = useToast();
 

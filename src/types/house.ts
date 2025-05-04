@@ -1,5 +1,4 @@
 import {PaginatedResponse} from "@/types/paginated.ts";
-import {Review} from "@/types/review.ts";
 
 export interface HouseCategory {
     id: number

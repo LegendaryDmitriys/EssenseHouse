@@ -18,13 +18,13 @@ interface NewOrderDialogProps {
     finishing_option: FinishingOption[];
 }
 
-const NewOrderDialog: React.FC<NewOrderDialogProps> = ({
+const NewOrderDialog = ({
                                                            isOpen,
                                                            onClose,
                                                            onCreate,
                                                            houses,
                                                            finishing_option
-                                                       }) => {
+                                                       }:NewOrderDialogProps) => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');

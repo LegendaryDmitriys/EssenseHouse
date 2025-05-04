@@ -1,10 +1,8 @@
-import {motion} from "framer-motion";
 import {Button} from "@/components/ui/button.tsx";
 import React, {useEffect, useState} from "react";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Quote, Star} from "lucide-react";
 import {Link} from "react-router-dom";
-import {id} from "date-fns/locale";
 import config from "@/api/api.ts";
 import { CircleUser } from 'lucide-react';
 
@@ -19,7 +17,7 @@ const TestimonialsSection = () => {
             {
                const response = await fetch(`${config.API_URL}reviews?limit=3`);
                if (!response.ok){
-                   throw new Error(`Http error! Status: ${response.status}`);
+                   throw new Error(`HTTP ошибка, Статус: ${response.status}`);
                }
                const result = await response.json();
                setReviews(result.slice(0, 3));

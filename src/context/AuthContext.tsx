@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(Object.values(error).flat().join(', ') || 'Registration failed');
+                throw new Error(Object.values(error).flat().join(', ') || 'Ошибка регистрации');
             }
 
             const data = await response.json();

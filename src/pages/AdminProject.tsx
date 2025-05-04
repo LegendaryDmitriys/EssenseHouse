@@ -8,21 +8,13 @@ import {
     Search,
     Edit,
     Trash2,
-    FileText,
     ChevronRight
 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+
 import {
     Pagination,
     PaginationContent,
@@ -31,13 +23,6 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { House, PaginatedHouses } from "@/types/house";
 import Layout from "@/components/admin/dashboard/Layout.tsx";
 import config from "@/api/api.ts";
@@ -174,15 +159,6 @@ const AdminProjects = () => {
                                 onChange={handleSearchChange}
                             />
                         </div>
-                        <Select defaultValue="priceAsc">
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Сортировка" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="priceAsc">По возрастанию цены</SelectItem>
-                                <SelectItem value="priceDesc">По убыванию цены</SelectItem>
-                            </SelectContent>
-                        </Select>
                     </div>
 
                     {isLoading ? (
@@ -253,11 +229,6 @@ const AdminProjects = () => {
                                                 </Button>
                                             </Link>
                                             <div className="flex gap-2">
-                                                <Link to={`/admin/projects/${house.id}`}>
-                                                    <Button size="icon" variant="ghost">
-                                                        <Edit className="h-4 w-4" />
-                                                    </Button>
-                                                </Link>
                                                 <Button
                                                     size="icon"
                                                     variant="ghost"

@@ -13,7 +13,7 @@ import QuestionFilters from '@/components/admin/questions/QuestionFilters';
 import QuestionPlaceholder from '@/components/admin/questions/QuestionPlaceholder';
 
 
-const HouseQuestions: React.FC = () => {
+const HouseQuestions = () => {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [sortBy, setSortBy] = useState<string>('date');

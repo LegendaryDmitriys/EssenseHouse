@@ -4,7 +4,7 @@ import { Menu, X, Home, FileText, User, MessageCircle, Phone, Info, ChevronDown 
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();

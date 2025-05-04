@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Building, CheckCheck, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -20,7 +19,7 @@ interface ClientsListProps {
     clients: Client[];
 }
 
-const ClientsList: React.FC<ClientsListProps> = ({ clients }) => {
+const ClientsList = ({ clients }: ClientsListProps) => {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">

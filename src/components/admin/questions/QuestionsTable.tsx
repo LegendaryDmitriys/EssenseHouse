@@ -1,7 +1,8 @@
 import React from 'react';
 import { HelpCircle, CheckCircle, Clock, XCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+
 import { HouseQuestion, QuestionStatus, UserQuestion } from '@/types/question';
+import {formatDate} from "@/lib/utils.ts";
 
 interface QuestionsTableProps {
     questions: (HouseQuestion | UserQuestion)[];
@@ -10,22 +11,12 @@ interface QuestionsTableProps {
     type: 'house' | 'user';
 }
 
-const QuestionsTable: React.FC<QuestionsTableProps> = ({
-                                                           questions,
-                                                           onSelect,
-                                                           selectedId,
-                                                           type
-                                                       }) => {
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).format(date);
-    };
+const QuestionsTable = ({
+                            questions,
+                            onSelect,
+                            selectedId,
+                            type,
+                        }: QuestionsTableProps) => {
 
     const getStatusIcon = (status: QuestionStatus) => {
         switch(status) {
@@ -107,8 +98,8 @@ const QuestionsTable: React.FC<QuestionsTableProps> = ({
                                 <div className="flex items-center">
                                     {getStatusIcon(question.status)}
                                     <span className="ml-1 text-sm text-gray-700">
-                      {getStatusText(question.status)}
-                    </span>
+                                        {getStatusText(question.status)}
+                                    </span>
                                 </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
