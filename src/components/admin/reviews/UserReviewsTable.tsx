@@ -1,7 +1,5 @@
 import {useEffect, useState} from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

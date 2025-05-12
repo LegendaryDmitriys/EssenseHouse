@@ -24,7 +24,7 @@ const ReadyHouses = () => {
             try {
                 const response = await fetch(`${config.API_URL}purchase/?construction_status=completed/`);
                 if (!response.ok){
-                    throw new Error(`Http error! Status: ${response.status}`);
+                    throw new Error(`HTTP ошибка, Статус: ${response.status}`);
                 }
                 const result =  await response.json();
                 console.log(result)

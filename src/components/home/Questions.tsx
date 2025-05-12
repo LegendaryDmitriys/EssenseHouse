@@ -4,6 +4,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+import React, {useState} from "react";
+import ContactForm from "@/components/home/ContactForm.tsx";
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -20,6 +22,7 @@ const staggerChildren = {
 }
 
 const Questions = () => {
+    const [isContactVisible, setIsContactVisible] = useState(false);
     const faqItems = [
         {
             question: "Сколько времени займет строительство дома?",
@@ -55,7 +58,6 @@ const Questions = () => {
 
     return (
         <section className="py-24 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
-            {/* Decorative elements */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0" />
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
             <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
@@ -128,18 +130,16 @@ const Questions = () => {
                         <Button
                             size="lg"
                             className="rounded-full px-8 font-medium"
-                            onClick={() =>
-                                toast.success("Наши специалисты свяжутся с вами в ближайшее время!", {
-                                    description: "Спасибо за обращение",
-                                    icon: <MessageCircle className="w-4 h-4" />,
-                                })
-                            }
+                            onClick={() => setIsContactVisible(true)}
                         >
                             Задать вопрос
                         </Button>
                     </div>
                 </motion.div>
             </div>
+            {isContactVisible && (
+                <ContactForm onIsContactVisible={setIsContactVisible} />
+            )}
         </section>
     )
 }

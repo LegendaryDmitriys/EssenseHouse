@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EssenseHouse</title>
   <meta name="description" content="Построим дом вашей мечты под ключ. Современные технологии, качественные материалы, профессиональный подход." />
-  <meta name="author" content="Lovable" />
-  <meta property="og:image" content="/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#B5A88C">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Cozy Homes">
+  <meta name="apple-mobile-web-app-title" content="Essense House">
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 </head>
 <body>
@@ -28,16 +28,11 @@
 </script>
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-              .then((registration) => {
-                console.log('ServiceWorker registration successful');
-              })
-              .catch((err) => {
-                console.log('ServiceWorker registration failed: ', err);
-              });
-    });
+    navigator.serviceWorker.register('/sw.js')
+            .then(() => console.log('✅ Service Worker зарегистрирован'))
+            .catch(err => console.error('💥 Ошибка при регистрации SW', err));
   }
 </script>
+
 </body>
 </html>

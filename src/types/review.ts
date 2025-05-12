@@ -14,6 +14,7 @@ export interface Review {
     review: string;
     date: string;
     rating: number;
+    image: string;
     status: "published" | "pending" | "rejected";
     files: ReviewFile[];
 }

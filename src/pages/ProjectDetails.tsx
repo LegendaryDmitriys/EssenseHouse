@@ -16,7 +16,6 @@ import {
     BarcodeIcon as Garage,
     Phone,
     Heart,
-    Share2,
     MessageSquare,
     ShoppingBag, FileText,
 } from "lucide-react"
@@ -41,6 +40,8 @@ import type { House } from "@/types/house"
 import config from "@/api/api"
 import {useAuth} from "@/context/AuthContext.tsx";
 import {cn} from "@/lib/utils.ts";
+import {useOfflineQueue} from "@/hooks/useOfflineHandler.ts";
+import {toast} from "sonner";
 
 const ProjectDetail = () => {
     const { id } = useParams<{ id: string }>()
@@ -51,6 +52,9 @@ const ProjectDetail = () => {
     const [error, setError] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<string>("overview")
     const [isImageExpanded, setIsImageExpanded] = useState(false)
+    const { sendRequest } = useOfflineQueue((message) => {
+        toast.info(message);
+    });
 
     const isFavorite = id ? favorites.includes(id) : false;
 
@@ -63,7 +67,6 @@ const ProjectDetail = () => {
             addToFavorites(id);
         }
     };
-
 
     const [orderForm, setOrderForm] = useState({
         name: "",
@@ -94,7 +97,7 @@ const ProjectDetail = () => {
                     setLoading(true)
                     const response = await fetch(`${config.API_URL}houses/${id}/`)
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`)
+                        throw new Error(`HTTP ошибка! Статус: ${response.status}`)
                     }
                     const data = await response.json()
                     setHouse(data)
@@ -141,14 +144,10 @@ const ProjectDetail = () => {
             formData.append("message", orderForm.message)
             formData.append("house", house.id.toString())
 
-            const response = await fetch(`${config.API_URL}orders/`, {
-                method: "POST",
-                body: formData,
-            })
+            const payload = Object.fromEntries(formData);
 
-            if (!response.ok) {
-                throw new Error("Failed to submit order")
-            }
+            const success = await sendRequest(`${config.API_URL}orders/`, payload);
+
 
             setOrderForm({
                 name: "",
@@ -163,11 +162,15 @@ const ProjectDetail = () => {
 
 
         } catch (error) {
-            console.error("Error submitting order:", error)
+            console.error("Ошибка при отправки заказа:", error)
         } finally {
             setOrderSubmitting(false)
         }
     }
+
+
+
+
 
     const handleQuestionSubmit = async (e) => {
         e.preventDefault()
@@ -185,14 +188,9 @@ const ProjectDetail = () => {
             formData.append("house", house.id.toString())
 
 
-            const response = await fetch(`${config.API_URL}user-questions/house/`, {
-                method: "POST",
-                body: formData,
-            })
+            const payload = Object.fromEntries(formData);
 
-            if (!response.ok) {
-                throw new Error("Failed to submit question")
-            }
+            const success = await sendRequest(`${config.API_URL}house-questions/`, payload);
 
 
             setQuestionForm({
@@ -206,13 +204,17 @@ const ProjectDetail = () => {
             setQuestionDialogOpen(false)
 
 
-
         } catch (error) {
-            console.error("Error submitting question:", error)
+            console.error("Ошибка при отправки вопроса:", error)
         } finally {
             setQuestionSubmitting(false)
         }
     }
+
+
+
+
+
 
     if (loading) {
         return (
@@ -352,7 +354,6 @@ const ProjectDetail = () => {
                 </div>
             </div>
 
-            {/* Key Features Bar */}
             <div className="bg-white border-b border-zinc-200 sticky top-0 z-10 shadow-sm">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between overflow-x-auto py-4 gap-8">
@@ -402,7 +403,6 @@ const ProjectDetail = () => {
                 </div>
             </div>
 
-            {/* Main Content */}
             <div className="container mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     <div className="lg:col-span-2 space-y-12">

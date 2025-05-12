@@ -20,7 +20,7 @@ export function useQuestions(type: QuestionType = 'house') {
 
             const response = await fetch(`${config.API_URL}${questionType}-questions/`);
             if (!response.ok) {
-                throw new Error(`Failed to fetch ${questionType} questions`);
+                throw new Error(`Ошибка при получении ${questionType} вопроса`);
             }
             const data = await response.json();
             setQuestions(data);
@@ -37,41 +37,7 @@ export function useQuestions(type: QuestionType = 'house') {
     };
 
 
-    console.log(questions);
 
-    const createQuestion = async (
-        questionType: 'house' | 'user',
-        questionData: Omit<HouseQuestion | UserQuestion, 'id' | 'created_at' | 'status'>
-    ) => {
-        try {
-            const response = await fetch(`${config.API_URL}${questionType}-questions/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(questionData),
-            });
-            if (!response.ok) {
-                throw new Error(`Failed to create ${questionType} question`);
-            }
-            const newQuestion = await response.json();
-            setQuestions((prevQuestions) => [newQuestion, ...prevQuestions]);
-
-            toast({
-                title: "Успешно",
-                description: "Вопрос успешно создан",
-            });
-
-            return newQuestion;
-        } catch (error) {
-            toast({
-                title: "Ошибка",
-                description: "Не удалось создать вопрос",
-                variant: "destructive",
-            });
-            throw error;
-        }
-    };
 
     const updateQuestionStatus = async (
         questionType: 'house' | 'user',
@@ -93,7 +59,7 @@ export function useQuestions(type: QuestionType = 'house') {
                 body: JSON.stringify(updateData),
             });
             if (!response.ok) {
-                throw new Error(`Failed to update ${questionType} question status`);
+                throw new Error(`Ошибка при обновлении ${questionType} статуса вопроса`);
             }
             const updatedQuestion = await response.json();
 

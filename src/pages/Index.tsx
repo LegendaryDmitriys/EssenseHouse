@@ -1,11 +1,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import {Building2, CheckCircle2, Clock4, Wrench, Phone, Play} from "lucide-react";
+import { Phone } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 import BuildTimeline from "@/components/home/BuildTimeline";
 import CostCalculator from "@/components/home/CostCalculator";
@@ -24,7 +21,6 @@ const Index = () => {
   const [showMainContent, setShowMainContent] = useState(false);
   const { scrollY } = useScroll();
   const heroRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
 
   const backgroundY = useTransform(scrollY, [0, 1000], [0, 300]);
@@ -42,11 +38,6 @@ const Index = () => {
   const servicesY = useTransform(scrollY, [0, 500], [0, 0]);
 
   const scale = useTransform(scrollY, [0, 800], [1, 1.2]);
-
-  const handleContactClick = () => {
-    setIsContactVisible(true);
-    toast("Форма обратной связи открыта");
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -191,19 +182,20 @@ const Index = () => {
         </motion.div>
 
 
+        <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="fixed bottom-8 right-8 bg-[#9b87f5] text-white p-4 rounded-full shadow-lg hover:bg-[#7E69AB] z-40"
+            onClick={() => setIsContactVisible(true)}
+        >
+          <Phone className="w-6 h-6" />
+        </motion.button>
+
+
         {isContactVisible && (
             <ContactForm onIsContactVisible={setIsContactVisible} />
         )}
-
-        <motion.button
-            initial={{opacity: 0}}
-            animate={{opacity: 1}}
-            transition={{delay: 1}}
-            className="fixed bottom-8 right-8 bg-[#9b87f5] text-white p-4 rounded-full shadow-lg hover:bg-[#7E69AB] z-40"
-            onClick={handleContactClick}
-        >
-          <Phone className="w-6 h-6"/>
-        </motion.button>
       </div>
 
 

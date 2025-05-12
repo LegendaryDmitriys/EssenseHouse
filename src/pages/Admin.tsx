@@ -1,5 +1,4 @@
 import React from 'react';
-import { Building, Calendar, CheckCircle2, CreditCard, MessageCircle, Truck, Users } from 'lucide-react';
 import Layout from "@/components/admin/dashboard/Layout.tsx";
 import {BudgetChartPanel, ProjectsChartPanel} from "@/components/admin/dashboard/ChartPanel.tsx";
 

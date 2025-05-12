@@ -1,6 +1,4 @@
 import { CheckCircle2, Download, FileImage, XCircle } from "lucide-react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 import { Review, ReviewFile } from "@/types/review.ts";
 import {Badge} from "@/components/ui/badge.tsx";
 import {Progress} from "@/components/ui/progress.tsx";

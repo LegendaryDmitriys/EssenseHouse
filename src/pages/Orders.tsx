@@ -65,9 +65,7 @@ const Orders = () => {
                     fetchFinishingOptions()
                 ]);
                 setHouses(fetchedHouses);
-                console.log('Fetched houses:', fetchedHouses);
                 setFinishingOptions(fetchedFinishingOptions);
-                console.log('Fetched options:', fetchedFinishingOptions);
             } catch (error) {
                 console.error('Ошибка при загрузке данных:', error);
             } finally {
@@ -133,7 +131,7 @@ const Orders = () => {
 
     const createOrder = async (orderData: Omit<Order, 'id' | 'data_created' | 'status'>): Promise<Order> => {
         try {
-            const response = await fetch(`${config.API_URL}/orders/`, {
+            const response = await fetch(`${config.API_URL}orders/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -287,7 +285,6 @@ const Orders = () => {
                             </div>
                         </div>
 
-                        {/* Filters */}
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                             <div>
                                 <span className="text-sm font-medium text-gray-500 mr-2">Статус:</span>

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import config from "@/api/api.ts";
-import { Review } from "@/pages/Testimonials.tsx";
+import {Review} from "@/types/review.ts";
 
 
 

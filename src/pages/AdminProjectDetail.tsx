@@ -126,7 +126,6 @@ const AdminProjectDetail = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Left column - Main Info */}
                 <div className="md:col-span-2">
                     <Card className="mb-6">
                         <CardHeader>

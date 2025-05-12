@@ -15,25 +15,11 @@ import {
     PaginationPrevious
 } from "@/components/ui/pagination"
 import {cn} from "@/lib/utils.ts";
+import {Review, ReviewFile} from "@/types/review.ts";
 
-interface FileData {
-    file: string
-    file_type: string
-    file_name: string
-    file_size: number
-}
 
-export interface Review {
-    id : number
-    name: string
-    review: string
-    rating: number
-    image: string
-    date: string
-    files?: FileData[]
-}
 
-const getFileIcon = (file: FileData) => {
+const getFileIcon = (file: ReviewFile) => {
     const fileType = file.file_type
     if (fileType.includes("image")) return <FileImage className="w-6 h-6" />
     if (fileType.includes("video")) return <FileVideo className="w-6 h-6" />
@@ -49,7 +35,7 @@ const getFileIcon = (file: FileData) => {
     return <File className="w-6 h-6" />
 }
 
-const downloadFile = (file: FileData) => {
+const downloadFile = (file: ReviewFile) => {
     const url = file.file
     const a = document.createElement("a")
     a.href = url
