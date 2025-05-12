@@ -14,6 +14,7 @@ import TestimonialsSection from "@/components/home/TestimonialsSection.tsx";
 import HowBuild from "@/components/home/HowBuild.tsx";
 import AdvantagesSection from "@/components/home/AdvantagesSection.tsx";
 import ContactForm from "@/components/home/ContactForm.tsx";
+import LazyComponent from "@/components/lazy/LazyComponent.tsx";
 
 const Index = () => {
   const [isContactVisible, setIsContactVisible] = useState(false);
@@ -165,7 +166,9 @@ const Index = () => {
 
           <CompanyHistory/>
 
-          <ProjectsShowcase/>
+          <LazyComponent>
+            <ProjectsShowcase />
+          </LazyComponent>
 
           <TeamSection/>
 
@@ -175,7 +178,9 @@ const Index = () => {
 
           <HowBuild/>
 
-          <TestimonialsSection/>
+          <LazyComponent>
+            <TestimonialsSection/>
+          </LazyComponent>
 
           <Questions/>
 
