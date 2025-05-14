@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 import { generateSW } from 'workbox-build'
 
 function workboxPlugin() {
@@ -12,6 +11,7 @@ function workboxPlugin() {
         swDest: 'dist/sw.js',
         globDirectory: 'dist',
         globPatterns: ['**/*.{html,js,css,png,svg,json,ico}'],
+        importScripts: ['/sw-custom.js'],
         runtimeCaching: [
           {
             urlPattern: /http:\/\/192\.168\.0\.103:8000\/.*$/,
@@ -63,9 +63,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
-    workboxPlugin()
+    workboxPlugin(),
   ].filter(Boolean),
   resolve: {
     alias: {
