@@ -1,3 +1,5 @@
+import {PaginatedResponse} from "@/types/paginated.ts";
+import {House} from "@/types/house.ts";
 
 export type BlogStatus = 'rejected' | 'pending' | 'published';
 
@@ -29,3 +31,4 @@ export interface BlogPost {
     };
 }
 
+export type PaginatedBlogs = PaginatedResponse<Blog>;
