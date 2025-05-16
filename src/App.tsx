@@ -34,6 +34,7 @@ import AdminProjectDetail from "@/pages/AdminProjectDetail.tsx";
 import BlogsAdmin from "@/pages/BlogsAdmin.tsx";
 
 import { initPush } from "./pushNotifications";
+import AdminNotifications from "@/pages/AdminNotifications.tsx";
 
 const queryClient = new QueryClient();
 
@@ -156,6 +157,16 @@ const App = () => {
                                         </ProtectedRoute>
                                     }
                                 />
+
+                                <Route
+                                    path="/admin/notifications"
+                                    element={
+                                        <ProtectedRoute>
+                                            <AdminNotifications />
+                                        </ProtectedRoute>
+                                    }
+                                />
+
                             </Routes>
                         </main>
                         <Footer />

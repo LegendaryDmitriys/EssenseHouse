@@ -4,7 +4,7 @@ import {
     LayoutDashboard,
     HardHat,
     ClipboardList,
-    Home, StickyNote, MessageCircleCode, MessageCircleQuestion, MailQuestion
+    Home, StickyNote, MessageCircleCode, MessageCircleQuestion, MailQuestion, Bell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -58,6 +58,11 @@ const Sidebar = ({ isMobile, isOpen, toggleSidebar }: SidebarProps) => {
             path: '/admin/blogs',
             icon: <StickyNote className="h-5 w-5" />
         },
+        {
+            name: 'Уведомления',
+            path: '/admin/notifications',
+            icon: <Bell className='h-5 w-5' />
+        }
     ];
 
     const sidebarClasses = cn(

@@ -162,21 +162,33 @@ const Index = () => {
             animate={{opacity: showMainContent ? 1 : 0}}
             transition={{duration: 0.8}}
         >
-          <AdvantagesSection/>
+          <LazyComponent>
+            <AdvantagesSection />
+          </LazyComponent>
 
-          <CompanyHistory/>
+          <LazyComponent>
+            <CompanyHistory />
+          </LazyComponent>
 
           <LazyComponent>
             <ProjectsShowcase />
           </LazyComponent>
 
-          <TeamSection/>
+          <LazyComponent>
+            <TeamSection/>
+          </LazyComponent>
 
-          <BuildTimeline/>
+          <LazyComponent>
+            <BuildTimeline/>
+          </LazyComponent>
 
-          <CostCalculator/>
+          <LazyComponent>
+            <CostCalculator/>
+          </LazyComponent>
 
-          <HowBuild/>
+          <LazyComponent>
+            <HowBuild/>
+          </LazyComponent>
 
           <LazyComponent>
             <TestimonialsSection/>

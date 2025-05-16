@@ -10,25 +10,25 @@ const Footer = () => {
     return (
         <footer className="bg-background border-t border-accent/20">
             <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div className="animate-fade-up" style={{ animationDelay: "100ms" }}>
                         <h3 className="font-heading text-lg font-semibold mb-4 text-secondary">Контакты</h3>
                         <ul className="space-y-3">
                             <li className="flex items-center gap-2 group">
                                 <Phone className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
-                                <a href="tel:+78001234567" className="text-muted-foreground hover:text-primary transition-colors">
-                                    8 (800) 123-45-67
+                                <a href="tel:79991234567" className="text-muted-foreground hover:text-primary transition-colors">
+                                    +7 (999) 123-45-67
                                 </a>
                             </li>
                             <li className="flex items-center gap-2 group">
                                 <Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
-                                <a href="mailto:info@example.com" className="text-muted-foreground hover:text-primary transition-colors">
-                                    info@example.com
+                                <a href="mailto:info@essense.com" className="text-muted-foreground hover:text-primary transition-colors">
+                                    info@essense.com
                                 </a>
                             </li>
                             <li className="flex items-start gap-2 group">
                                 <MapPin className="w-4 h-4 mt-1 text-primary group-hover:scale-110 transition-transform" />
-                                <span className="text-muted-foreground">г. Москва, ул. Строителей, д. 1</span>
+                                <span className="text-muted-foreground">г. Великий Новгород, ул. Германа, д. 1</span>
                             </li>
                         </ul>
                     </div>
@@ -97,20 +97,6 @@ const Footer = () => {
                                 <Linkedin className="w-5 h-5" />
                             </a>
                         </div>
-                    </div>
-
-                    <div className="animate-fade-up" style={{ animationDelay: "400ms" }}>
-                        <h3 className="font-heading text-lg font-semibold mb-4 text-secondary">Подписаться на новости</h3>
-                        <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-                            <Input
-                                type="email"
-                                placeholder="Ваш email"
-                                className="border-accent/30 focus:border-primary"
-                            />
-                            <Button type="submit" className="w-full transition-all duration-300 hover:shadow-essence">
-                                Подписаться
-                            </Button>
-                        </form>
                     </div>
                 </div>
 
