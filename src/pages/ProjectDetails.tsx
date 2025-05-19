@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
@@ -17,7 +16,8 @@ import {
     Phone,
     Heart,
     MessageSquare,
-    ShoppingBag, FileText,
+    ShoppingBag,
+    FileText,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -38,35 +38,54 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { House } from "@/types/house"
 import config from "@/api/api"
-import {useAuth} from "@/context/AuthContext.tsx";
-import {cn} from "@/lib/utils.ts";
-import {useOfflineQueue} from "@/hooks/useOfflineHandler.ts";
-import {toast} from "sonner";
+import { useAuth } from "@/context/AuthContext.tsx"
+import { cn } from "@/lib/utils.ts"
+import { useOfflineQueue } from "@/hooks/useOfflineHandler.ts"
+import { toast } from "sonner"
+
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+
+        checkIsMobile()
+
+        window.addEventListener("resize", checkIsMobile)
+
+        return () => window.removeEventListener("resize", checkIsMobile)
+    }, [])
+
+    return isMobile
+}
 
 const ProjectDetail = () => {
     const { id } = useParams<{ id: string }>()
-    const { addToFavorites, removeFromFavorites, favorites, isAuthenticated } = useAuth();
+    const { addToFavorites, removeFromFavorites, favorites, isAuthenticated } = useAuth()
     const navigate = useNavigate()
     const [house, setHouse] = useState<House | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<string>("overview")
     const [isImageExpanded, setIsImageExpanded] = useState(false)
+    const isMobile = useIsMobile()
     const { sendRequest } = useOfflineQueue((message) => {
-        toast.info(message);
-    });
+        toast.info(message)
+    })
 
-    const isFavorite = id ? favorites.includes(id) : false;
+    const isFavorite = id ? favorites.includes(id) : false
 
     const handleFavoriteToggle = () => {
-        if (!id) return;
+        if (!id) return
 
         if (isFavorite) {
-            removeFromFavorites(id);
+            removeFromFavorites(id)
         } else {
-            addToFavorites(id);
+            addToFavorites(id)
         }
-    };
+    }
 
     const [orderForm, setOrderForm] = useState({
         name: "",
@@ -144,33 +163,28 @@ const ProjectDetail = () => {
             formData.append("message", orderForm.message)
             formData.append("house", house.id.toString())
 
-            const payload = Object.fromEntries(formData);
+            const payload = Object.fromEntries(formData)
 
-            const success = await sendRequest(`${config.API_URL}orders/`, payload);
+            const success = await sendRequest(`${config.API_URL}orders/`, payload)
 
-
-            setOrderForm({
-                name: "",
-                phone: "",
-                email: "",
-                construction_place: "",
-                message: "",
-                agreeToTerms: false,
-            })
-
-            setOrderDialogOpen(false)
-
-
+            if (success) {
+                toast.success("Заявка на заказ проекта успешно отправлена!")
+                setOrderForm({
+                    name: "",
+                    phone: "",
+                    email: "",
+                    construction_place: "",
+                    message: "",
+                    agreeToTerms: false,
+                })
+                setOrderDialogOpen(false)
+            }
         } catch (error) {
             console.error("Ошибка при отправки заказа:", error)
         } finally {
             setOrderSubmitting(false)
         }
     }
-
-
-
-
 
     const handleQuestionSubmit = async (e) => {
         e.preventDefault()
@@ -187,11 +201,9 @@ const ProjectDetail = () => {
             formData.append("question", questionForm.question)
             formData.append("house", house.id.toString())
 
+            const payload = Object.fromEntries(formData)
 
-            const payload = Object.fromEntries(formData);
-
-            const success = await sendRequest(`${config.API_URL}house-questions/`, payload);
-
+            const success = await sendRequest(`${config.API_URL}house-questions/`, payload)
 
             setQuestionForm({
                 name: "",
@@ -202,19 +214,12 @@ const ProjectDetail = () => {
             })
 
             setQuestionDialogOpen(false)
-
-
         } catch (error) {
             console.error("Ошибка при отправки вопроса:", error)
         } finally {
             setQuestionSubmitting(false)
         }
     }
-
-
-
-
-
 
     if (loading) {
         return (
@@ -252,7 +257,7 @@ const ProjectDetail = () => {
 
     return (
         <div className="min-h-screen bg-zinc-50 pb-16">
-            <div className="relative h-[600px] overflow-hidden">
+            <div className="relative h-[400px] md:h-[600px] overflow-hidden">
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 ease-out"
                     style={{
@@ -263,7 +268,7 @@ const ProjectDetail = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
 
-                <div className="container mx-auto px-4 py-24 relative h-full flex flex-col justify-between">
+                <div className="container mx-auto px-4 py-12 md:py-24 relative h-full flex flex-col justify-between">
                     <div className="flex justify-between items-center">
                         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
                             <Button
@@ -273,7 +278,8 @@ const ProjectDetail = () => {
                                 onClick={() => navigate("/projects")}
                             >
                                 <ArrowLeft className="w-4 h-4 mr-2" />
-                                Назад к проектам
+                                <span className="hidden md:inline">Назад к проектам</span>
+                                <span className="md:hidden">Назад</span>
                             </Button>
                         </motion.div>
 
@@ -285,11 +291,12 @@ const ProjectDetail = () => {
                         >
                             <Button
                                 variant={isFavorite ? "default" : "outline"}
+                                size={isMobile ? "sm" : "default"}
                                 className={isFavorite ? "bg-white/90 hover:bg-white text-zinc-800" : ""}
                                 onClick={handleFavoriteToggle}
                             >
                                 <Heart className={cn("h-4 w-4", isFavorite ? "fill-current" : "")} />
-                                <span className="ml-2">{isFavorite ? "В избранном" : "В избранное"}</span>
+                                <span className="ml-2 hidden md:inline">{isFavorite ? "В избранном" : "В избранное"}</span>
                             </Button>
                         </motion.div>
                     </div>
@@ -298,53 +305,56 @@ const ProjectDetail = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6"
+                        className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6"
                     >
-                        <div className="space-y-4">
-                            <div className="flex flex-wrap gap-2">
+                        <div className="space-y-2 md:space-y-4">
+                            <div className="flex flex-wrap gap-1 md:gap-2">
                                 {house.new && (
-                                    <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-3 py-1">
+                                    <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-2 md:px-3 py-0.5 md:py-1 text-xs">
                                         Новинка
                                     </Badge>
                                 )}
                                 {house.best_seller && (
-                                    <Badge className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-3 py-1">
+                                    <Badge className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-2 md:px-3 py-0.5 md:py-1 text-xs">
                                         {house.best_seller}
                                     </Badge>
                                 )}
                                 {calculateDiscount() && (
-                                    <Badge className="bg-red-500 hover:bg-red-600 text-white font-medium px-3 py-1">
+                                    <Badge className="bg-red-500 hover:bg-red-600 text-white font-medium px-2 md:px-3 py-0.5 md:py-1 text-xs">
                                         Скидка {calculateDiscount()}%
                                     </Badge>
                                 )}
-                                <Badge className="bg-zinc-700 hover:bg-zinc-800 text-white font-medium px-3 py-1">
+                                <Badge className="bg-zinc-700 hover:bg-zinc-800 text-white font-medium px-2 md:px-3 py-0.5 md:py-1 text-xs">
                                     {house.category_details.name}
                                 </Badge>
                             </div>
 
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">{house.title}</h1>
+                            <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white leading-tight">{house.title}</h1>
 
-                            <p className="text-white/90 text-lg max-w-2xl">{house.description.split(".")[0]}.</p>
+                            <p className="text-white/90 text-sm md:text-lg max-w-2xl">{house.description.split(".")[0]}.</p>
                         </div>
 
-                        <div className="bg-white rounded-xl p-6 shadow-lg">
+                        <div className="bg-white rounded-xl p-4 md:p-6 shadow-lg w-full md:w-auto">
                             <div className="space-y-2">
-                                <p className="text-sm text-zinc-500 font-medium">Стоимость проекта</p>
+                                <p className="text-xs md:text-sm text-zinc-500 font-medium">Стоимость проекта</p>
                                 {house.discount && house.discount > 0 ? (
                                     <div className="space-y-1">
-                    <span className="text-sm line-through text-zinc-400">
+                    <span className="text-xs md:text-sm line-through text-zinc-400">
                       {new Intl.NumberFormat("ru-RU").format(Number.parseFloat(house.price))} ₽
                     </span>
-                                        <div className="text-3xl font-bold text-primary">
+                                        <div className="text-xl md:text-3xl font-bold text-primary">
                                             {new Intl.NumberFormat("ru-RU").format(house.new_price || 0)} ₽
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="text-3xl font-bold text-primary">
+                                    <div className="text-xl md:text-3xl font-bold text-primary">
                                         {new Intl.NumberFormat("ru-RU").format(Number.parseFloat(house.price))} ₽
                                     </div>
                                 )}
-                                <Button className="w-full mt-3 font-medium" onClick={() => setOrderDialogOpen(true)}>
+                                <Button
+                                    className="w-full mt-2 md:mt-3 font-medium text-sm md:text-base"
+                                    onClick={() => setOrderDialogOpen(true)}
+                                >
                                     <ShoppingBag className="w-4 h-4 mr-2" />
                                     Заказать проект
                                 </Button>
@@ -356,85 +366,85 @@ const ProjectDetail = () => {
 
             <div className="bg-white border-b border-zinc-200 sticky top-0 z-10 shadow-sm">
                 <div className="container mx-auto px-4">
-                    <div className="flex items-center justify-between overflow-x-auto py-4 gap-8">
-                        <div className="flex items-center gap-2 min-w-max">
-                            <Home className="w-5 h-5 text-primary" />
+                    <div className="flex items-center justify-between overflow-x-auto py-2 md:py-4 gap-2 md:gap-8">
+                        <div className="flex items-center gap-1 md:gap-2 min-w-max">
+                            <Home className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                             <div>
-                                <p className="text-xs text-zinc-500">Площадь</p>
-                                <p className="font-medium">{house.area} м²</p>
+                                <p className="text-[10px] md:text-xs text-zinc-500">Площадь</p>
+                                <p className="text-xs md:text-base font-medium">{house.area} м²</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 min-w-max">
-                            <Building2 className="w-5 h-5 text-primary" />
+                        <div className="flex items-center gap-1 md:gap-2 min-w-max">
+                            <Building2 className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                             <div>
-                                <p className="text-xs text-zinc-500">Этажи</p>
-                                <p className="font-medium">{house.floors}</p>
+                                <p className="text-[10px] md:text-xs text-zinc-500">Этажи</p>
+                                <p className="text-xs md:text-base font-medium">{house.floors}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 min-w-max">
-                            <Box className="w-5 h-5 text-primary" />
+                        <div className="flex items-center gap-1 md:gap-2 min-w-max">
+                            <Box className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                             <div>
-                                <p className="text-xs text-zinc-500">Комнаты</p>
-                                <p className="font-medium">{house.rooms}</p>
+                                <p className="text-[10px] md:text-xs text-zinc-500">Комнаты</p>
+                                <p className="text-xs md:text-base font-medium">{house.rooms}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 min-w-max">
-                            <Crown className="w-5 h-5 text-primary" />
+                        <div className="flex items-center gap-1 md:gap-2 min-w-max">
+                            <Crown className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                             <div>
-                                <p className="text-xs text-zinc-500">Спальни</p>
-                                <p className="font-medium">{house.bedrooms}</p>
+                                <p className="text-[10px] md:text-xs text-zinc-500">Спальни</p>
+                                <p className="text-xs md:text-base font-medium">{house.bedrooms}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 min-w-max">
-                            <Bath className="w-5 h-5 text-primary" />
+                        <div className="flex items-center gap-1 md:gap-2 min-w-max">
+                            <Bath className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                             <div>
-                                <p className="text-xs text-zinc-500">Санузлы</p>
-                                <p className="font-medium">{house.bathrooms}</p>
+                                <p className="text-[10px] md:text-xs text-zinc-500">Санузлы</p>
+                                <p className="text-xs md:text-base font-medium">{house.bathrooms}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 min-w-max">
-                            <Clock4 className="w-5 h-5 text-primary" />
+                        <div className="flex items-center gap-1 md:gap-2 min-w-max">
+                            <Clock4 className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                             <div>
-                                <p className="text-xs text-zinc-500">Срок</p>
-                                <p className="font-medium">{house.construction_time} мес.</p>
+                                <p className="text-[10px] md:text-xs text-zinc-500">Срок</p>
+                                <p className="text-xs md:text-base font-medium">{house.construction_time} мес.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="container mx-auto px-4 py-6 md:py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-12">
                     <div className="lg:col-span-2 space-y-12">
                         <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="w-full bg-white p-1 rounded-xl shadow-sm grid grid-cols-5">
+                            <TabsList className="w-full bg-white p-1 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-5 gap-1">
                                 <TabsTrigger
                                     value="overview"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
+                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
                                 >
                                     Обзор
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="plans"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
+                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
                                 >
                                     Планировка
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="interiors"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
+                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
                                 >
                                     Интерьер
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="facades"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
+                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
                                 >
                                     Фасад
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="documents"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white"
+                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
                                 >
                                     Документы
                                 </TabsTrigger>
@@ -449,7 +459,6 @@ const ProjectDetail = () => {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ duration: 0.5 }}
                                     >
-
                                         <Card className="border-none shadow-md overflow-hidden">
                                             <CardContent className="pt-6">
                                                 {house.images && house.images.length > 0 ? (
@@ -652,7 +661,10 @@ const ProjectDetail = () => {
                                         {house.layout_images && house.layout_images.length > 0 ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 {house.layout_images.map((image) => (
-                                                    <Card key={image.id} className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                    <Card
+                                                        key={image.id}
+                                                        className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                                                    >
                                                         <img
                                                             src={`${config.API_URL}${image.image}`}
                                                             alt={`Планировка ${house.title}`}
@@ -690,7 +702,10 @@ const ProjectDetail = () => {
                                         {house.interior_images && house.interior_images.length > 0 ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 {house.interior_images.map((image) => (
-                                                    <Card key={image.id} className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                    <Card
+                                                        key={image.id}
+                                                        className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                                                    >
                                                         <img
                                                             src={`${config.API_URL}${image.image}`}
                                                             alt={`Интерьер ${house.title}`}
@@ -728,7 +743,10 @@ const ProjectDetail = () => {
                                         {house.facade_images && house.facade_images.length > 0 ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 {house.facade_images.map((image) => (
-                                                    <Card key={image.id} className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                    <Card
+                                                        key={image.id}
+                                                        className="border-none shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                                                    >
                                                         <img
                                                             src={`${config.API_URL}${image.image}`}
                                                             alt={`Фасад ${house.title}`}
@@ -779,7 +797,9 @@ const ProjectDetail = () => {
                                                                         </div>
                                                                         <div>
                                                                             <h4 className="font-medium">{doc.title}</h4>
-                                                                            <p className="text-xs text-zinc-500">{doc.file.split('.').pop().toUpperCase()} файл</p>
+                                                                            <p className="text-xs text-zinc-500">
+                                                                                {doc.file.split(".").pop().toUpperCase()} файл
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                     <Button
@@ -1020,11 +1040,11 @@ const ProjectDetail = () => {
                                     <div className="flex items-center gap-2 text-zinc-600">
                                         <Phone className="w-4 h-4 text-primary" />
                                         <span>
-                      Или позвоните нам:{" "}
+                                          Или позвоните нам:{" "}
                                             <a href="tel:+78001234567" className="font-medium text-primary hover:underline">
-                        8 (800) 123-45-67
-                      </a>
-                    </span>
+                                                8 (800) 123-45-67
+                                            </a>
+                                        </span>
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -1034,8 +1054,6 @@ const ProjectDetail = () => {
             </div>
         </div>
     )
-};
-
+}
 
 export default ProjectDetail
-

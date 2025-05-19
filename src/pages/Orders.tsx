@@ -39,7 +39,7 @@ const Orders = () => {
         const fetchOrders = async () => {
             setLoading(true)
             try {
-                const response = await fetch(`${config.API_URL}/orders`)
+                const response = await fetch(`${config.API_URL}orders`)
                 if (!response.ok){
                     throw new Error(`HTTP ошибка, Статус: ${response.status}`)
                 }
@@ -79,7 +79,7 @@ const Orders = () => {
 
     const updateOrderStatus = async (id: number, status: OrderStatus) => {
         try {
-            const response = await fetch(`${config.API_URL}/order/${id}/`, {
+            const response = await fetch(`${config.API_URL}order/${id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,11 +87,11 @@ const Orders = () => {
                 body: JSON.stringify({ status }),
             });
             if (!response.ok) {
-                throw new Error('Failed to update order status');
+                throw new Error('Не удалось обновить статус заказа');
             }
             return await response.json();
         } catch (error) {
-            console.error('Error updating order status:', error);
+            console.error('Ошибка при обновлении статуса:', error);
             throw error;
         }
     };
@@ -223,7 +223,7 @@ const Orders = () => {
 
     const fetchHouses = async (): Promise<House[]> => {
         try {
-            const response = await fetch(`${config.API_URL}/houses`);
+            const response = await fetch(`${config.API_URL}houses`);
             if (!response.ok) {
                 throw new Error('Не удалось получить дома');
             }
@@ -241,13 +241,13 @@ const Orders = () => {
 
     const fetchFinishingOptions = async (): Promise<FinishingOption[]> => {
         try {
-            const response = await fetch(`${config.API_URL}/finishing-options`);
+            const response = await fetch(`${config.API_URL}houses/finishing-options`);
             if (!response.ok) {
-                throw new Error('Failed to fetch finishing options');
+                throw new Error('Не удалось получить параметры отделки');
             }
             return await response.json();
         } catch (error) {
-            console.error('Error fetching finishing options:', error);
+            console.error('Ошибка при получении вариантов отделки:', error);
             throw error;
         }
     };

@@ -2,36 +2,32 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import {useEffect, useState} from "react";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import config from "@/api/api.ts";
+import {useQuery} from "@tanstack/react-query";
 
 const BlogPost = () => {
     const { id } = useParams();
-    const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchPost = async () => {
-            try {
-                const response = await fetch(`${config.API_URL}blogs/${id}`);
-                if (!response.ok) {
-                    throw new Error(`Ошибка при загрузке статьи`);
-                }
-                const result = await response.json();
-                setPost(result);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "Неизвестная ошибка");
-            } finally {
-                setLoading(false);
+    const {data: post, isLoading, isError, error} = useQuery({
+        queryKey: ["blog", id],
+        queryFn: async () => {
+            const response = await fetch(`${config.API_URL}blogs/${id}`);
+            if (!response.ok) {
+                throw new Error('Ошибка при загрузке статьи');
             }
-        };
+            return await response.json();
+        },
+        enabled: !!id,
+    })
 
-        fetchPost();
-    }, [id]);
 
-    if (loading) {
+    if (isError) {
+        return <div>Ошибка: {error.message}</div>;
+    }
+
+
+    if (isLoading) {
         return (
             <div className="min-h-screen pt-24 pb-16">
                 <div className="container">

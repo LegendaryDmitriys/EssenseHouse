@@ -30,76 +30,8 @@ const Header = ({ toggleSidebar, sidebarOpen } :HeaderProps) => {
                         {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
                     </Button>
                     <h1 className="text-xl font-semibold text-gray-900 hidden md:block">
-                        Админ-панель СтройУправление
+                        Админ-панель EssenseHouse
                     </h1>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="relative"
-                            >
-                                <Bell size={20} />
-                                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-construction-orange-500 ring-2 ring-white" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-72">
-                            <DropdownMenuLabel>Уведомления</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <div className="max-h-80 overflow-y-auto">
-                                <DropdownMenuItem className="py-3">
-                                    <div>
-                                        <div className="font-medium">Новый проект создан</div>
-                                        <div className="text-sm text-muted-foreground">Проект "Загородный дом 230м²" создан</div>
-                                        <div className="text-xs text-muted-foreground mt-1">2 часа назад</div>
-                                    </div>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="py-3">
-                                    <div>
-                                        <div className="font-medium">Поступила новая заявка</div>
-                                        <div className="text-sm text-muted-foreground">Клиент запрашивает консультацию</div>
-                                        <div className="text-xs text-muted-foreground mt-1">5 часов назад</div>
-                                    </div>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="py-3">
-                                    <div>
-                                        <div className="font-medium">Задержка поставки</div>
-                                        <div className="text-sm text-muted-foreground">Задержка поставки кровельных материалов</div>
-                                        <div className="text-xs text-muted-foreground mt-1">Вчера</div>
-                                    </div>
-                                </DropdownMenuItem>
-                            </div>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="justify-center text-primary">
-                                Просмотреть все
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                className="flex items-center gap-2"
-                            >
-                                <span className="hidden md:block">Александр Петров</span>
-                                <div className="h-8 w-8 rounded-full bg-construction-blue-200 flex items-center justify-center">
-                                    <User size={16} className="text-construction-blue-700" />
-                                </div>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Профиль</DropdownMenuItem>
-                            <DropdownMenuItem>Настройки</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-red-500">Выйти</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                 </div>
             </div>
         </header>

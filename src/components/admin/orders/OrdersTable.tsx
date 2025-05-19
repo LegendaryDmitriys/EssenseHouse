@@ -4,6 +4,7 @@ import { ru } from 'date-fns/locale';
 import { Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {Order, OrderStatus} from "@/types/orders.ts";
+import {formatDate} from "@/lib/utils.ts";
 
 interface OrdersTableProps {
     orders: Order[];
@@ -40,13 +41,6 @@ const OrdersTable = ({ orders, onSelect, selectedId }:OrdersTableProps) => {
         }
     };
 
-    const formatDate = (dateString: string) => {
-        try {
-            return format(new Date(dateString), 'dd MMM yyyy, HH:mm', { locale: ru });
-        } catch (error) {
-            return dateString;
-        }
-    };
 
     return (
         <div className="overflow-x-auto">

@@ -11,7 +11,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import PurchasedHousesTable from "@/components/admin/purhased/PurchasedHousesTable.tsx";
 import PurchasedHouseDetails from "@/components/admin/purhased/PurchasedHouseDetails.tsx";
-import NewPurchasedHouseDialog from "@/components/admin/purhased/NewPurchasedHouseDialog.tsx";
 import config from "@/api/api.ts";
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
 
@@ -297,14 +296,6 @@ const PurchasedHouses = () => {
                     )}
                 </div>
             </div>
-
-            <NewPurchasedHouseDialog
-                isOpen={isNewHouseOpen}
-                onClose={() => setIsNewHouseOpen(false)}
-                onCreate={handleCreatePurchasedHouse}
-                houses={[
-                ]}
-            />
         </Layout>
     );
 };

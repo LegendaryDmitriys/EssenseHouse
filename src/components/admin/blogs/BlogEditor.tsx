@@ -37,7 +37,7 @@ const BlogEditor = ({ blog, onSave, onCancel }: BlogEditorProps) => {
     const { data: categories } = useQuery({
         queryKey: ["blog-categories"],
         queryFn: async () => {
-            const response = await fetch(`${config.API_URL}blog/categories/`)
+            const response = await fetch(`${config.API_URL}blogs/categories/`)
             if (!response.ok) {
                 throw new Error("Не удалось загрузить категории")
             }
@@ -110,10 +110,6 @@ const BlogEditor = ({ blog, onSave, onCancel }: BlogEditorProps) => {
             formDataToSend.append("image", formData.image);
         }
 
-        console.log("FormData contents:");
-        formDataToSend.forEach((value, key) => {
-            console.log(`${key}:`, value);
-        });
 
         const url = isEditing
             ? `${config.API_URL}blogs/${blog.id}/`

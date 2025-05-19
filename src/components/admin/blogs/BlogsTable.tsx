@@ -6,14 +6,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {Search, Loader2, AlertCircle, Clock, CheckCircle2} from "lucide-react"
 import config from "@/api/api"
 import {Badge} from "@/components/ui/badge.tsx";
-import {BlogStatus} from "@/types/blog.ts";
+import { PaginatedBlogs } from "@/types/blog.ts";
 import {formatDate} from "@/lib/utils.ts";
 
 const BlogsTable = ({ onBlogSelect, selectedBlogId }) => {
     const [searchTerm, setSearchTerm] = useState("")
     const [categoryFilter, setCategoryFilter] = useState("")
 
-    const { data: blogs, isLoading } = useQuery({
+    const { data: paginatedBlogs, isLoading } = useQuery<PaginatedBlogs>({
         queryKey: ["blogs"],
         queryFn: async () => {
             const response = await fetch(`${config.API_URL}blogs/`)
@@ -27,7 +27,7 @@ const BlogsTable = ({ onBlogSelect, selectedBlogId }) => {
     const { data: categories } = useQuery({
         queryKey: ["blog-categories"],
         queryFn: async () => {
-            const response = await fetch(`${config.API_URL}blog/categories/`)
+            const response = await fetch(`${config.API_URL}blogs/categories/`)
             if (!response.ok) {
                 throw new Error("Не удалось загрузить категории")
             }
@@ -35,13 +35,15 @@ const BlogsTable = ({ onBlogSelect, selectedBlogId }) => {
         },
     })
 
+    const blogs = paginatedBlogs?.results || []
+
     const filteredBlogs = blogs?.filter((blog) => {
         const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesCategory = categoryFilter ? blog.category.id === Number.parseInt(categoryFilter) : true
         return matchesSearch && matchesCategory
     })
 
-    const renderStatusBadge = (status: BlogStatus) => {
+    const renderStatusBadge = (status: string) => {
         switch(status) {
             case 'rejected':
                 return (

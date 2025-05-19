@@ -30,7 +30,6 @@ const UserReviewsTable = ({ onReviewSelect }: UserReviewsTableProps) => {
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 6;
-    const queryClient = useQueryClient();
 
     const { data: paginatedData, isLoading } = useQuery<ReviewPaginatedResponse>({
         queryKey: ["reviews", statusFilter, currentPage],

@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
+import {formatDate} from "@/lib/utils.ts";
 
 interface PurchasedHousesTableProps {
     houses: PurchasedHouse[];
@@ -41,15 +40,6 @@ const PurchasedHousesTable = ({ houses, onSelect, selectedId }: PurchasedHousesT
         }
     };
 
-    const formatDate = (dateString?: string) => {
-        if (!dateString) return '';
-
-        try {
-            return format(new Date(dateString), 'dd MMM yyyy', { locale: ru });
-        } catch (error) {
-            return dateString;
-        }
-    };
 
     return (
         <div className="overflow-x-auto">

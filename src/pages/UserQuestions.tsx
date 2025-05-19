@@ -17,7 +17,6 @@ const UserQuestions = () => {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [sortBy, setSortBy] = useState<string>('date');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const {
         questions,

@@ -134,36 +134,6 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
         },
     });
 
-    const saveMutation = useMutation({
-        mutationFn: async (data: FormData) => {
-            const url = house
-                ? `${config.API_URL}houses/${house.id}/`
-                : `${config.API_URL}houses/create`;
-
-            const method = house ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method,
-                body: data,
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.detail || "Произошла ошибка при сохранении");
-            }
-
-            return response.json();
-        },
-        onSuccess: () => {
-            setIsLoading(false);
-            onSuccess();
-        },
-        onError: (error) => {
-            setIsLoading(false);
-            toast.error(error.message || "Произошла ошибка при сохранении");
-        },
-    });
-
 
     const onSubmit = (values: HouseFormValues) => {
         setIsLoading(true);

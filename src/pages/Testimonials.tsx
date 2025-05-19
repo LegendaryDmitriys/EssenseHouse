@@ -84,16 +84,18 @@ const Testimonials = () => {
     }, []);
 
     const handleSubmitReview = (newReview: Review) => {
-        setReviews([newReview, ...reviews])
-        setIsFormOpen(false)
-    }
+        if (newReview.status === "published") {
+            setReviews([newReview, ...reviews]);
+        }
+        setIsFormOpen(false);
+    };
 
     const fetchReviews = async (url?: string) => {
         setLoading(true);
         try {
             const response = await fetch(url || `${config.API_URL}reviews/`);
             if (!response.ok) {
-                throw new Error(`Http error, Status: ${response.status}`);
+                throw new Error(`HTTP ошибка, Статус: ${response.status}`);
             }
             const result = await response.json();
             setReviews(result.results);
