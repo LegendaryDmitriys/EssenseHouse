@@ -1,8 +1,6 @@
 import {useEffect, useState} from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Clock, CheckCircle2, XCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
     Select,
     SelectContent,
@@ -21,6 +19,7 @@ import {
 import config from "@/api/api.ts";
 import { Review, ReviewPaginatedResponse } from "@/types/review.ts";
 import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 interface UserReviewsTableProps {
     onReviewSelect: (review: Review) => void;
@@ -46,32 +45,6 @@ const UserReviewsTable = ({ onReviewSelect }: UserReviewsTableProps) => {
         },
     });
 
-
-    const renderStatusBadge = (status: Review["status"]) => {
-        switch (status) {
-            case "pending":
-                return (
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        Ожидает публикации
-                    </Badge>
-                );
-            case "published":
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Опубликован
-                    </Badge>
-                );
-            case "rejected":
-                return (
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 flex items-center gap-1">
-                        <XCircle className="h-3 w-3" />
-                        Отклонено
-                    </Badge>
-                );
-        }
-    };
 
     const totalPages = paginatedData ? Math.ceil(paginatedData.count / pageSize) : 0;
 
@@ -144,7 +117,7 @@ const UserReviewsTable = ({ onReviewSelect }: UserReviewsTableProps) => {
                                             <h3 className="font-medium">{review.name}</h3>
                                             <p className="text-sm text-gray-500">{formatDate(review.date)}</p>
                                         </div>
-                                        {renderStatusBadge(review.status)}
+                                        <StatusBadge status={review.status} context="review"/>
                                     </div>
                                     <p className="mt-2 text-sm text-gray-600 line-clamp-2">{review.review}</p>
                                 </CardContent>

@@ -1,9 +1,9 @@
 import { CheckCircle2, Download, FileImage, XCircle } from "lucide-react";
 import { Review, ReviewFile } from "@/types/review.ts";
-import {Badge} from "@/components/ui/badge.tsx";
 import {Progress} from "@/components/ui/progress.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 interface UserReviewsDetailsProps {
     review: Review;
@@ -25,31 +25,6 @@ const UserReviewsDetails = ({ review, onStatusChange, onDelete }: UserReviewsDet
         }
     };
 
-    const renderStatusBadge = (status: Review["status"]) => {
-        switch (status) {
-            case "pending":
-                return (
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Ожидает публикации
-                    </Badge>
-                );
-            case "published":
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Опубликован
-                    </Badge>
-                );
-            case "rejected":
-                return (
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 flex items-center gap-1">
-                        <XCircle className="h-3 w-3" />
-                        Отклонено
-                    </Badge>
-                );
-        }
-    };
 
     const handleFileDownload = (fileUrl: string, fileName: string) => {
         const link = document.createElement("a");
@@ -126,7 +101,7 @@ const UserReviewsDetails = ({ review, onStatusChange, onDelete }: UserReviewsDet
         <div>
             <div className="flex justify-between items-start">
                 <h2 className="text-lg font-bold">Детали отзыва</h2>
-                {renderStatusBadge(review.status)}
+                <StatusBadge status={review.status} context="review" />
             </div>
             <Progress
                 value={getProgressValue(review.status)}

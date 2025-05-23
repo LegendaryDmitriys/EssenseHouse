@@ -25,7 +25,7 @@ export function useQuestions(type: QuestionType = 'house') {
             const data = await response.json();
             setQuestions(data);
         } catch (err) {
-            setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+            setError(err instanceof Error ? err : new Error('Произошла неизвестная ошибка'));
             toast({
                 title: "Ошибка",
                 description: "Не удалось загрузить вопросы",

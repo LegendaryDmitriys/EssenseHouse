@@ -8,6 +8,7 @@ import config from "@/api/api"
 import {Badge} from "@/components/ui/badge.tsx";
 import { PaginatedBlogs } from "@/types/blog.ts";
 import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 const BlogsTable = ({ onBlogSelect, selectedBlogId }) => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -42,35 +43,6 @@ const BlogsTable = ({ onBlogSelect, selectedBlogId }) => {
         const matchesCategory = categoryFilter ? blog.category.id === Number.parseInt(categoryFilter) : true
         return matchesSearch && matchesCategory
     })
-
-    const renderStatusBadge = (status: string) => {
-        switch(status) {
-            case 'rejected':
-                return (
-                    <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Отказано
-                    </Badge>
-                );
-            case 'pending':
-                return (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        В ожидании
-                    </Badge>
-                );
-            case 'published':
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Опубликован
-                    </Badge>
-                );
-            default:
-                return null;
-        }
-    };
-
 
 
     return (
@@ -125,7 +97,7 @@ const BlogsTable = ({ onBlogSelect, selectedBlogId }) => {
                                     >
                                         <TableCell className="font-medium">{blog.title}</TableCell>
                                         <TableCell>{blog.category.name}</TableCell>
-                                        <TableCell>{renderStatusBadge(blog.status)}</TableCell>
+                                        <TableCell><StatusBadge status={blog.status} context="blog"/></TableCell>
                                         <TableCell>{formatDate(blog.date)}</TableCell>
                                     </TableRow>
                                 ))

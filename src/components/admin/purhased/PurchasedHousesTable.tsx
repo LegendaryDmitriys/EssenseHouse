@@ -4,6 +4,7 @@ import { Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
 import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 interface PurchasedHousesTableProps {
     houses: PurchasedHouse[];
@@ -12,34 +13,6 @@ interface PurchasedHousesTableProps {
 }
 
 const PurchasedHousesTable = ({ houses, onSelect, selectedId }: PurchasedHousesTableProps) => {
-    const renderStatusBadge = (status: ConstructionStatus) => {
-        switch(status) {
-            case 'not_started':
-                return (
-                    <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Не начато
-                    </Badge>
-                );
-            case 'in_progress':
-                return (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        В процессе
-                    </Badge>
-                );
-            case 'completed':
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Построен
-                    </Badge>
-                );
-            default:
-                return null;
-        }
-    };
-
 
     return (
         <div className="overflow-x-auto">
@@ -70,7 +43,7 @@ const PurchasedHousesTable = ({ houses, onSelect, selectedId }: PurchasedHousesT
                                 <div className="text-gray-500 text-xs">{house.buyer_phone}</div>
                             </td>
                             <td className="py-3 px-4">{house.house.title}</td>
-                            <td className="py-3 px-4">{renderStatusBadge(house.construction_status)}</td>
+                            <td className="py-3 px-4"><StatusBadge status={house.construction_status} context="purchasedHouse"/></td>
                         </tr>
                     ))}
                     </tbody>

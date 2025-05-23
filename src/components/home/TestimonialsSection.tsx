@@ -1,37 +1,24 @@
 import {Button} from "@/components/ui/button.tsx";
-import React, {useEffect, useState} from "react";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Quote, Star} from "lucide-react";
 import {Link} from "react-router-dom";
 import config from "@/api/api.ts";
 import { CircleUser } from 'lucide-react';
+import {useQuery} from "@tanstack/react-query";
+import {Review} from "@/types/review.ts";
 
 const TestimonialsSection = () => {
-    const [reviews, setReviews] = useState([]);
-    const [error, setError] = useState<string | null>()
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchReviews = async () => {
-            try
-            {
-               const response = await fetch(`${config.API_URL}reviews?limit=3&status=published`);
-               if (!response.ok){
-                   throw new Error(`HTTP ошибка, Статус: ${response.status}`);
-               }
-               const result = await response.json();
-               setReviews(result.slice(0, 3));
+    const { data: reviews = [], isLoading, error } = useQuery<Review[]>({
+        queryKey: ["review"],
+        queryFn: async () => {
+            const response = await fetch(`${config.API_URL}reviews?limit=3&status=published`)
+            if (!response.ok) {
+                throw new Error(`HTTP ошибка, Статус: ${response.status}`);
             }
-            catch (err){
-                setError(err instanceof Error ? err.message : "Неизвестная ошибка");
-            }
-            finally {
-                setLoading(false);
-            }
-        }
-
-        fetchReviews()
-    },[])
+            return await response.json();
+        },
+        retry: 1,
+    });
 
     return (
         <section className="py-16 md:py-24 bg-gradient-to-b from-accent/20 to-background">
@@ -45,14 +32,14 @@ const TestimonialsSection = () => {
                     </p>
                 </div>
 
-                {loading ? (
+                {isLoading ? (
                     <div className="text-center py-12">
                         <div className="inline-block w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                         <p className="mt-4 text-muted-foreground">Загрузка отзывов...</p>
                     </div>
                 ) : error ? (
                     <div className="text-center py-12">
-                        <p className="text-destructive">{error}</p>
+                        <p className="text-destructive">{error.message}</p>
                         <Button
                             variant="outline"
                             onClick={() => window.location.reload()}

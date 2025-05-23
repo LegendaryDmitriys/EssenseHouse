@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Star, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -149,8 +149,8 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
                     </label>
                     {files && (
                         <span className="text-sm text-muted-foreground">
-              Выбрано файлов: {files.length}
-            </span>
+                            Выбрано файлов: {files.length}
+                        </span>
                     )}
                 </div>
             </div>

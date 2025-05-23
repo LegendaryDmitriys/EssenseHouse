@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
@@ -13,25 +12,14 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import {Edit, Trash2, MoreVertical, Eye, ChevronRight} from "lucide-react"
+import {Edit, Trash2, MoreVertical, Eye} from "lucide-react"
 import {Link} from "react-router-dom";
 import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 const BlogDetails = ({ blog, onEdit, onDelete, onStatusChange }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "published":
-                return <Badge className="bg-green-500">Опубликован</Badge>
-            case "rejected":
-                return <Badge className="bg-red-500">Отказано</Badge>
-            case "pending":
-                return <Badge className="bg-yellow-500">В ожидании</Badge>
-            default:
-                return <Badge className="bg-gray-500">{status}</Badge>
-        }
-    }
 
     const renderContent = () => {
         try {
@@ -83,7 +71,7 @@ const BlogDetails = ({ blog, onEdit, onDelete, onStatusChange }) => {
 
                 <CardTitle>{blog.title}</CardTitle>
                 <CardDescription className="flex items-center gap-2">
-                    {getStatusBadge(blog.status)}
+                    <StatusBadge status={blog.status} context="blog"/>
                     <span>Категория: {blog.category.name}</span>
                 </CardDescription>
             </CardHeader>

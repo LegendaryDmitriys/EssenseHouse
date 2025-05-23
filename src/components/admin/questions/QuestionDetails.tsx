@@ -9,6 +9,7 @@ import { HouseQuestion, QuestionStatus, UserQuestion } from '@/types/question';
 import { useToast } from '@/hooks/use-toast';
 import {formatDate} from "@/lib/utils.ts";
 import config from "@/api/api.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 interface QuestionDetailsProps {
     question: HouseQuestion | UserQuestion;
@@ -24,34 +25,6 @@ const QuestionDetails = ({
     const [answerText, setAnswerText] = useState('');
     const { toast } = useToast();
 
-
-    const getStatusBadge = (status: QuestionStatus) => {
-        switch(status) {
-            case 'waiting':
-                return (
-                    <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-                        <Clock className="mr-1 h-3 w-3" />
-                        Ожидает ответа
-                    </Badge>
-                );
-            case 'answered':
-                return (
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                        <CheckCircle className="mr-1 h-3 w-3" />
-                        Ответ предоставлен
-                    </Badge>
-                );
-            case 'closed':
-                return (
-                    <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
-                        <XCircle className="mr-1 h-3 w-3" />
-                        Закрыт
-                    </Badge>
-                );
-            default:
-                return null;
-        }
-    };
 
 
     const isHouseQuestion = (question: HouseQuestion | UserQuestion): question is HouseQuestion => {
@@ -116,10 +89,10 @@ const QuestionDetails = ({
                     </div>
                 </div>
                 <div className="flex flex-col items-end">
-                    {getStatusBadge(question.status)}
+                    <StatusBadge status={question.status} context="question" />
                     <span className="text-xs text-gray-500 mt-2">
-            {formatDate(question.created_at)}
-          </span>
+                        {formatDate(question.created_at)}
+                    </span>
                 </div>
             </div>
 

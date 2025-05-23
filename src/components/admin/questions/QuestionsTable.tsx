@@ -3,6 +3,7 @@ import { HelpCircle, CheckCircle, Clock, XCircle } from 'lucide-react';
 
 import { HouseQuestion, QuestionStatus, UserQuestion } from '@/types/question';
 import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 interface QuestionsTableProps {
     questions: (HouseQuestion | UserQuestion)[];
@@ -18,27 +19,6 @@ const QuestionsTable = ({
                             type,
                         }: QuestionsTableProps) => {
 
-    const getStatusIcon = (status: QuestionStatus) => {
-        switch(status) {
-            case 'waiting':
-                return <Clock size={16} className="text-amber-500" />;
-            case 'answered':
-                return <CheckCircle size={16} className="text-green-500" />;
-            case 'closed':
-                return <XCircle size={16} className="text-gray-500" />;
-            default:
-                return null;
-        }
-    };
-
-    const getStatusText = (status: QuestionStatus) => {
-        switch(status) {
-            case 'waiting': return 'Ожидает ответа';
-            case 'answered': return 'Ответ предоставлен';
-            case 'closed': return 'Закрыт';
-            default: return '';
-        }
-    };
 
     const isHouseQuestion = (question: HouseQuestion | UserQuestion): question is HouseQuestion => {
         return 'house' in question && 'question' in question;
@@ -96,10 +76,7 @@ const QuestionsTable = ({
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
-                                    {getStatusIcon(question.status)}
-                                    <span className="ml-1 text-sm text-gray-700">
-                                        {getStatusText(question.status)}
-                                    </span>
+                                    <StatusBadge status={question.status} context="question" />
                                 </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

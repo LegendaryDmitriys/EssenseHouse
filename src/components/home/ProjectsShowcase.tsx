@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from "react";
 import { motion } from "framer-motion";
 import { Building2, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,37 +5,33 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import {House} from "@/types/house.ts";
 import config from "@/api/api.ts";
+import {useQuery} from "@tanstack/react-query";
 
 
 
 const ProjectsShowcase = () => {
     const navigate = useNavigate();
-    const [houses, setHouses] = useState<House[]>([]);
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
 
-
-
-    useEffect(() => {
-        const FetchHouses = async () => {
-            try {
-                const response = await fetch(`${config.API_URL}houses/?limit=3`)
-                if (!response.ok){
-                    throw new Error(`HTTP ошибка, Статус: ${response.status}`)
-                }
-                const result = await response.json();
-                setHouses(result)
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "Неизвестная ошибка")
+    const { data: houses = [], isLoading, error } = useQuery<House[]>({
+        queryKey: ["house"],
+        queryFn: async () => {
+            const response = await fetch(`${config.API_URL}houses/?limit=3`)
+            if (!response.ok) {
+                throw new Error(`HTTP ошибка, Статус: ${response.status}`);
             }
-            finally {
-                setLoading(false)
-            }
-        }
-        FetchHouses();
-    },[])
+            return await response.json();
+        },
+        retry: 1,
+    });
 
-    console.log(houses)
+
+    if (isLoading) {
+        return <div>Загрузка домов...</div>
+    }
+
+    if (error) {
+        return <div>Ошибка: {(error as Error).message}</div>;
+    }
 
 
     return (

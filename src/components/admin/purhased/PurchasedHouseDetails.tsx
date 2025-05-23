@@ -1,15 +1,18 @@
 
 import React, {useState} from 'react';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { Phone, Mail, MapPin, Home, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+
+import { Phone, Mail, MapPin, Home, Clock, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+
 import {ConstructionStatus, PurchasedHouse} from "@/types/purchasedHouse.ts";
+
 import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
+
 import {formatDate} from "@/lib/utils.ts";
+
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 
 interface PurchasedHouseDetailsProps {
@@ -32,34 +35,6 @@ const PurchasedHouseDetails = ({ house, onUpdateStatus }:PurchasedHouseDetailsPr
         }
     };
 
-
-    const renderStatusBadge = (construction_status: ConstructionStatus) => {
-        switch(construction_status) {
-            case 'not_started':
-                return (
-                    <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Не начато
-                    </Badge>
-                );
-            case 'in_progress':
-                return (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        В процессе
-                    </Badge>
-                );
-            case 'completed':
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Построен
-                    </Badge>
-                );
-            default:
-                return null;
-        }
-    };
 
     const renderStatusActions = () => {
         switch(house.construction_status) {
@@ -116,7 +91,7 @@ const PurchasedHouseDetails = ({ house, onUpdateStatus }:PurchasedHouseDetailsPr
             <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                     <CardTitle>Информация об объекте</CardTitle>
-                    {renderStatusBadge(house.construction_status)}
+                    <StatusBadge status={house.construction_status} context="purchasedHouse" />
                 </div>
                 <Progress
                     value={getProgressValue(house.construction_status)}

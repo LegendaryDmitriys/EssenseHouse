@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { Phone, Mail, MapPin, Home, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Home, CheckCircle2, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {Order, OrderStatus} from "@/types/orders.ts";
 import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
+import {formatDate} from "@/lib/utils.ts";
+import StatusBadge from "@/components/StatusBadge.tsx";
 
 
 interface OrderDetailsProps {
@@ -19,14 +18,6 @@ const OrderDetails = ({ order, onUpdateStatus } :OrderDetailsProps) => {
     const [mapCenter, setMapCenter] = useState<[number, number]>([55.7558, 37.6173]);
     const [mapZoom, setMapZoom] = useState(2);
     const [isUpdating, setIsUpdating] = useState(false);
-    const formatDate = (dateString: string) => {
-        try {
-            return format(new Date(dateString), 'dd MMMM yyyy, HH:mm', { locale: ru });
-        } catch (error) {
-            return dateString;
-        }
-    };
-
 
     const getProgressValue = (status: OrderStatus) => {
         switch(status) {
@@ -47,34 +38,6 @@ const OrderDetails = ({ order, onUpdateStatus } :OrderDetailsProps) => {
         }
     };
 
-
-    const renderStatusBadge = (status: OrderStatus) => {
-        switch(status) {
-            case 'pending':
-                return (
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        Ожидает одобрения
-                    </Badge>
-                );
-            case 'approved':
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Одобрено
-                    </Badge>
-                );
-            case 'rejected':
-                return (
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 flex items-center gap-1">
-                        <XCircle className="h-3 w-3" />
-                        Отклонено
-                    </Badge>
-                );
-            default:
-                return null;
-        }
-    };
 
 
     const renderStatusActions = () => {
@@ -137,7 +100,7 @@ const OrderDetails = ({ order, onUpdateStatus } :OrderDetailsProps) => {
             <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                     <CardTitle>Информация о заказе</CardTitle>
-                    {renderStatusBadge(order.status)}
+                    <StatusBadge status={order.status} context="order"/>
                 </div>
                 <Progress
                     value={getProgressValue(order.status)}
