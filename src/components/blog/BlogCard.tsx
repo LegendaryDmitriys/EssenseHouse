@@ -17,6 +17,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
                     src={post.image}
                     alt={post.title}
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
                 />
             </div>
             <CardHeader>

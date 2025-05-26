@@ -21,42 +21,40 @@ import { Label } from "@/components/ui/label"
 import type { House } from "@/types/house"
 import type { FilterOption } from "@/types/filter"
 import config from "@/api/api.ts"
+import {useQuery} from "@tanstack/react-query";
 
 const Projects = () => {
   const { toast } = useToast()
   const navigate = useNavigate()
-  const [houses, setHouses] = useState<House[]>([])
-  const [filterOptions, setFilterOptions] = useState<FilterOption[]>([])
-  const [pagination, setPagination] = useState<{
-    count: number
-    next: string | null
-    previous: string | null
-  }>({ count: 0, next: null, previous: null })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [compareHouses, setCompareHouses] = useState<House[]>([])
   const [isCompareMode, setIsCompareMode] = useState(false)
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({})
+  const [page, setPage] = useState(1)
   const itemsPerPage = 6
 
-  const fetchFilterOptions = async () => {
-    try {
-      const response = await fetch(`${config.API_URL}filter-options/`)
-      if (!response.ok) {
-        throw new Error(`HTTP ошибка, Статус: ${response.status}`)
-      }
-      const result = await response.json()
-      setFilterOptions(result)
-    } catch (err) {
-      console.error("Ошибка при получении фильтров:", err)
-    }
-  }
+  useEffect(() => {
+    setPage(1)
+  }, [activeFilters])
 
-  const fetchHouses = async (url?: string) => {
-    setLoading(true)
-    try {
+
+  const { data: filterOptions = [], isLoading: isFilterLoading,  error: filterError } = useQuery<FilterOption[], Error>({
+    queryKey: ['filterOptions'],
+    queryFn: async () => {
+      const response = await fetch(`${config.API_URL}filter-options/`)
+      if (!response.ok){
+        throw new Error(`Ошибка загрузки фильтров: ${response.status}`)
+      }
+      return await response.json()
+    },
+    staleTime: 1000 * 60 * 5
+  })
+
+  const { data: houseData = { results: [], count: 0, next: null, previous: null }, isLoading: isHouseLoading, error: houseError, refetch: refetchHouses } = useQuery({
+    queryKey: ['houses', activeFilters, page],
+    queryFn: async () => {
       const queryParams = new URLSearchParams()
+
       Object.entries(activeFilters).forEach(([key, value]) => {
         if (value !== null && value !== undefined && value !== "") {
           if (Array.isArray(value)) {
@@ -66,39 +64,21 @@ const Projects = () => {
           }
         }
       })
-      const queryString = queryParams.toString()
-      const requestUrl = url || `${config.API_URL}houses/${queryString ? `?${queryString}` : ""}`
-      console.log(requestUrl)
-      const response = await fetch(requestUrl)
-      if (!response.ok) {
-        throw new Error(`HTTP error, Status: ${response.status}`)
-      }
-      const result = await response.json()
-      if (result && result.results && Array.isArray(result.results)) {
-        setHouses(result.results)
-        setPagination({
-          count: result.count,
-          next: result.next,
-          previous: result.previous,
-        })
-      } else {
-        setHouses([])
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Неизвестная ошибка")
-    } finally {
-      setLoading(false)
-    }
-  }
 
-  useEffect(() => {
-    fetchFilterOptions()
-    fetchHouses()
-  }, [])
+      queryParams.append('page', page.toString())
 
-  useEffect(() => {
-    fetchHouses()
-  }, [activeFilters])
+      const url = `${config.API_URL}houses/?${queryParams.toString()}`
+      const response = await fetch(url)
+
+      if (!response.ok) throw new Error(`Ошибка загрузки домов: ${response.status}`)
+
+      return await response.json()
+    },
+    initialData: { results: [], count: 0, next: null, previous: null },
+  })
+
+  const loading = isFilterLoading || isHouseLoading
+  const houses = houseData.results
 
   const handleFilterChange = (fieldName: string, value: any) => {
     setActiveFilters((prev) => {
@@ -157,7 +137,7 @@ const Projects = () => {
 
   const resetFilters = () => {
     setActiveFilters({})
-    fetchHouses()
+    refetchHouses()
   }
 
   const toggleCompare = (house: House) => {
@@ -365,22 +345,15 @@ const Projects = () => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
               </div>
           )}
-          {error && (
+          {(filterError || houseError) && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md my-6">
-                <p>Ошибка загрузки данных: {error}</p>
-                <Button
-                    variant="outline"
-                    className="mt-2"
-                    onClick={() => {
-                      setError(null)
-                      fetchHouses()
-                    }}
-                >
+                <p>Ошибка загрузки данных: {(filterError || houseError)?.message}</p>
+                <Button variant="outline" className="mt-2" onClick={() => refetchHouses()}>
                   Попробовать снова
                 </Button>
               </div>
           )}
-          {!loading && !error && houses.length === 0 && (
+          {!loading && !(filterError || houseError) && houses.length === 0 && (
               <div className="text-center py-20">
                 <Building2 className="w-12 h-12 mx-auto text-zinc-300 mb-4" />
                 <h3 className="text-xl font-medium text-zinc-700 mb-2">Проекты не найдены</h3>
@@ -388,7 +361,7 @@ const Projects = () => {
                 <Button onClick={resetFilters}>Сбросить фильтры</Button>
               </div>
           )}
-          {!loading && !error && (
+          {!loading && !(filterError || houseError) && (
               <>
                 {isCompareMode ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -574,25 +547,30 @@ const Projects = () => {
                             </motion.div>
                         ))}
                       </div>
-                      {(pagination.next || pagination.previous) && (
+                      {(houseData.count > 0 && Math.ceil(houseData.count / itemsPerPage) > 1) && (
                           <div className="mt-12">
                             <Pagination>
                               <PaginationContent>
                                 <PaginationItem>
                                   <PaginationPrevious
-                                      onClick={() => pagination.previous && fetchHouses(pagination.previous)}
-                                      className={cn(!pagination.previous && "pointer-events-none opacity-50")}
+                                      onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                                      className={cn(page === 1 && "pointer-events-none opacity-50")}
                                   />
                                 </PaginationItem>
+
                                 <PaginationItem>
-                                  <PaginationLink isActive>
-                                    {Math.ceil(houses.length > 0 ? houses[0].id / itemsPerPage : 1)}
-                                  </PaginationLink>
+                                  <PaginationLink isActive>{page}</PaginationLink>
                                 </PaginationItem>
+
                                 <PaginationItem>
                                   <PaginationNext
-                                      onClick={() => pagination.next && fetchHouses(pagination.next)}
-                                      className={cn(!pagination.next && "pointer-events-none opacity-50")}
+                                      onClick={() => {
+                                        const totalPages = Math.ceil(houseData.count / itemsPerPage)
+                                        setPage(prev => Math.min(prev + 1, totalPages))
+                                      }}
+                                      className={cn(
+                                          page >= Math.ceil(houseData.count / itemsPerPage) && "pointer-events-none opacity-50"
+                                      )}
                                   />
                                 </PaginationItem>
                               </PaginationContent>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -42,35 +42,16 @@ import { useAuth } from "@/context/AuthContext.tsx"
 import { cn } from "@/lib/utils.ts"
 import { useOfflineQueue } from "@/hooks/useOfflineHandler.ts"
 import { toast } from "sonner"
+import {useQuery} from "@tanstack/react-query";
 
-const useIsMobile = () => {
-    const [isMobile, setIsMobile] = useState(false)
 
-    useEffect(() => {
-        const checkIsMobile = () => {
-            setIsMobile(window.innerWidth < 768)
-        }
-
-        checkIsMobile()
-
-        window.addEventListener("resize", checkIsMobile)
-
-        return () => window.removeEventListener("resize", checkIsMobile)
-    }, [])
-
-    return isMobile
-}
 
 const ProjectDetail = () => {
     const { id } = useParams<{ id: string }>()
-    const { addToFavorites, removeFromFavorites, favorites, isAuthenticated } = useAuth()
+    const { addToFavorites, removeFromFavorites, favorites } = useAuth()
     const navigate = useNavigate()
-    const [house, setHouse] = useState<House | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<string>("overview")
     const [isImageExpanded, setIsImageExpanded] = useState(false)
-    const isMobile = useIsMobile()
     const { sendRequest } = useOfflineQueue((message) => {
         toast.info(message)
     })
@@ -109,27 +90,19 @@ const ProjectDetail = () => {
     const [orderDialogOpen, setOrderDialogOpen] = useState(false)
     const [questionDialogOpen, setQuestionDialogOpen] = useState(false)
 
-    useEffect(() => {
-        const fetchHouse = async () => {
-            if (id) {
-                try {
-                    setLoading(true)
-                    const response = await fetch(`${config.API_URL}houses/${id}/`)
-                    if (!response.ok) {
-                        throw new Error(`HTTP ошибка! Статус: ${response.status}`)
-                    }
-                    const data = await response.json()
-                    setHouse(data)
-                } catch (e) {
-                    setError(e instanceof Error ? e.message : "Произошла ошибка при получении данных о доме.")
-                } finally {
-                    setLoading(false)
-                }
+    const { data: house, isLoading, isError, error} = useQuery<House, Error>({
+        queryKey: ['house', id],
+        queryFn: async () => {
+            const response = await fetch(`${config.API_URL}houses/${id}/`)
+            if (!response.ok){
+                throw new Error(`Ошибка загрузки дома: ${response.status}`)
             }
-        }
-
-        fetchHouse()
-    }, [id])
+            return await response.json()
+        },
+        enabled: !!id,
+        staleTime: 1000 * 60 * 5,
+        retry: 2,
+    })
 
     const handleOrderFormChange = (e) => {
         const { name, value, type, checked } = e.target
@@ -205,15 +178,17 @@ const ProjectDetail = () => {
 
             const success = await sendRequest(`${config.API_URL}house-questions/`, payload)
 
-            setQuestionForm({
-                name: "",
-                phone: "",
-                email: "",
-                question: "",
-                agreeToTerms: false,
-            })
-
-            setQuestionDialogOpen(false)
+            if (success) {
+                toast.success("Вопрос о проекта успешно отправлена!")
+                setQuestionForm({
+                    name: "",
+                    phone: "",
+                    email: "",
+                    question: "",
+                    agreeToTerms: false,
+                })
+                setQuestionDialogOpen(false)
+            }
         } catch (error) {
             console.error("Ошибка при отправки вопроса:", error)
         } finally {
@@ -221,7 +196,7 @@ const ProjectDetail = () => {
         }
     }
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-zinc-50">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
@@ -232,12 +207,12 @@ const ProjectDetail = () => {
         )
     }
 
-    if (error || !house) {
+    if (isError || !house) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-zinc-50">
                 <div className="text-center">
                     <h2 className="text-2xl font-bold text-zinc-800 mb-4">Ошибка загрузки проекта</h2>
-                    <p className="text-zinc-600 mb-6">{error || "Проект не найден"}</p>
+                    <p className="text-zinc-600 mb-6">{error.message || "Проект не найден"}</p>
                     <Button onClick={() => navigate("/projects")}>Вернуться к списку проектов</Button>
                 </div>
             </div>
@@ -291,7 +266,6 @@ const ProjectDetail = () => {
                         >
                             <Button
                                 variant={isFavorite ? "default" : "outline"}
-                                size={isMobile ? "sm" : "default"}
                                 className={isFavorite ? "bg-white/90 hover:bg-white text-zinc-800" : ""}
                                 onClick={handleFavoriteToggle}
                             >

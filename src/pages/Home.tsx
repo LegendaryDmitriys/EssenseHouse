@@ -11,12 +11,11 @@ import TeamSection from "@/components/home/TeamSection";
 import ProjectsShowcase from "@/components/home/ProjectsShowcase";
 import Questions from "@/components/home/Questions.tsx";
 import TestimonialsSection from "@/components/home/TestimonialsSection.tsx";
-import HowBuild from "@/components/home/HowBuild.tsx";
 import AdvantagesSection from "@/components/home/AdvantagesSection.tsx";
 import ContactForm from "@/components/home/ContactForm.tsx";
 import LazyComponent from "@/components/lazy/LazyComponent.tsx";
 
-const Index = () => {
+const Home = () => {
   const [isContactVisible, setIsContactVisible] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [showMainContent, setShowMainContent] = useState(false);
@@ -25,7 +24,7 @@ const Index = () => {
 
 
   const backgroundY = useTransform(scrollY, [0, 1000], [0, 300]);
-  const headerOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+
 
 
   const opacityTitle = useTransform(scrollY, [0, 200, 500], [1, 1, 0.8]);
@@ -186,9 +185,6 @@ const Index = () => {
             <CostCalculator/>
           </LazyComponent>
 
-          <LazyComponent>
-            <HowBuild/>
-          </LazyComponent>
 
           <LazyComponent>
             <TestimonialsSection/>
@@ -219,4 +215,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Home;

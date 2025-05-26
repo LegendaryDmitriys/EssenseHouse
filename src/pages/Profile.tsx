@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -20,46 +20,33 @@ import UserOrderCard from '@/components/profile/UserOrderCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import {Order} from "@/types/orders.ts";
 import config from "@/api/api.ts";
+import {useQuery} from "@tanstack/react-query";
 
 
 const Profile = () => {
     const { user, logout, favorites } = useAuth();
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState('profile');
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            if (!user?.email) {
-                setOrders([]);
-                setIsLoading(false);
-                return;
+    const { data: orders = [], isLoading, isError, error } = useQuery<Order[], Error>({
+        queryKey: ['orders', user?.email],
+        queryFn: async () => {
+            if (!user?.email) return []
+
+            const response = await fetch(
+                `${config.API_URL}orders/by-email/?email=${encodeURIComponent(user.email)}`
+            )
+
+            if (!response.ok) {
+                const errorData = await response.json()
+                throw new Error(errorData.error || 'Не удалось загрузить заказы')
             }
 
-            try {
-                setIsLoading(true);
-                setError(null);
-
-                const response = await fetch(`${config.API_URL}orders/by-email/?email=${encodeURIComponent(user.email)}`);
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Не удалось загрузить заказы');
-                }
-
-                const data = await response.json();
-                setOrders(data);
-            } catch (err) {
-                setError(err.message);
-                console.error('Ошибка при загрузке заказов:', err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchOrders();
-    }, [user]);
+            return await response.json()
+        },
+        enabled: !!user?.email,
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
+    })
 
     return (
         <div className="container mx-auto px-4 py-32">
@@ -142,8 +129,8 @@ const Profile = () => {
                                         <Skeleton className="h-32 w-full" />
                                         <Skeleton className="h-32 w-full" />
                                     </div>
-                                ) : error ? (
-                                    <div className="text-destructive text-center py-4">{error}</div>
+                                ) : isError ? (
+                                    <div className="text-destructive text-center py-4">{error.message}</div>
                                 ) : orders.length > 0 ? (
                                     <div className="grid gap-4 md:grid-cols-2">
                                         {orders.map((order) => (

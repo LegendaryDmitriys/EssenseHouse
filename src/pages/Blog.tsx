@@ -15,6 +15,9 @@ import { cn } from "@/lib/utils.ts"
 import { getPageNumberFromUrl } from "@/utils/getPageNumberFromUrl.ts"
 import config from "@/api/api.ts"
 import { useQuery } from "@tanstack/react-query"
+import {Newspaper} from "lucide-react";
+import {Button} from "@/components/ui/button.tsx";
+import {Link} from "react-router-dom";
 
 const Blog = () => {
     const [currentCategory, setCurrentCategory] = useState<string | null>(null)
@@ -27,11 +30,7 @@ const Blog = () => {
         return `${config.API_URL}blogs/?${params.toString()}`
     }
 
-    const {
-        data: blogsData = { results: [], count: 0, next: null, previous: null },
-        isLoading: blogsLoading,
-        error: blogsError,
-    } = useQuery({
+    const { data: blogsData = { results: [], count: 0, next: null, previous: null }, isLoading: blogsLoading, error: blogsError } = useQuery({
         queryKey: ["blogs", currentCategory, currentPage],
         queryFn: async () => {
             const response = await fetch(getBlogsUrl())
@@ -44,17 +43,14 @@ const Blog = () => {
         retry: 1,
     })
 
-    const {
-        data: categories = [],
-        isLoading: categoriesLoading,
-        error: categoriesError,
-    } = useQuery({
+    const {data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useQuery({
         queryKey: ["blog-categories"],
         queryFn: async () => {
             const response = await fetch(`${config.API_URL}blogs/categories/`)
             if (!response.ok) throw new Error("Ошибка загрузки категорий")
             return await response.json()
         },
+        staleTime: 1000 * 60 * 5,
         retry: 1,
     })
 
@@ -128,20 +124,40 @@ const Blog = () => {
                         </TabsList>
 
                         <TabsContent value="all" className="mt-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {blogsData.results.map((post) => (
-                                    <BlogCard key={post.id} post={post} />
-                                ))}
-                            </div>
-                        </TabsContent>
-
-                        {categories.map((category) => (
-                            <TabsContent key={category.id} value={category.name} className="mt-6">
+                            {blogsLoading ? (
+                                <div className="flex justify-center py-12">
+                                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                                </div>
+                            ) : blogsData.results.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {blogsData.results.map((post) => (
                                         <BlogCard key={post.id} post={post} />
                                     ))}
                                 </div>
+                            ) : (
+                                <div className="text-center py-20">
+                                    <Newspaper className="w-12 h-12 mx-auto text-zinc-300 mb-4" />
+                                    <h3 className="text-xl font-medium text-zinc-700 mb-2">Статьи не найдены</h3>
+                                    <p className="text-zinc-500 mb-6">В этой категории пока нет статей</p>
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        {categories.map((category) => (
+                            <TabsContent key={category.id} value={category.name} className="mt-6">
+                                {blogsData.results.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {blogsData.results.map((post) => (
+                                            <BlogCard key={post.id} post={post} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-20">
+                                        <Newspaper className="w-12 h-12 mx-auto text-zinc-300 mb-4"/>
+                                        <h3 className="text-xl font-medium text-zinc-700 mb-2">Статьи не найдены</h3>
+                                        <p className="text-zinc-500 mb-6">В этой категории пока нет статей</p>
+                                    </div>
+                                )}
                             </TabsContent>
                         ))}
                     </Tabs>
@@ -151,7 +167,7 @@ const Blog = () => {
                             <Pagination>
                                 <PaginationContent>
                                     <PaginationItem>
-                                        <PaginationPrevious
+                                    <PaginationPrevious
                                             onClick={handlePrevPage}
                                             className={cn(!blogsData.previous && "pointer-events-none opacity-50")}
                                         />

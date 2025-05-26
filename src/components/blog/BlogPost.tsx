@@ -12,13 +12,14 @@ const BlogPost = () => {
     const {data: post, isLoading, isError, error} = useQuery({
         queryKey: ["blog", id],
         queryFn: async () => {
-            const response = await fetch(`${config.API_URL}blogs/${id}`);
+            const response = await fetch(`${config.API_URL}blogs/${id}/`);
             if (!response.ok) {
                 throw new Error('Ошибка при загрузке статьи');
             }
             return await response.json();
         },
         enabled: !!id,
+        staleTime: 1000 * 60 * 5,
     })
 
 

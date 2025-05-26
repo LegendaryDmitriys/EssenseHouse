@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Star, Quote, PlusCircle, File, FileText, FileImage, FileVideo, FileAudio } from "lucide-react"
+import {
+    Star,
+    Quote,
+    PlusCircle,
+    File,
+    FileText,
+    FileImage,
+    FileVideo,
+    FileAudio,
+    NotebookPen
+} from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -65,7 +75,7 @@ const Testimonials = () => {
             try {
                 const response = await fetch(url || `${config.API_URL}reviews/?status=published`);
                 if (!response.ok) {
-                    throw new Error(`Http error, Status: ${response.status}`);
+                    throw new Error(`HTTP ошибка, Статус: ${response.status}`);
                 }
                 const result = await response.json();
                 setReviews(result.results);
@@ -161,23 +171,23 @@ const Testimonials = () => {
             <section className="py-20">
                 <div className="container">
                     {loading ? (
-                        <div className="text-center py-12">
-                            <p className="text-muted-foreground">Загрузка отзывов...</p>
-                        </div>
-                    ) : error ? (
-                        <div className="text-center py-12">
-                            <p className="text-destructive">Ошибка: {error}</p>
+                        <div className="flex justify-center items-center py-20">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                         </div>
                     ) : reviews.length === 0 ? (
                         <div className="text-center py-12">
-                            <p className="text-muted-foreground">Отзывов пока нет. Будьте первым!</p>
+                            <div className="text-center py-20">
+                            <NotebookPen className="w-12 h-12 mx-auto text-zinc-300 mb-4"/>
+                                <h3 className="text-xl font-medium text-zinc-700 mb-2">Отзывы не найдены</h3>
+                                <p className="text-zinc-500 mb-6">Будьте первым!</p>
+                            </div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {reviews.map((testimonial, index) => (
                                 <motion.div
                                     key={index}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{opacity: 0, y: 20}}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.5, delay: index * 0.1 }}
                                 >

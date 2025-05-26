@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Index from "./pages/Index";
+import Home from "./pages/Home.tsx";
 import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 import About from "@/pages/About.tsx";
@@ -53,7 +53,7 @@ const App = () => {
                         <Navbar />
                         <main>
                             <Routes>
-                                <Route path="/" element={<Index />} />
+                                <Route path="/" element={<Home />} />
                                 <Route path="/projects" element={<Projects />} />
                                 <Route path="/projects/:id" element={<ProjectDetail />} />
                                 <Route path="/about" element={<About />} />

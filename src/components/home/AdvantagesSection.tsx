@@ -35,7 +35,7 @@ const  AdvantagesSection = ()=> {
                     viewport={{ once: true }}
                     className="max-w-4xl mx-auto mb-20"
                 >
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-16">
+                    <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6">
                         СТРОИМ ТАК, ЧТО СОСЕДИ БУДУТ ЗАВИДОВАТЬ
                     </h2>
                 </motion.div>

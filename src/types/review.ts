@@ -20,4 +20,12 @@ export interface Review {
 }
 
 
+export interface FetchReviewsResponse {
+    results: Review[]
+    count: number
+    next: string | null
+    previous: string | null
+}
+
+
 export type ReviewPaginatedResponse = PaginatedResponse<Review>;
