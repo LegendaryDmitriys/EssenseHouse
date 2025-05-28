@@ -1,11 +1,13 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import config from "@/api/api.ts";
+import {authFetch} from "@/context/authFetch.ts";
+import { initPush } from '../pushNotifications';
 
 interface User {
     email: string;
+    isAdmin?: boolean;
 }
 
 interface AuthContextType {
@@ -23,26 +25,65 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [favorites, setFavorites] = useState<string[]>([]);
     const navigate = useNavigate();
 
+    function parseJwt(token: string) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                    .split('')
+                    .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join('')
+            );
+            return JSON.parse(jsonPayload);
+        } catch {
+            return null;
+        }
+    }
+
+    const fetchAndSetUser = async (accessToken: string) => {
+        const payload = parseJwt(accessToken);
+        const userId = payload?.user_id;
+        if (!userId) return;
+
+        const response = await authFetch(`${config.API_URL}auth/users/${userId}/`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+
+        if (!response.ok) throw new Error("Ошибка загрузки пользователя");
+
+        const userData = await response.json();
+
+        const userObj = {
+            email: userData.email,
+            isAdmin: userData.is_admin,
+        };
+        localStorage.setItem('user', JSON.stringify(userObj));
+        setUser(userObj);
+    };
+
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
         const storedToken = localStorage.getItem('accessToken');
         const storedFavorites = localStorage.getItem('favorites');
-
-        if (storedUser && storedToken) {
-            setUser(JSON.parse(storedUser));
-        }
 
         if (storedFavorites) {
             setFavorites(JSON.parse(storedFavorites));
         }
 
-        setLoading(false);
+        if (storedToken) {
+            fetchAndSetUser(storedToken).catch(console.error).finally(() => setLoading(false));
+        } else {
+            setLoading(false);
+        }
     }, []);
 
     useEffect(() => {
@@ -71,10 +112,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.setItem('accessToken', data.access);
             localStorage.setItem('refreshToken', data.refresh);
 
-            const userObj = { email };
-            localStorage.setItem('user', JSON.stringify(userObj));
+            await fetchAndSetUser(data.access);
 
-            setUser(userObj);
+            await initPush();
+
             toast({
                 title: "Успешный вход",
                 description: "Вы успешно вошли в систему",
@@ -109,14 +150,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             const data = await response.json();
 
-
             localStorage.setItem('accessToken', data.access);
             localStorage.setItem('refreshToken', data.refresh);
 
-            const userObj = { email };
-            localStorage.setItem('user', JSON.stringify(userObj));
+            await fetchAndSetUser(data.access);
 
-            setUser(userObj);
             toast({
                 title: "Регистрация успешна",
                 description: "Вы успешно зарегистрировались и вошли в систему",
@@ -181,7 +219,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const isAuthenticated = !!user;
-    const isAdmin = isAuthenticated;
+    const isAdmin = user?.isAdmin ?? false;
 
     return (
         <AuthContext.Provider value={{

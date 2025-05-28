@@ -1,16 +1,17 @@
 
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import React from "react";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
     adminOnly?: boolean;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+export const ProtectedRoute = ({
                                                                   children,
                                                                   adminOnly = false
-                                                              }) => {
+                                                              }: ProtectedRouteProps) => {
     const { isAuthenticated, isAdmin, loading } = useAuth();
 
     if (loading) {

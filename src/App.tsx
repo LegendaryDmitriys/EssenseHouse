@@ -33,16 +33,11 @@ import AdminProjects from "@/pages/AdminProject.tsx";
 import AdminProjectDetail from "@/pages/AdminProjectDetail.tsx";
 import BlogsAdmin from "@/pages/BlogsAdmin.tsx";
 
-import { initPush } from "./pushNotifications";
 import AdminNotifications from "@/pages/AdminNotifications.tsx";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-    useEffect(() => {
-        initPush();
-    }, []);
-
     return (
         <QueryClientProvider client={queryClient}>
             <TooltipProvider>

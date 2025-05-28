@@ -18,6 +18,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
     const [rating, setRating] = useState(5);
     const [review, setReview] = useState("");
     const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [files, setFiles] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,7 +28,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
         if (isSubmitting) return;
 
 
-        if (!name || !review) {
+        if (!name || !email || !review) {
             toast.error("Пожалуйста, заполните все обязательные поля");
             return;
         }
@@ -36,6 +37,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
 
         const formData = new FormData();
         formData.append("name", name);
+        formData.append("email", email);
         formData.append("review", review);
         formData.append("rating", String(rating));
 
@@ -60,6 +62,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
 
 
             setName("");
+            setEmail("");
             setReview("");
             setRating(5);
             setFiles(null);
@@ -97,6 +100,16 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
                 />
             </div>
 
+            <div>
+                <label className="block text-sm font-medium mb-2">Ваш email *</label>
+                <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Введите вашу почту"
+                    required
+                />
+            </div>
 
             <div>
                 <label className="block text-sm font-medium mb-2">Оценка</label>
@@ -144,7 +157,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
                         htmlFor="file-upload"
                         className="flex items-center gap-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-accent"
                     >
-                        <Upload className="w-4 h-4" />
+                        <Upload className="w-4 h-4"/>
                         Выбрать файлы
                     </label>
                     {files && (

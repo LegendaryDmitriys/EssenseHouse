@@ -15,9 +15,14 @@ export async function initPush() {
             applicationServerKey: 'BPSzZyM01ouj_pvEXeRRloM23YTmt81hkSOo7LfPtUrbjOpIBb80vEg38x3AoJRIrJRsTTfPuEYTxEJurrY0css'
         });
 
+        const accessToken = localStorage.getItem('accessToken');
+
         await fetch(`${config.API_URL}mail/subscribe`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                ...(accessToken && { 'Authorization': `Bearer ${accessToken}` })
+            },
             body: JSON.stringify(subscription)
         });
 
