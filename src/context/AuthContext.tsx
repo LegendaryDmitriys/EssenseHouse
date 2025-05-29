@@ -2,7 +2,6 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import config from "@/api/api.ts";
-import {authFetch} from "@/context/authFetch.ts";
 import { initPush } from '../pushNotifications';
 
 interface User {
@@ -47,17 +46,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    const refreshToken = async () => {
+        const refresh = localStorage.getItem('refreshToken');
+        if (!refresh) throw new Error("Нет refresh токена");
+
+        const response = await fetch(`${config.API_URL}auth/token/refresh/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh })
+        });
+
+        if (!response.ok) {
+            throw new Error("Не удалось обновить токен");
+        }
+
+        const data = await response.json();
+        localStorage.setItem('accessToken', data.access);
+        return data.access;
+    };
+
     const fetchAndSetUser = async (accessToken: string) => {
         const payload = parseJwt(accessToken);
         const userId = payload?.user_id;
         if (!userId) return;
 
-        const response = await authFetch(`${config.API_URL}auth/users/${userId}/`, {
+        const response = await fetch(`${config.API_URL}auth/users/${userId}/`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-
 
         if (!response.ok) throw new Error("Ошибка загрузки пользователя");
 
@@ -87,10 +104,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     useEffect(() => {
-        if (favorites.length > 0) {
-            localStorage.setItem('favorites', JSON.stringify(favorites));
-        }
-    }, [favorites]);
+        const checkAndRefreshToken = async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) return;
+
+            try {
+                const payload = parseJwt(token);
+                const exp = payload?.exp;
+
+                if (exp && Date.now() / 1000 > exp - 60) {
+                    await refreshToken();
+                }
+            } catch (err) {
+                console.error("Ошибка обновления токена", err);
+                logout();
+            }
+        };
+
+        checkAndRefreshToken();
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) return;
+
+            try {
+                const payload = parseJwt(token);
+                const exp = payload?.exp;
+
+                if (exp && Date.now() / 1000 > exp - 60) {
+                    await refreshToken();
+                }
+            } catch {
+                logout();
+            }
+        }, 5 * 60 * 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const login = async (email: string, password: string) => {
         try {
@@ -113,14 +165,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             localStorage.setItem('refreshToken', data.refresh);
 
             await fetchAndSetUser(data.access);
-
             await initPush();
 
-            toast({
-                title: "Успешный вход",
-                description: "Вы успешно вошли в систему",
-            });
-
+            toast({ title: "Успешный вход", description: "Вы успешно вошли в систему" });
             navigate('/profile');
         } catch (error) {
             toast({
@@ -155,11 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             await fetchAndSetUser(data.access);
 
-            toast({
-                title: "Регистрация успешна",
-                description: "Вы успешно зарегистрировались и вошли в систему",
-            });
-
+            toast({ title: "Регистрация успешна", description: "Вы успешно зарегистрировались и вошли в систему" });
             navigate('/');
         } catch (error) {
             toast({
@@ -178,11 +221,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('user');
 
         setUser(null);
-        toast({
-            title: "Выход выполнен",
-            description: "Вы успешно вышли из системы",
-        });
-
+        toast({ title: "Выход выполнен", description: "Вы успешно вышли из системы" });
         navigate('/');
     };
 
@@ -201,10 +240,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const newFavorites = [...favorites, projectId];
             setFavorites(newFavorites);
             localStorage.setItem('favorites', JSON.stringify(newFavorites));
-            toast({
-                title: "Добавлено в избранное",
-                description: "Проект успешно добавлен в избранное",
-            });
+            toast({ title: "Добавлено в избранное", description: "Проект успешно добавлен в избранное" });
         }
     };
 
@@ -212,10 +248,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const newFavorites = favorites.filter(id => id !== projectId);
         setFavorites(newFavorites);
         localStorage.setItem('favorites', JSON.stringify(newFavorites));
-        toast({
-            title: "Удалено из избранного",
-            description: "Проект успешно удален из избранного",
-        });
+        toast({ title: "Удалено из избранного", description: "Проект успешно удален из избранного" });
     };
 
     const isAuthenticated = !!user;

@@ -13,7 +13,6 @@ import Contacts from "@/pages/Contacts.tsx";
 import Testimonials from "@/pages/Testimonials.tsx";
 import Blog from "@/pages/Blog.tsx";
 import BlogPost from "@/components/blog/BlogPost.tsx";
-import React, { useEffect } from "react";
 import ProjectDetail from "@/pages/ProjectDetails.tsx";
 import PrivacyPolicy from "@/pages/PrivacyPolice.tsx";
 import TermsOfUse from "@/pages/TermsOfUse.tsx";

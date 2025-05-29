@@ -119,6 +119,9 @@ const BlogEditor = ({ blog, onSave, onCancel }: BlogEditorProps) => {
             const response = await fetch(url, {
                 method: isEditing ? "PATCH" : "POST",
                 body: formDataToSend,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+                }
             });
 
             if (!response.ok) {

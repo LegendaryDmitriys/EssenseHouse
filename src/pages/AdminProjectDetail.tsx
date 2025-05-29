@@ -52,6 +52,9 @@ const AdminProjectDetail = () => {
         mutationFn: async () => {
             const response = await fetch(`${config.API_URL}houses/${id}/`, {
                 method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")} `,
+                }
             });
             if (!response.ok) {
                 throw new Error("Ошибка во время удаления");
@@ -60,7 +63,7 @@ const AdminProjectDetail = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["houses"] });
             toast.success("Дом успешно удален");
-            navigate("/houses");
+            navigate("/admin/projects");
         },
         onError: () => {
             toast.error("Ошибка при удалении дома");

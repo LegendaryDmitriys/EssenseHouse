@@ -44,7 +44,6 @@ const Profile = () => {
             return await response.json()
         },
         enabled: !!user?.email,
-        staleTime: 1000 * 60 * 5,
         retry: 1,
     })
 

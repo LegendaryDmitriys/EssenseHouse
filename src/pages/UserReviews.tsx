@@ -21,6 +21,9 @@ const Reviews = () => {
             const response = await fetch(`${config.API_URL}reviews/${reviewId}/`, {
                 method: "PUT",
                 body: formData,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+                }
             });
 
             if (!response.ok) {
@@ -38,6 +41,9 @@ const Reviews = () => {
         try {
             const response = await fetch(`${config.API_URL}reviews/${reviewId}/`, {
                 method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+                }
             });
 
             if (!response.ok) {

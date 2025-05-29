@@ -57,10 +57,11 @@ const PurchasedHouses = () => {
 
     const createPurchasedHouse = async (purchaseData: Omit<PurchasedHouse, 'id' | 'data_created' | 'status'>): Promise<PurchasedHouse> => {
         try {
-            const response = await fetch(`${config.API_URL}/purchase/`, {
+            const response = await fetch(`${config.API_URL}purchase/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
                 },
                 body: JSON.stringify(purchaseData),
             });
@@ -101,6 +102,7 @@ const PurchasedHouses = () => {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
                 },
                 body: JSON.stringify({ construction_status }),
             });

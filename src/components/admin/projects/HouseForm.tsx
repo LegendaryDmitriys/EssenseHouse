@@ -173,7 +173,10 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
 
         fetch(url, {
             method,
-            body: formData
+            body: formData,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")} `,
+            }
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -236,6 +239,9 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
     const deleteImage = async (imageId: number, category: string) => {
         const res = await fetch(`${config.API_URL}houses/${house!.id}/images/${imageId}/delete/${category}/`, {
             method: 'DELETE',
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")} `,
+            }
         });
         if (res.ok) {
             toast.success("Изображение удалено");
@@ -253,6 +259,9 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
     const deleteDocument = async (docId: number) => {
         const res = await fetch(`${config.API_URL}houses/${house!.id}/documents/${docId}/delete/`, {
             method: 'DELETE',
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")} `,
+            }
         });
         if (res.ok) {
             toast.success("Документ удалён");

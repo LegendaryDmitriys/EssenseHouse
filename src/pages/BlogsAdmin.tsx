@@ -39,6 +39,9 @@ const BlogsAdmin = () => {
         try {
             const response = await fetch(`${config.API_URL}blogs/${blogId}/`, {
                 method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+                }
             })
 
             if (!response.ok) {
@@ -61,6 +64,9 @@ const BlogsAdmin = () => {
             const response = await fetch(`${config.API_URL}blogs/${blogId}/`, {
                 method: "PUT",
                 body: formData,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+                }
             })
 
             if (!response.ok) {
