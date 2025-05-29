@@ -3,9 +3,8 @@ import React, { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {Search, Loader2, AlertCircle, Clock, CheckCircle2} from "lucide-react"
+import {Search, Loader2} from "lucide-react"
 import config from "@/api/api"
-import {Badge} from "@/components/ui/badge.tsx";
 import { PaginatedBlogs } from "@/types/blog.ts";
 import {formatDate} from "@/lib/utils.ts";
 import StatusBadge from "@/components/StatusBadge.tsx";

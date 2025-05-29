@@ -4,7 +4,7 @@ import {
     Clock,
     CheckCircle2,
     AlertCircle,
-    XCircle, CheckCircle,
+    XCircle,
 } from "lucide-react";
 
 type StatusType = 'pending' | 'approved' | 'rejected' | 'published' | 'not_started' | 'in_progress' | 'completed' | 'waiting' | 'answered' | 'closed' | string;
@@ -14,7 +14,7 @@ interface StatusBadgeProps {
     context?: 'order' | 'blog' | 'purchasedHouse' | 'question' | 'review' | 'default';
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status, context = 'default' }) => {
+const StatusBadge = ({ status, context = 'default' }: StatusBadgeProps) => {
 
     const getBadgeConfig = () => {
         switch (context) {

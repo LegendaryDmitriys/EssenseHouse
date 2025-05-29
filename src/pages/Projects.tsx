@@ -29,6 +29,13 @@ const Projects = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [compareHouses, setCompareHouses] = useState<House[]>([])
   const [isCompareMode, setIsCompareMode] = useState(false)
+
+  useEffect(() => {
+    if (compareHouses.length === 0 && isCompareMode) {
+      setIsCompareMode(false);
+    }
+  }, [compareHouses.length, isCompareMode]);
+
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({})
   const [page, setPage] = useState(1)
   const itemsPerPage = 6

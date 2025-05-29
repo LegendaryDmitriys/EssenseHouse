@@ -43,6 +43,7 @@ import { cn } from "@/lib/utils.ts"
 import { useOfflineQueue } from "@/hooks/useOfflineHandler.ts"
 import { toast } from "sonner"
 import {useQuery} from "@tanstack/react-query";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
 
 
@@ -74,6 +75,7 @@ const ProjectDetail = () => {
         email: "",
         construction_place: "",
         message: "",
+        finishingOption: "",
         agreeToTerms: false,
     })
 
@@ -103,6 +105,7 @@ const ProjectDetail = () => {
         staleTime: 1000 * 60 * 5,
         retry: 2,
     })
+
 
     const handleOrderFormChange = (e) => {
         const { name, value, type, checked } = e.target
@@ -135,6 +138,9 @@ const ProjectDetail = () => {
             formData.append("construction_place", orderForm.construction_place)
             formData.append("message", orderForm.message)
             formData.append("house", house.id.toString())
+            if (orderForm.finishingOption) {
+                formData.append("finishing_option", orderForm.finishingOption)
+            }
 
             const payload = Object.fromEntries(formData)
 
@@ -148,6 +154,7 @@ const ProjectDetail = () => {
                     email: "",
                     construction_place: "",
                     message: "",
+                    finishingOption: "",
                     agreeToTerms: false,
                 })
                 setOrderDialogOpen(false)
@@ -874,10 +881,12 @@ const ProjectDetail = () => {
                                                         </div>
                                                         <div className="grid grid-cols-1 gap-2">
                                                             <Label htmlFor="order-project">Проект</Label>
-                                                            <Input id="order-project" value={house?.title || ""} disabled />
+                                                            <Input id="order-project" value={house?.title || ""}
+                                                                   disabled/>
                                                         </div>
                                                         <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="order-construction_place">Место строительства</Label>
+                                                            <Label htmlFor="order-construction_place">Место
+                                                                строительства</Label>
                                                             <Input
                                                                 id="order-construction_place"
                                                                 name="construction_place"
@@ -885,6 +894,29 @@ const ProjectDetail = () => {
                                                                 onChange={handleOrderFormChange}
                                                             />
                                                         </div>
+                                                        {house?.finishing_options_details && house.finishing_options_details.length > 0 && (
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                <Label htmlFor="order-finishing">Вариант отделки</Label>
+                                                                <Select
+                                                                    name="finishingOption"
+                                                                    value={orderForm.finishingOption}
+                                                                    onValueChange={(value) =>
+                                                                        setOrderForm({ ...orderForm, finishingOption: value })
+                                                                    }
+                                                                >
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Выберите вариант" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        {house.finishing_options_details.map((option) => (
+                                                                            <SelectItem key={option.id} value={option.id.toString()}>
+                                                                                {option.title}
+                                                                            </SelectItem>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
+                                                        )}
                                                         <div className="grid grid-cols-1 gap-2">
                                                             <Label htmlFor="order-message">Сообщение</Label>
                                                             <Textarea
@@ -901,7 +933,10 @@ const ProjectDetail = () => {
                                                                 name="agreeToTerms"
                                                                 checked={orderForm.agreeToTerms}
                                                                 onCheckedChange={(checked) =>
-                                                                    setOrderForm({ ...orderForm, agreeToTerms: checked === true })
+                                                                    setOrderForm({
+                                                                        ...orderForm,
+                                                                        agreeToTerms: checked === true
+                                                                    })
                                                                 }
                                                                 required
                                                             />
@@ -914,7 +949,8 @@ const ProjectDetail = () => {
                                                         </div>
                                                     </div>
                                                     <DialogFooter>
-                                                        <Button type="submit" disabled={orderSubmitting || !orderForm.agreeToTerms}>
+                                                        <Button type="submit"
+                                                                disabled={orderSubmitting || !orderForm.agreeToTerms}>
                                                             {orderSubmitting ? "Отправка..." : "Отправить заявку"}
                                                         </Button>
                                                     </DialogFooter>

@@ -14,6 +14,7 @@ export interface Order {
     };
 
     finishing_option?: FinishingOption
+    finishing_option_details?: FinishingOption
     construction_place: string;
     message: string;
     data_created: string;

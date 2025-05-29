@@ -95,12 +95,6 @@ const Profile = () => {
                 </Card>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                    <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="profile">Профиль</TabsTrigger>
-                        <TabsTrigger value="orders">Мои заказы</TabsTrigger>
-                        <TabsTrigger value="favorites">Избранное</TabsTrigger>
-                    </TabsList>
-
                     <TabsContent value="profile" className="space-y-4">
                         <Card>
                             <CardHeader>
