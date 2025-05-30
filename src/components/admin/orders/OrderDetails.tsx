@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Home, CheckCircle2, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import {Order, OrderStatus} from "@/types/orders.ts";
+import {Order, OrderStatus} from "@/types/order.ts";
 import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
 import {formatDate} from "@/lib/utils.ts";
 import StatusBadge from "@/components/StatusBadge.tsx";
@@ -113,7 +113,7 @@ const OrderDetails = ({ order, onUpdateStatus } :OrderDetailsProps) => {
                         <h3 className="font-medium mb-2 text-sm text-gray-500">Основная информация</h3>
                         <div className="grid grid-cols-1 gap-3">
                             <div>
-                                <div className="font-semibold">{order.name}</div>
+                                <div className="font-semibold">{order.first_name} {order.last_name}</div>
                                 <div className="flex items-center text-sm text-gray-500 mt-1">
                                     <Phone className="h-3 w-3 mr-1" />
                                     {order.phone}

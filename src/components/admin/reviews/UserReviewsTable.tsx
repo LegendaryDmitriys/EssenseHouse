@@ -114,7 +114,7 @@ const UserReviewsTable = ({ onReviewSelect }: UserReviewsTableProps) => {
                                 <CardContent className="pt-4">
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <h3 className="font-medium">{review.name}</h3>
+                                            <h3 className="font-medium">{review.first_name} {review.last_name}</h3>
                                             <p className="text-sm text-gray-500">{formatDate(review.date)}</p>
                                         </div>
                                         <StatusBadge status={review.status} context="review"/>

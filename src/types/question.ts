@@ -3,7 +3,8 @@ export type QuestionStatus = 'waiting' | 'answered' | 'closed';
 
 export interface HouseQuestion {
     id: string;
-    name: string;
+    first_name: string;
+    last_name: string;
     phone: string;
     email?: string;
     house: number;
@@ -19,7 +20,8 @@ export interface HouseQuestion {
 
 export interface UserQuestion {
     id: string;
-    name: string;
+    first_name: string;
+    last_name: string;
     phone: string;
     created_at: string;
     status: QuestionStatus;

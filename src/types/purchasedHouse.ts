@@ -7,9 +7,10 @@ export interface PurchasedHouse {
     house: House;
     house_id : number;
     purchase_date: string;
-    buyer_name: string;
-    buyer_phone: string;
-    buyer_email: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    email: string;
     construction_status: ConstructionStatus;
     latitude?: number;
     longitude?: number;

@@ -1,14 +1,30 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button.tsx";
 import { toast } from "sonner";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import config from "@/api/api.ts";
+import {useAuth} from "@/context/AuthContext.tsx";
 
 const ContactForm = ({ onIsContactVisible }) => {
+    const { user } = useAuth()
+
     const [formData, setFormData] = useState({
-        name: "",
-        phone: "",
+        first_name: user?.first_name || '',
+        last_name: user?.last_name || '',
+        phone: user?.phone_number || '',
     });
+
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                phone: user.phone_number,
+            }));
+        }
+    }, [user]);
+
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,7 +42,8 @@ const ContactForm = ({ onIsContactVisible }) => {
 
         try {
             const data = new FormData();
-            data.append ("name", formData.name);
+            data.append("first_name", formData.first_name);
+            data.append("last_name", formData.last_name);
             data.append("phone", formData.phone);
 
 
@@ -40,7 +57,7 @@ const ContactForm = ({ onIsContactVisible }) => {
             }
 
             toast.success("Спасибо за обращение! Мы свяжемся с вами в ближайшее время.");
-            setFormData({ name: "", phone: "" });
+            setFormData({ first_name: "", last_name: "", phone: "" });
             onIsContactVisible(false);
 
         } catch (error) {
@@ -80,11 +97,27 @@ const ContactForm = ({ onIsContactVisible }) => {
                         </label>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="firstName"
+                            value={formData.first_name}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md"
-                            placeholder="Иван Иванов"
+                            placeholder="Иван"
+                            disabled={!!(user?.first_name)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">
+                            Ваша фамилия
+                        </label>
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={formData.last_name}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md"
+                            placeholder="Иванов"
+                            disabled={!!(user?.last_name)}
                             required
                         />
                     </div>
@@ -99,6 +132,7 @@ const ContactForm = ({ onIsContactVisible }) => {
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md"
                             placeholder="+7 (999) 999-99-99"
+                            disabled={!!(user?.phone_number)}
                             required
                         />
                     </div>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -49,7 +49,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 
 const ProjectDetail = () => {
     const { id } = useParams<{ id: string }>()
-    const { addToFavorites, removeFromFavorites, favorites } = useAuth()
+    const { addToFavorites, removeFromFavorites, favorites, user } = useAuth()
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState<string>("overview")
     const [isImageExpanded, setIsImageExpanded] = useState(false)
@@ -70,22 +70,45 @@ const ProjectDetail = () => {
     }
 
     const [orderForm, setOrderForm] = useState({
-        name: "",
-        phone: "",
-        email: "",
+        first_name: user ? user.first_name : '',
+        last_name: user ? user.last_name : '',
+        phone: user ? user.phone_number : '',
+        email: user ? user.email : '',
         construction_place: "",
         message: "",
         finishingOption: "",
         agreeToTerms: false,
     })
 
+
     const [questionForm, setQuestionForm] = useState({
-        name: "",
-        phone: "",
-        email: "",
+        first_name: user ? user.first_name : '',
+        last_name: user ? user.last_name : '',
+        phone: user ? user.phone_number : '',
+        email: user ? user.email : '',
         question: "",
         agreeToTerms: false,
     })
+
+
+    useEffect(() => {
+        if (user) {
+            setOrderForm(prev => ({
+                ...prev,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                phone: user.phone_number,
+                email: user.email,
+            }));
+            setQuestionForm(prev => ({
+                ...prev,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                phone: user.phone_number,
+                email: user.email,
+            }));
+        }
+    }, [user]);
 
     const [orderSubmitting, setOrderSubmitting] = useState(false)
     const [questionSubmitting, setQuestionSubmitting] = useState(false)
@@ -132,7 +155,8 @@ const ProjectDetail = () => {
         setOrderSubmitting(true)
         try {
             const formData = new FormData()
-            formData.append("name", orderForm.name)
+            formData.append("first_name", orderForm.first_name)
+            formData.append("last_name", orderForm.last_name)
             formData.append("phone", orderForm.phone)
             formData.append("email", orderForm.email)
             formData.append("construction_place", orderForm.construction_place)
@@ -149,7 +173,8 @@ const ProjectDetail = () => {
             if (success) {
                 toast.success("Заявка на заказ проекта успешно отправлена!")
                 setOrderForm({
-                    name: "",
+                    first_name: "",
+                    last_name: "",
                     phone: "",
                     email: "",
                     construction_place: "",
@@ -175,7 +200,8 @@ const ProjectDetail = () => {
         setQuestionSubmitting(true)
         try {
             const formData = new FormData()
-            formData.append("name", questionForm.name)
+            formData.append("first_name", questionForm.first_name)
+            formData.append("last_name", questionForm.last_name)
             formData.append("phone", questionForm.phone)
             formData.append("email", questionForm.email)
             formData.append("question", questionForm.question)
@@ -188,7 +214,8 @@ const ProjectDetail = () => {
             if (success) {
                 toast.success("Вопрос о проекта успешно отправлена!")
                 setQuestionForm({
-                    name: "",
+                    first_name: "",
+                    last_name: "",
                     phone: "",
                     email: "",
                     question: "",
@@ -320,9 +347,9 @@ const ProjectDetail = () => {
                                 <p className="text-xs md:text-sm text-zinc-500 font-medium">Стоимость проекта</p>
                                 {house.discount && house.discount > 0 ? (
                                     <div className="space-y-1">
-                    <span className="text-xs md:text-sm line-through text-zinc-400">
-                      {new Intl.NumberFormat("ru-RU").format(Number.parseFloat(house.price))} ₽
-                    </span>
+                                        <span className="text-xs md:text-sm line-through text-zinc-400">
+                                          {new Intl.NumberFormat("ru-RU").format(Number.parseFloat(house.price))} ₽
+                                        </span>
                                         <div className="text-xl md:text-3xl font-bold text-primary">
                                             {new Intl.NumberFormat("ru-RU").format(house.new_price || 0)} ₽
                                         </div>
@@ -849,12 +876,24 @@ const ProjectDetail = () => {
                                                 <form onSubmit={handleOrderSubmit}>
                                                     <div className="grid gap-4 py-4">
                                                         <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="order-name">Ваше имя</Label>
+                                                            <Label htmlFor="order-first_name">Ваше имя</Label>
                                                             <Input
-                                                                id="order-name"
-                                                                name="name"
-                                                                value={orderForm.name}
+                                                                id="order-first_name"
+                                                                name="first_name"
+                                                                value={orderForm.first_name}
                                                                 onChange={handleOrderFormChange}
+                                                                disabled={!!(user?.first_name)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="grid grid-cols-1 gap-2">
+                                                            <Label htmlFor="order-last_name">Ваша фамилия</Label>
+                                                            <Input
+                                                                id="order-last_name"
+                                                                name="last_name"
+                                                                value={orderForm.last_name}
+                                                                onChange={handleOrderFormChange}
+                                                                disabled={!!(user?.last_name)}
                                                                 required
                                                             />
                                                         </div>
@@ -865,6 +904,7 @@ const ProjectDetail = () => {
                                                                 name="phone"
                                                                 value={orderForm.phone}
                                                                 onChange={handleOrderFormChange}
+                                                                disabled={!!user?.phone_number}
                                                                 required
                                                             />
                                                         </div>
@@ -876,6 +916,7 @@ const ProjectDetail = () => {
                                                                 type="email"
                                                                 value={orderForm.email}
                                                                 onChange={handleOrderFormChange}
+                                                                disabled={!!user?.email}
                                                                 required
                                                             />
                                                         </div>
@@ -901,15 +942,19 @@ const ProjectDetail = () => {
                                                                     name="finishingOption"
                                                                     value={orderForm.finishingOption}
                                                                     onValueChange={(value) =>
-                                                                        setOrderForm({ ...orderForm, finishingOption: value })
+                                                                        setOrderForm({
+                                                                            ...orderForm,
+                                                                            finishingOption: value
+                                                                        })
                                                                     }
                                                                 >
                                                                     <SelectTrigger>
-                                                                        <SelectValue placeholder="Выберите вариант" />
+                                                                        <SelectValue placeholder="Выберите вариант"/>
                                                                     </SelectTrigger>
                                                                     <SelectContent>
                                                                         {house.finishing_options_details.map((option) => (
-                                                                            <SelectItem key={option.id} value={option.id.toString()}>
+                                                                            <SelectItem key={option.id}
+                                                                                        value={option.id.toString()}>
                                                                                 {option.title}
                                                                             </SelectItem>
                                                                         ))}
@@ -960,7 +1005,7 @@ const ProjectDetail = () => {
 
                                         <Dialog open={questionDialogOpen} onOpenChange={setQuestionDialogOpen}>
                                             <DialogTrigger asChild>
-                                                <Button variant="outline" className="w-full" size="lg">
+                                            <Button variant="outline" className="w-full" size="lg">
                                                     <MessageSquare className="w-4 h-4 mr-2" />
                                                     Задать вопрос
                                                 </Button>
@@ -973,74 +1018,96 @@ const ProjectDetail = () => {
                                                 <form onSubmit={handleQuestionSubmit}>
                                                     <div className="grid gap-4 py-4">
                                                         <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="question-name">Ваше имя</Label>
+                                                            <Label htmlFor="question-firstName">Ваше имя</Label>
                                                             <Input
-                                                                id="question-name"
-                                                                name="name"
-                                                                value={questionForm.name}
+                                                                id="question-firstName"
+                                                                name="firstName"
+                                                                value={questionForm.first_name}
                                                                 onChange={handleQuestionFormChange}
+                                                                disabled={!!user?.first_name}
                                                                 required
                                                             />
                                                         </div>
-                                                        <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="question-phone">Телефон</Label>
-                                                            <Input
-                                                                id="question-phone"
-                                                                name="phone"
-                                                                value={questionForm.phone}
-                                                                onChange={handleQuestionFormChange}
-                                                                required
-                                                            />
+                                                        <div className="grid gap-4 py-4">
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                <Label htmlFor="question-lastName">Ваше имя</Label>
+                                                                <Input
+                                                                    id="question-lastName"
+                                                                    name="lastName"
+                                                                    value={questionForm.last_name}
+                                                                    onChange={handleQuestionFormChange}
+                                                                    disabled={!!user?.last_name}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                <Label htmlFor="question-phone">Телефон</Label>
+                                                                <Input
+                                                                    id="question-phone"
+                                                                    name="phone"
+                                                                    value={questionForm.phone}
+                                                                    onChange={handleQuestionFormChange}
+                                                                    disabled={!!user?.phone_number}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                <Label htmlFor="question-email">Почта</Label>
+                                                                <Input
+                                                                    id="question-email"
+                                                                    name="email"
+                                                                    type="email"
+                                                                    value={questionForm.email}
+                                                                    onChange={handleQuestionFormChange}
+                                                                    disabled={!!user?.email}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                <Label htmlFor="question-project">Интересующий
+                                                                    товар/проект</Label>
+                                                                <Input id="question-project" value={house?.title || ""}
+                                                                       disabled/>
+                                                            </div>
+                                                            <div className="grid grid-cols-1 gap-2">
+                                                                <Label htmlFor="question-text">Ваш вопрос</Label>
+                                                                <Textarea
+                                                                    id="question-text"
+                                                                    name="question"
+                                                                    value={questionForm.question}
+                                                                    onChange={handleQuestionFormChange}
+                                                                    rows={4}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className="flex items-center space-x-2">
+                                                                <Checkbox
+                                                                    id="question-terms"
+                                                                    name="agreeToTerms"
+                                                                    checked={questionForm.agreeToTerms}
+                                                                    onCheckedChange={(checked) =>
+                                                                        setQuestionForm({
+                                                                            ...questionForm,
+                                                                            agreeToTerms: checked === true
+                                                                        })
+                                                                    }
+                                                                    required
+                                                                />
+                                                                <label
+                                                                    htmlFor="question-terms"
+                                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                                >
+                                                                    Я согласен на обработку персональных данных
+                                                                </label>
+                                                            </div>
                                                         </div>
-                                                        <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="question-email">Почта</Label>
-                                                            <Input
-                                                                id="question-email"
-                                                                name="email"
-                                                                type="email"
-                                                                value={questionForm.email}
-                                                                onChange={handleQuestionFormChange}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="question-project">Интересующий товар/проект</Label>
-                                                            <Input id="question-project" value={house?.title || ""} disabled />
-                                                        </div>
-                                                        <div className="grid grid-cols-1 gap-2">
-                                                            <Label htmlFor="question-text">Ваш вопрос</Label>
-                                                            <Textarea
-                                                                id="question-text"
-                                                                name="question"
-                                                                value={questionForm.question}
-                                                                onChange={handleQuestionFormChange}
-                                                                rows={4}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="flex items-center space-x-2">
-                                                            <Checkbox
-                                                                id="question-terms"
-                                                                name="agreeToTerms"
-                                                                checked={questionForm.agreeToTerms}
-                                                                onCheckedChange={(checked) =>
-                                                                    setQuestionForm({ ...questionForm, agreeToTerms: checked === true })
-                                                                }
-                                                                required
-                                                            />
-                                                            <label
-                                                                htmlFor="question-terms"
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                            >
-                                                                Я согласен на обработку персональных данных
-                                                            </label>
-                                                        </div>
+                                                        <DialogFooter>
+                                                            <Button type="submit"
+                                                                    disabled={questionSubmitting || !questionForm.agreeToTerms}>
+                                                                {questionSubmitting ? "Отправка..." : "Отправить вопрос"}
+                                                            </Button>
+                                                        </DialogFooter>
                                                     </div>
-                                                    <DialogFooter>
-                                                        <Button type="submit" disabled={questionSubmitting || !questionForm.agreeToTerms}>
-                                                            {questionSubmitting ? "Отправка..." : "Отправить вопрос"}
-                                                        </Button>
-                                                    </DialogFooter>
                                                 </form>
                                             </DialogContent>
                                         </Dialog>
@@ -1048,10 +1115,11 @@ const ProjectDetail = () => {
                                 </CardContent>
                                 <CardFooter className="bg-zinc-50 px-6 py-4">
                                     <div className="flex items-center gap-2 text-zinc-600">
-                                        <Phone className="w-4 h-4 text-primary" />
+                                        <Phone className="w-4 h-4 text-primary"/>
                                         <span>
                                           Или позвоните нам:{" "}
-                                            <a href="tel:+78001234567" className="font-medium text-primary hover:underline">
+                                            <a href="tel:+78001234567"
+                                               className="font-medium text-primary hover:underline">
                                                 8 (800) 123-45-67
                                             </a>
                                         </span>

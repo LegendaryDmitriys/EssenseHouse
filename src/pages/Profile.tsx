@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -11,21 +11,78 @@ import {
 } from '@/components/ui/card';
 import {
     Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
+    TabsContent
 } from '@/components/ui/tabs';
 import { LogOut, Heart, User, Package } from 'lucide-react';
 import UserOrderCard from '@/components/profile/UserOrderCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import {Order} from "@/types/orders.ts";
+import {Order} from "@/types/order.ts";
 import config from "@/api/api.ts";
 import {useQuery} from "@tanstack/react-query";
+import {toast} from "@/hooks/use-toast.ts";
 
 
 const Profile = () => {
-    const { user, logout, favorites } = useAuth();
+    const { user, setUser, logout, favorites } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
+
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                first_name: user.first_name || '',
+                last_name: user.last_name || '',
+                phone_number: user.phone_number || '',
+            });
+        }
+    }, [user]);
+
+    const [formData, setFormData] = useState({
+        first_name: user?.first_name || '',
+        last_name: user?.last_name || '',
+        phone_number: user?.phone_number || '',
+    });
+
+
+    const handleSave = async () => {
+        try {
+            const response = await fetch(`${config.API_URL}auth/users/me/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка при сохранении профиля');
+            }
+
+            const updatedUser = await response.json();
+
+            setUser({
+                email: updatedUser.email,
+                isAdmin: updatedUser.is_admin,
+                first_name: updatedUser.first_name,
+                last_name: updatedUser.last_name,
+                phone_number: updatedUser.phone_number,
+            });
+
+            toast({ title: "Профиль обновлён", description: "Данные успешно сохранены" });
+
+        } catch (error) {
+            console.error(error);
+            alert('Не удалось сохранить изменения');
+        }
+    };
+
+    const isChanged = useMemo(() => {
+        return (
+            formData.first_name !== user?.first_name ||
+            formData.last_name !== user?.last_name ||
+            formData.phone_number !== user?.phone_number
+        );
+    }, [formData, user]);
 
     const { data: orders = [], isLoading, isError, error } = useQuery<Order[], Error>({
         queryKey: ['orders', user?.email],
@@ -99,13 +156,55 @@ const Profile = () => {
                         <Card>
                             <CardHeader>
                                 <CardTitle>Профиль</CardTitle>
-                                <CardDescription>Ваша личная информация</CardDescription>
+                                <CardDescription>Редактируйте свою личную информацию</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <div className="space-y-2">
-                                    <p className="text-sm font-medium">Email</p>
-                                    <p className="text-sm">{user?.email}</p>
+                            <CardContent className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-sm font-medium">Имя</label>
+                                        <input
+                                            className="w-full border rounded-md p-2 mt-1"
+                                            value={formData.first_name}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, first_name: e.target.value })
+                                            }
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Фамилия</label>
+                                        <input
+                                            className="w-full border rounded-md p-2 mt-1"
+                                            value={formData.last_name}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, last_name: e.target.value })
+                                            }
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Телефон</label>
+                                        <input
+                                            className="w-full border rounded-md p-2 mt-1"
+                                            value={formData.phone_number}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, phone_number: e.target.value })
+                                            }
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Email</label>
+                                        <input
+                                            className="w-full border rounded-md p-2 mt-1 bg-gray-100"
+                                            value={user?.email || ''}
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
+
+                                {isChanged && (
+                                    <Button onClick={handleSave} className="mt-4">
+                                        Сохранить изменения
+                                    </Button>
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>

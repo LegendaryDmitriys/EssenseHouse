@@ -10,7 +10,8 @@ export interface ReviewFile {
 
 export interface Review {
     id: number;
-    name: string;
+    first_name: string;
+    last_name: string;
     review: string;
     date: string;
     rating: number;

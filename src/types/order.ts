@@ -5,7 +5,8 @@ export type OrderStatus = 'pending' | 'approved' | 'rejected';
 export interface Order {
     id: number;
     house: number;
-    name: string;
+    first_name: string;
+    last_name: string;
     phone: string;
     email?: string;
     house_details: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Order} from "@/types/orders.ts";
+import {Order} from "@/types/order.ts";
 import {formatDate} from "@/lib/utils.ts";
 import StatusBadge from "@/components/StatusBadge.tsx";
 
@@ -35,7 +35,7 @@ const OrdersTable = ({ orders, onSelect, selectedId }:OrdersTableProps) => {
                         >
                             <td className="py-3 px-4">{formatDate(order.data_created)}</td>
                             <td className="py-3 px-4">
-                                <div className="font-medium">{order.name}</div>
+                                <div className="font-medium">{order.first_name} {order.last_name}</div>
                                 <div className="text-gray-500 text-xs">{order.phone}</div>
                             </td>
                             <td className="py-3 px-4">{order.house_details.title}</td>

@@ -39,8 +39,8 @@ const PurchasedHousesTable = ({ houses, onSelect, selectedId }: PurchasedHousesT
                         >
                             <td className="py-3 px-4">{formatDate(house.purchase_date)}</td>
                             <td className="py-3 px-4">
-                                <div className="font-medium">{house.buyer_name}</div>
-                                <div className="text-gray-500 text-xs">{house.buyer_phone}</div>
+                                <div className="font-medium">{house.first_name} {house.last_name}</div>
+                                <div className="text-gray-500 text-xs">{house.phone_number}</div>
                             </td>
                             <td className="py-3 px-4">{house.house.title}</td>
                             <td className="py-3 px-4"><StatusBadge status={house.construction_status} context="purchasedHouse"/></td>

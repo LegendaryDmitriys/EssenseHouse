@@ -11,7 +11,8 @@ export const filterQuestions = (
         const isHouseQuestion = 'house_details' in question && 'question' in question;
 
         const matchesSearch =
-            question.name.toLowerCase().includes(search.toLowerCase()) ||
+            question.last_name.toLowerCase().includes(search.toLowerCase()) ||
+            question.first_name.toLowerCase().includes(search.toLowerCase()) ||
             question.phone.toLowerCase().includes(search.toLowerCase()) ||
             (isHouseQuestion && (
                 (question as HouseQuestion).house_details.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -36,8 +37,11 @@ export const sortQuestions = (
         let comparison = 0;
 
         switch(sortBy) {
-            case 'name':
-                comparison = a.name.localeCompare(b.name);
+            case 'firstName':
+                comparison = a.first_name.localeCompare(b.first_name);
+                break;
+            case 'lastName':
+                comparison = a.last_name.localeCompare(b.last_name);
                 break;
             case 'status': {
                 const statusOrder: Record<QuestionStatus, number> = {

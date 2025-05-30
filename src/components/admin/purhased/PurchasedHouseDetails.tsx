@@ -122,14 +122,14 @@ const PurchasedHouseDetails = ({ house, onUpdateStatus }:PurchasedHouseDetailsPr
                         <h3 className="font-medium mb-2 text-sm text-gray-500">Информация о покупателе</h3>
                         <div className="grid grid-cols-1 gap-3">
                             <div>
-                                <div className="font-semibold">{house.buyer_name}</div>
+                                <div className="font-semibold">{house.first_name} {house.last_name}</div>
                                 <div className="flex items-center text-sm text-gray-500 mt-1">
                                     <Phone className="h-3 w-3 mr-1" />
-                                    {house.buyer_phone}
+                                    {house.phone_number}
                                 </div>
                                 <div className="flex items-center text-sm text-gray-500 mt-1">
                                     <Mail className="h-3 w-3 mr-1" />
-                                    {house.buyer_email}
+                                    {house.email}
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Star, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import config from "@/api/api.ts";
 import {Review} from "@/types/review.ts";
+import {useAuth} from "@/context/AuthContext.tsx";
 
 
 
@@ -15,12 +16,23 @@ interface ReviewFormProps {
 }
 
 const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
+    const { user } = useAuth();
+
     const [rating, setRating] = useState(5);
     const [review, setReview] = useState("");
-    const [name, setName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [files, setFiles] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            setFirstName(user.first_name ?? "");
+            setLastName(user.last_name ?? "");
+            setEmail(user.email ?? "");
+        }
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,7 +40,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
         if (isSubmitting) return;
 
 
-        if (!name || !email || !review) {
+        if (!firstName || !lastName || !email || !review) {
             toast.error("Пожалуйста, заполните все обязательные поля");
             return;
         }
@@ -36,7 +48,8 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
         setIsSubmitting(true);
 
         const formData = new FormData();
-        formData.append("name", name);
+        formData.append("first_name", firstName);
+        formData.append("last_name", lastName);
         formData.append("email", email);
         formData.append("review", review);
         formData.append("rating", String(rating));
@@ -61,7 +74,8 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
             toast.success("Спасибо за ваш отзыв!");
 
 
-            setName("");
+            setFirstName("");
+            setLastName("");
             setEmail("");
             setReview("");
             setRating(5);
@@ -93,13 +107,23 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
             <div>
                 <label className="block text-sm font-medium mb-2">Ваше имя *</label>
                 <Input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Введите ваше имя"
+                    disabled={!!user?.first_name}
                     required
                 />
             </div>
-
+            <div>
+                <label className="block text-sm font-medium mb-2">Ваше имя *</label>
+                <Input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Введите вашу фамилию"
+                    disabled={!!user?.last_name}
+                    required
+                />
+            </div>
             <div>
                 <label className="block text-sm font-medium mb-2">Ваш email *</label>
                 <Input
@@ -107,6 +131,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Введите вашу почту"
+                    disabled={!!user?.email}
                     required
                 />
             </div>

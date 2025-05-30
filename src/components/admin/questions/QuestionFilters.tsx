@@ -62,9 +62,9 @@ const QuestionFilters = ({
                                 sortOrder === 'asc' ? <ArrowUp className="ml-1 h-3 w-3" /> : <ArrowDown className="ml-1 h-3 w-3" />
                             )}
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="name" className="flex items-center">
+                        <ToggleGroupItem value="lastName" className="flex items-center">
                             Имя
-                            {sortBy === 'name' && (
+                            {sortBy === 'lastName' && (
                                 sortOrder === 'asc' ? <ArrowUp className="ml-1 h-3 w-3" /> : <ArrowDown className="ml-1 h-3 w-3" />
                             )}
                         </ToggleGroupItem>

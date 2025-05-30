@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import OrdersTable from '@/components/admin/orders/OrdersTable';
 import OrderDetails from '@/components/admin/orders/OrderDetails';
 import NewOrderDialog from '@/components/admin/orders/NewOrderDialog';
-import {Order, OrderStatus} from "@/types/orders.ts";
+import {Order, OrderStatus} from "@/types/order.ts";
 import config from "@/api/api.ts";
 import {FinishingOption, House} from "@/types/house.ts";
 
@@ -172,7 +172,8 @@ const Orders = () => {
 
     const filteredOrders = orders.filter(order => {
         const matchesSearch =
-            order.name.toLowerCase().includes(search.toLowerCase()) ||
+            order.first_name.toLowerCase().includes(search.toLowerCase()) ||
+            order.last_name.toLowerCase().includes(search.toLowerCase()) ||
             order.construction_place.toLowerCase().includes(search.toLowerCase()) ||
             (order.email && order.email.toLowerCase().includes(search.toLowerCase())) ||
             order.house_details.title.toLowerCase().includes(search.toLowerCase());
@@ -187,8 +188,11 @@ const Orders = () => {
         let comparison = 0;
 
         switch(sortBy) {
-            case 'name':
-                comparison = a.name.localeCompare(b.name);
+            case 'firstName':
+                comparison = a.first_name.localeCompare(b.first_name);
+                break;
+            case 'lastName':
+                comparison = a.last_name.localeCompare(b.last_name);
                 break;
             case 'house':
                 comparison = a.house_details.title.localeCompare(b.house_details.title);

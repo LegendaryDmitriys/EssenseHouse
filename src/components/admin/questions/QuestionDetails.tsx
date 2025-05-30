@@ -81,7 +81,7 @@ const QuestionDetails = ({
 
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
                 <div>
-                    <h3 className="text-lg font-medium text-gray-900">{question.name}</h3>
+                    <h3 className="text-lg font-medium text-gray-900">{question.first_name} {question.last_name}</h3>
                     <div className="text-sm text-gray-600 mt-1">
                         <p>Телефон: {question.phone}</p>
                         {isHouseQuestion(question) && question.email && (

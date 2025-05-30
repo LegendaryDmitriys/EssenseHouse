@@ -60,7 +60,7 @@ const QuestionsTable = ({
                                 <div className="flex items-center">
                                     <div className="ml-4">
                                         <div className="text-sm font-medium text-gray-900">
-                                            {question.name}
+                                            {question.first_name} {question.last_name}
                                         </div>
                                         <div className="text-sm text-gray-500 truncate max-w-[250px]">
                                             {isHouseQuestion(question) ? question.house_details.title  : ''}

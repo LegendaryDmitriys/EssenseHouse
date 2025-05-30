@@ -197,12 +197,12 @@ const Testimonials = () => {
                                                 <div className="w-12 h-12 rounded-full overflow-hidden">
                                                     <img
                                                         src={testimonial.image || "/placeholder.svg"}
-                                                        alt={testimonial.name}
+                                                        alt={`${testimonial.first_name} ${testimonial.last_name}`}
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold">{testimonial.name}</h4>
+                                                    <h4 className="font-semibold">{testimonial.first_name} {testimonial.last_name}</h4>
                                                 </div>
                                             </div>
                                             <div className="flex gap-1 mb-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Home } from 'lucide-react';
-import { Order } from "@/types/orders.ts";
+import { Order } from "@/types/order.ts";
 import { formatDate } from "@/lib/utils.ts";
 import StatusBadge from "@/components/StatusBadge.tsx";
 

@@ -112,7 +112,7 @@ const UserReviewsDetails = ({ review, onStatusChange, onDelete }: UserReviewsDet
                     <h3 className="font-medium mb-2 text-sm text-gray-500">Информация</h3>
                     <div className="grid grid-cols-1 gap-3">
                         <div>
-                            <div className="font-semibold">{review.name}</div>
+                            <div className="font-semibold">{review.first_name} {review.last_name}</div>
                             <div className="text-sm text-gray-500 mt-1">
                                 Дата: {formatDate(review.date)}
                             </div>

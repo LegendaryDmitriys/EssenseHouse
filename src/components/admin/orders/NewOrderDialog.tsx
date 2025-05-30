@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Order } from "@/types/orders.ts";
+import { Order } from "@/types/order.ts";
 import {FinishingOption, House} from "@/types/house.ts";
 
 
@@ -25,7 +25,8 @@ const NewOrderDialog = ({
                                                            houses,
                                                            finishing_option
                                                        }:NewOrderDialogProps) => {
-    const [name, setName] = useState('');
+    const [first_name, setFirstName] = useState('');
+    const [last_name, setLastName] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [selectedHouseId, setSelectedHouseId] = useState('');
@@ -37,7 +38,8 @@ const NewOrderDialog = ({
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (!name) newErrors.name = 'Имя обязательно';
+        if (!first_name) newErrors.name = 'Имя обязательно';
+        if (!last_name) newErrors.name = 'Фамилия обязательна';
         if (!phone) newErrors.phone = 'Телефон обязателен';
         if (!selectedHouseId) newErrors.selectedHouseId = 'Выберите дом';
         if (!constructionPlace) newErrors.constructionPlace = 'Укажите место строительства';
@@ -59,7 +61,8 @@ const NewOrderDialog = ({
         if (!selectedHouse) return;
 
         const newOrder: Omit<Order, 'id' | 'data_created' | 'status'> = {
-            name,
+            first_name,
+            last_name,
             phone,
             house: selectedHouse.id,
             email: email || undefined,
@@ -74,7 +77,8 @@ const NewOrderDialog = ({
     };
 
     const resetForm = () => {
-        setName('');
+        setFirstName('');
+        setLastName('');
         setPhone('');
         setEmail('');
         setSelectedHouseId('');
@@ -101,12 +105,22 @@ const NewOrderDialog = ({
 
                 <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                     <div className="space-y-2">
-                        <Label htmlFor="name">Имя заказчика *</Label>
+                        <Label htmlFor="first_name">Имя заказчика *</Label>
                         <Input
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className={errors.name ? "border-red-300" : ""}
+                            id="first_name"
+                            value={first_name}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className={errors.first_name ? "border-red-300" : ""}
+                        />
+                        {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="last_name">Фамилия заказчика *</Label>
+                        <Input
+                            id="last_name"
+                            value={last_name}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className={errors.last_name ? "border-red-300" : ""}
                         />
                         {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
                     </div>
@@ -140,11 +154,12 @@ const NewOrderDialog = ({
                             onValueChange={setSelectedHouseId}
                         >
                             <SelectTrigger className={errors.selectedHouseId ? "border-red-300" : ""}>
-                                <SelectValue placeholder="Выберите дом" />
+                                <SelectValue placeholder="Выберите дом"/>
                             </SelectTrigger>
                             <SelectContent>
                                 {houses.map((house) => (
-                                    <SelectItem key={String(house.id)} value={String(house.id)}>{house.title}</SelectItem>
+                                    <SelectItem key={String(house.id)}
+                                                value={String(house.id)}>{house.title}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -158,11 +173,12 @@ const NewOrderDialog = ({
                             onValueChange={setSelectedFinishingOptionId}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Выберите вариант отделки" />
+                                <SelectValue placeholder="Выберите вариант отделки"/>
                             </SelectTrigger>
                             <SelectContent>
                                 {finishing_option.map((option) => (
-                                    <SelectItem key={String(option.id)} value={String(option.id)}>{option.title}</SelectItem>
+                                    <SelectItem key={String(option.id)}
+                                                value={String(option.id)}>{option.title}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -176,7 +192,8 @@ const NewOrderDialog = ({
                             onChange={(e) => setConstructionPlace(e.target.value)}
                             className={errors.construction_place ? "border-red-300" : ""}
                         />
-                        {errors.construction_place && <p className="text-xs text-red-500">{errors.construction_place}</p>}
+                        {errors.construction_place &&
+                            <p className="text-xs text-red-500">{errors.construction_place}</p>}
                     </div>
 
                     <div className="space-y-2">

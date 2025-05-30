@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import config from "@/api/api.ts";
 import { initPush } from '../pushNotifications';
-
-interface User {
-    email: string;
-    isAdmin?: boolean;
-}
+import { User } from "@/types/user.ts";
 
 interface AuthContextType {
     user: User | null;
@@ -20,6 +16,7 @@ interface AuthContextType {
     addToFavorites: (projectId: string) => void;
     removeFromFavorites: (projectId: string) => void;
     favorites: string[];
+    setUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +26,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [favorites, setFavorites] = useState<string[]>([]);
     const navigate = useNavigate();
+
+
 
     function parseJwt(token: string) {
         try {
@@ -70,7 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const userId = payload?.user_id;
         if (!userId) return;
 
-        const response = await fetch(`${config.API_URL}auth/users/${userId}/`, {
+        const response = await fetch(`${config.API_URL}auth/users/me/`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -80,9 +79,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         const userData = await response.json();
 
-        const userObj = {
+        const userObj: User = {
             email: userData.email,
             isAdmin: userData.is_admin,
+            first_name: userData.first_name,
+            last_name: userData.last_name,
+            phone_number: userData.phone_number,
         };
         localStorage.setItem('user', JSON.stringify(userObj));
         setUser(userObj);
@@ -265,7 +267,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             logout,
             addToFavorites,
             removeFromFavorites,
-            favorites
+            favorites,
+            setUser,
         }}>
             {children}
         </AuthContext.Provider>

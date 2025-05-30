@@ -150,9 +150,10 @@ const PurchasedHouses = () => {
 
     const filteredHouses = purchasedHouses.filter(house => {
         const matchesSearch =
-            house.buyer_name.toLowerCase().includes(search.toLowerCase()) ||
+            house.first_name.toLowerCase().includes(search.toLowerCase()) ||
+            house.last_name.toLowerCase().includes(search.toLowerCase()) ||
             (house.address && house.address.toLowerCase().includes(search.toLowerCase())) ||
-            house.buyer_email.toLowerCase().includes(search.toLowerCase()) ||
+            house.email.toLowerCase().includes(search.toLowerCase()) ||
             house.house.title.toLowerCase().includes(search.toLowerCase());
 
         const matchesStatus = statusFilter === 'all' || house.construction_status === statusFilter;
@@ -164,8 +165,11 @@ const PurchasedHouses = () => {
         let comparison = 0;
 
         switch(sortBy) {
-            case 'buyer':
-                comparison = a.buyer_name.localeCompare(b.buyer_name);
+            case 'firstName':
+                comparison = a.first_name.localeCompare(b.first_name);
+                break;
+            case 'lastName':
+                comparison = a.last_name.localeCompare(b.last_name);
                 break;
             case 'house':
                 comparison = a.house.title.localeCompare(b.house.title);
@@ -260,7 +264,7 @@ const PurchasedHouses = () => {
                                     </ToggleGroupItem>
                                     <ToggleGroupItem value="buyer" className="flex items-center">
                                         Покупатель
-                                        {sortBy === 'buyer' && (
+                                        {sortBy === 'lastName' && (
                                             sortOrder === 'asc' ? <ArrowUp className="ml-1 h-3 w-3" /> : <ArrowDown className="ml-1 h-3 w-3" />
                                         )}
                                     </ToggleGroupItem>
