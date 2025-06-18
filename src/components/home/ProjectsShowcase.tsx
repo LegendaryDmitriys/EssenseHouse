@@ -8,7 +8,6 @@ import config from "@/api/api.ts";
 import {useQuery} from "@tanstack/react-query";
 
 
-
 const ProjectsShowcase = () => {
     const navigate = useNavigate();
 

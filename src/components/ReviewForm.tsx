@@ -78,7 +78,7 @@ const ReviewForm = ({ onSubmit, onCancel }: ReviewFormProps) => {
             setLastName("");
             setEmail("");
             setReview("");
-            setRating(5);
+            setRating(0);
             setFiles(null);
 
             onSubmit(await response.json());

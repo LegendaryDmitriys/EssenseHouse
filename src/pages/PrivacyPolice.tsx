@@ -138,7 +138,7 @@ const PrivacyPolicy = () => {
                             <div className="bg-essence/5 rounded-lg p-4 max-w-sm">
                                 <p className="text-gray-800 mb-1">EssenseHouse</p>
                                 <p className="text-gray-800 mb-1">Email: privacy@essensehouse.ru</p>
-                                <p className="text-gray-800">Телефон: +7 (900) 000-00-00</p>
+                                <p className="text-gray-800">Телефон: +7 (999) 123-45-67</p>
                             </div>
                         </div>
                     </section>

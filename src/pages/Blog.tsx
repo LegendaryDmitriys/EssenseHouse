@@ -16,8 +16,6 @@ import { getPageNumberFromUrl } from "@/utils/getPageNumberFromUrl.ts"
 import config from "@/api/api.ts"
 import { useQuery } from "@tanstack/react-query"
 import {Newspaper} from "lucide-react";
-import {Button} from "@/components/ui/button.tsx";
-import {Link} from "react-router-dom";
 
 const Blog = () => {
     const [currentCategory, setCurrentCategory] = useState<string | null>(null)
@@ -27,6 +25,7 @@ const Blog = () => {
         const params = new URLSearchParams()
         if (currentCategory) params.append("category", currentCategory)
         if (currentPage) params.append("page", currentPage.toString())
+        params.append("status", "published")
         return `${config.API_URL}blogs/?${params.toString()}`
     }
 

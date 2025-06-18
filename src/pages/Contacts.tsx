@@ -21,7 +21,7 @@ const contactInfo = [
     {
         icon: Mail,
         title: "Email",
-        content: "info@company.ru",
+        content: "info@essensehouse.com",
     },
     {
         icon: Clock,
@@ -128,87 +128,6 @@ const Contacts = () => {
                             allowFullScreen
                             loading="lazy"
                         />
-                    </div>
-                </div>
-            </section>
-
-            <section className="py-20">
-                <div className="container">
-                    <div className="max-w-3xl mx-auto">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="text-center mb-12"
-                        >
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                                Напишите нам
-                            </h2>
-                            <p className="text-muted-foreground text-lg">
-                                Если у вас есть вопросы или предложения, заполните форму ниже
-                            </p>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            className="bg-card shadow-lg rounded-xl p-8"
-                        >
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label htmlFor="name" className="text-sm font-medium">
-                                            Ваше имя
-                                        </label>
-                                        <Input
-                                            id="name"
-                                            required
-                                            placeholder="Введите ваше имя"
-                                            className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="phone" className="text-sm font-medium">
-                                            Телефон
-                                        </label>
-                                        <Input
-                                            id="phone"
-                                            required
-                                            placeholder="+7 (___) ___-__-__"
-                                            className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-medium">
-                                        Email
-                                    </label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        required
-                                        placeholder="example@mail.ru"
-                                        className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="message" className="text-sm font-medium">
-                                        Сообщение
-                                    </label>
-                                    <Textarea
-                                        id="message"
-                                        required
-                                        placeholder="Введите ваше сообщение"
-                                        rows={5}
-                                        className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
-                                    />
-                                </div>
-                                <Button type="submit" className="w-full text-lg py-6">
-                                    Отправить сообщение
-                                </Button>
-                            </form>
-                        </motion.div>
                     </div>
                 </div>
             </section>

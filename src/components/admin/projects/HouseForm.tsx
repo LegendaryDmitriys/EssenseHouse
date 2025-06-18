@@ -476,7 +476,6 @@ const HouseForm = ({ house, onSuccess }: HouseFormProps) => {
                                             <SelectContent>
                                                 <SelectItem value="__none__">Нет</SelectItem>
                                                 <SelectItem value="Акция">Акция</SelectItem>
-                                                <SelectItem value="Новинка">Новинка</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />

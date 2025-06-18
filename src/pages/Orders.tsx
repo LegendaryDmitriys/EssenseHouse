@@ -39,7 +39,7 @@ const Orders = () => {
         const fetchOrders = async () => {
             setLoading(true)
             try {
-                const response = await fetch(`${config.API_URL}orders`)
+                const response = await fetch(`${config.API_URL}orders/`)
                 if (!response.ok){
                     throw new Error(`HTTP ошибка, Статус: ${response.status}`)
                 }
@@ -228,7 +228,7 @@ const Orders = () => {
 
     const fetchHouses = async (): Promise<House[]> => {
         try {
-            const response = await fetch(`${config.API_URL}houses`);
+            const response = await fetch(`${config.API_URL}houses/`);
             if (!response.ok) {
                 throw new Error('Не удалось получить дома');
             }
@@ -246,7 +246,7 @@ const Orders = () => {
 
     const fetchFinishingOptions = async (): Promise<FinishingOption[]> => {
         try {
-            const response = await fetch(`${config.API_URL}houses/finishing-options`);
+            const response = await fetch(`${config.API_URL}houses/finishing-options/`);
             if (!response.ok) {
                 throw new Error('Не удалось получить параметры отделки');
             }

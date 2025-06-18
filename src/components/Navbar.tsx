@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, FileText, User, MessageCircle, Phone, Info, ChevronDown } from 'lucide-react';
+import {
+  Menu,
+  X,
+  Home,
+  FileText,
+  User,
+  MessageCircle,
+  Phone,
+  Info,
+  ChevronDown,
+  MapPinHouse,
+  HousePlus
+} from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import ContactForm from "@/components/home/ContactForm.tsx";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const [isContactVisible, setIsContactVisible] = useState(false);
 
   const isHomePage = location.pathname === "/";
   const useWhiteText = isHomePage && !isScrolled;
@@ -28,7 +42,8 @@ const Navbar = () => {
 
   const navLinks = [
     { title: 'Главная', path: '/', icon: <Home size={18} /> },
-    { title: 'Проекты', path: '/projects', icon: <Home size={18} /> },
+    { title: 'Проекты', path: '/projects', icon: <HousePlus size={18} /> },
+    { title: 'Построенные дома', path: '/ready-houses', icon: <MapPinHouse size={18} /> },
     { title: 'О нас', path: '/about', icon: <Info size={18} /> },
     { title: 'Блог', path: '/blog', icon: <FileText size={18} /> },
     { title: 'Отзывы', path: '/comments', icon: <MessageCircle size={18} /> },
@@ -40,6 +55,7 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
+      <>
       <header
           className={cn(
               "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
@@ -61,7 +77,7 @@ const Navbar = () => {
               <span className="text-xl font-heading font-bold">EssenseHouse</span>
             </Link>
 
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-6">
               {navLinks.filter(link => !link.mobileOnly).map((link) => (
                   <Link
                       key={link.path}
@@ -99,6 +115,7 @@ const Navbar = () => {
                           ? "bg-white text-primary hover:bg-white/90"
                           : "bg-primary text-white hover:bg-primary/90"
                   )}
+                  onClick={() => setIsContactVisible(true)}
               >
                 Связаться с нами
               </Button>
@@ -106,7 +123,7 @@ const Navbar = () => {
 
             <button
                 className={cn(
-                    "md:hidden transition-colors",
+                    "lg:hidden transition-colors",
                     useWhiteText ? "text-white hover:text-white/80" : "text-secondary hover:text-primary"
                 )}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -117,8 +134,9 @@ const Navbar = () => {
           </div>
         </div>
 
+
         {mobileMenuOpen && (
-            <div className="md:hidden bg-white/95 backdrop-blur-md shadow-lg animate-fade-in">
+            <div className="lg:hidden  bg-white/95 backdrop-blur-md shadow-lg animate-fade-in">
               <div className="container mx-auto px-4 py-4">
                 <nav className="flex flex-col space-y-2">
                   {navLinks.map((link) => (
@@ -153,6 +171,10 @@ const Navbar = () => {
             </div>
         )}
       </header>
+      {isContactVisible && (
+          <ContactForm onIsContactVisible={setIsContactVisible} />
+      )}
+      </>
   );
 };
 

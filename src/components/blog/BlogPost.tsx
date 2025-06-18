@@ -97,7 +97,7 @@ const BlogPost = () => {
                         </Link>
                         <div className="aspect-video relative overflow-hidden rounded-lg mb-8">
                             <img
-                                src={post.image}
+                                src={`${config.API_URL}${post.image}`}
                                 alt={post.title}
                                 className="object-cover w-full h-full"
                             />
@@ -109,7 +109,7 @@ const BlogPost = () => {
                         </div>
                         <h1 className="text-4xl font-heading font-bold mb-8">{post.title}</h1>
                         <div className="prose [&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-5">
-                            <p className="text-muted-foreground">{post.description}</p>
+                            <p className="text-muted-foreground mb-4">{post.description}</p>
                             <div dangerouslySetInnerHTML={{__html: post.content}}/>
                         </div>
 

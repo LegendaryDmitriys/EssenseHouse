@@ -51,7 +51,7 @@ export function useQuestions(type: QuestionType = 'house') {
                 updateData.answer = answer;
             }
 
-            const response = await fetch(`${config.API_URL}/${questionType}-question/${id}/`, {
+            const response = await fetch(`${config.API_URL}${questionType}-question/${id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

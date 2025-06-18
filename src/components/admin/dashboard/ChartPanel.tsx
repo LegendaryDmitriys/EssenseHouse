@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     ResponsiveContainer,
     BarChart,
@@ -13,28 +13,38 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import config from "@/api/api.ts";
 
-
-const projectsData = [
-    { name: 'Янв', active: 4, completed: 1 },
-    { name: 'Фев', active: 5, completed: 2 },
-    { name: 'Мар', active: 6, completed: 2 },
-    { name: 'Апр', active: 8, completed: 3 },
-    { name: 'Май', active: 10, completed: 4 },
-    { name: 'Июн', active: 9, completed: 6 },
-];
-
-
-const budgetData = [
-    { name: 'Янв', plan: 3.2, actual: 2.8 },
-    { name: 'Фев', plan: 3.5, actual: 3.6 },
-    { name: 'Мар', plan: 3.8, actual: 3.9 },
-    { name: 'Апр', plan: 4.2, actual: 4.0 },
-    { name: 'Май', plan: 4.5, actual: 4.8 },
-    { name: 'Июн', plan: 5.0, actual: 5.2 },
-];
 
 export const ProjectsChartPanel = () => {
+    const [data, setData] = useState([]);
+    const [period, setPeriod] = useState('6m');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${config.API_URL}stats/dashboard/?period=${period}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки данных');
+                }
+
+                const json = await response.json();
+                setData(json.projects);
+            } catch (error) {
+                console.error('Ошибка при загрузке данных:', error);
+            }
+        };
+
+        fetchData();
+    }, [period]);
+
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -42,7 +52,7 @@ export const ProjectsChartPanel = () => {
                     <CardTitle>Статистика проектов</CardTitle>
                     <CardDescription>Активные и завершенные проекты по месяцам</CardDescription>
                 </div>
-                <Select defaultValue="6m">
+                <Select defaultValue={period} onValueChange={setPeriod}>
                     <SelectTrigger className="w-[120px]">
                         <SelectValue placeholder="Период" />
                     </SelectTrigger>
@@ -57,10 +67,7 @@ export const ProjectsChartPanel = () => {
             <CardContent>
                 <div className="h-80 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                            data={projectsData}
-                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                        >
+                        <BarChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                             <XAxis dataKey="name" axisLine={false} tickLine={false} />
                             <YAxis axisLine={false} tickLine={false} />
@@ -76,7 +83,35 @@ export const ProjectsChartPanel = () => {
     );
 };
 
-export const BudgetChartPanel: React.FC = () => {
+export const BudgetChartPanel = () => {
+    const [data, setData] = useState([]);
+    const [period, setPeriod] = useState('6m');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${config.API_URL}stats/dashboard/?period=${period}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки данных');
+                }
+
+                const json = await response.json();
+                setData(json.budget);
+            } catch (error) {
+                console.error('Ошибка при загрузке данных:', error);
+            }
+        };
+
+        fetchData();
+    }, [period]);
+
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -84,7 +119,7 @@ export const BudgetChartPanel: React.FC = () => {
                     <CardTitle>Бюджет проектов</CardTitle>
                     <CardDescription>План vs факт (млн руб.)</CardDescription>
                 </div>
-                <Select defaultValue="6m">
+                <Select value={period} onValueChange={setPeriod}>
                     <SelectTrigger className="w-[120px]">
                         <SelectValue placeholder="Период" />
                     </SelectTrigger>
@@ -100,7 +135,7 @@ export const BudgetChartPanel: React.FC = () => {
                 <div className="h-80 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart
-                            data={budgetData}
+                            data={data}
                             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />

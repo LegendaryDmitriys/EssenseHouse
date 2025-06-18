@@ -27,3 +27,19 @@ export interface UserQuestion {
     status: QuestionStatus;
     answer?: string;
 }
+
+
+export interface SimpleQuestion {
+    id: number;
+    first_name: string;
+    last_name: string;
+    phone: string;
+    created_at: string;
+    status: 'waiting' | 'closed' | 'answered';
+}
+
+
+export interface QuestionsResponse {
+    simple_questions: SimpleQuestion[];
+    house_questions: HouseQuestion[];
+}

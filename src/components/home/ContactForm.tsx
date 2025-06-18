@@ -46,9 +46,17 @@ const ContactForm = ({ onIsContactVisible }) => {
             data.append("last_name", formData.last_name);
             data.append("phone", formData.phone);
 
+            const headers = {};
+
+            const accessToken = localStorage.getItem("accessToken");
+            if (accessToken) {
+                headers['Authorization'] = `Bearer ${accessToken}`;
+            }
+
 
             const response = await fetch(`${config.API_URL}user-questions/`, {
                 method: "POST",
+                headers,
                 body: data,
             });
 
@@ -97,7 +105,7 @@ const ContactForm = ({ onIsContactVisible }) => {
                         </label>
                         <input
                             type="text"
-                            name="firstName"
+                            name="first_name"
                             value={formData.first_name}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md"
@@ -112,7 +120,7 @@ const ContactForm = ({ onIsContactVisible }) => {
                         </label>
                         <input
                             type="text"
-                            name="lastName"
+                            name="last_name"
                             value={formData.last_name}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md"

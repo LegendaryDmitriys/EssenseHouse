@@ -71,6 +71,9 @@ const AdminProjects = () => {
         mutationFn: async (id: number) => {
             const response = await fetch(`${config.API_URL}houses/${id}/`, {
                 method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")} `,
+                }
             });
             if (!response.ok) {
                 throw new Error("Ошибка во время удаления дома");

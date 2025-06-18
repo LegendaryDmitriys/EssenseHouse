@@ -11,7 +11,7 @@ const TestimonialsSection = () => {
     const { data: reviews = [], isLoading, error } = useQuery<Review[]>({
         queryKey: ["review"],
         queryFn: async () => {
-            const response = await fetch(`${config.API_URL}reviews?limit=3&status=published`)
+            const response = await fetch(`${config.API_URL}reviews/?limit=3&status=published`)
             if (!response.ok) {
                 throw new Error(`HTTP ошибка, Статус: ${response.status}`);
             }
@@ -19,7 +19,6 @@ const TestimonialsSection = () => {
         },
         retry: 1,
     });
-
     return (
         <section className="py-16 md:py-24 bg-gradient-to-b from-accent/20 to-background">
             <div className="container px-4 mx-auto">
@@ -61,11 +60,11 @@ const TestimonialsSection = () => {
                                         <div className="flex items-center gap-4 mb-5">
                                             <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
                                                 <div className="w-full h-full object-cover">
-                                                    <CircleUser width={45} height={45} />
+                                                    <CircleUser width={45} height={45} strokeWidth={1.5} color="#666666" />
                                                 </div>
                                             </div>
                                             <div>
-                                                <h4 className="font-medium text-secondary">{review.name}</h4>
+                                                <h4 className="font-medium text-secondary">{review.first_name} {review.last_name}</h4>
                                             </div>
                                         </div>
                                         <div className="flex gap-1 mb-4">

@@ -49,6 +49,12 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link to="/ready-houses"
+                                      className="text-muted-foreground hover:text-primary transition-colors inline-block">
+                                    Построенные дома
+                                </Link>
+                            </li>
+                            <li>
                                 <Link to="/blog"
                                       className="text-muted-foreground hover:text-primary transition-colors inline-block">
                                     Блог
@@ -78,7 +84,7 @@ const Footer = () => {
                     <div className="animate-fade-up" style={{animationDelay: "300ms"}}>
                         <h3 className="font-heading text-lg font-semibold mb-4 text-secondary">Мы в соцсетях</h3>
                         <div className="flex gap-4">
-                            <a
+                        <a
                                 href="#facebook"
                                 className="w-10 h-10 rounded-full flex items-center justify-center bg-muted hover:bg-accent/30 text-primary hover:text-secondary transition-all duration-300 shadow-sm"
                             >

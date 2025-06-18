@@ -22,7 +22,7 @@ const ReadyHouses = () => {
         const fetchReadyHouses = async () => {
             setLoading(true)
             try {
-                const response = await fetch(`${config.API_URL}purchase/?construction_status=completed/`);
+                const response = await fetch(`${config.API_URL}purchase/?construction_status=completed`);
                 if (!response.ok){
                     throw new Error(`HTTP ошибка, Статус: ${response.status}`);
                 }
@@ -94,10 +94,11 @@ const ReadyHouses = () => {
                                         <CardContent className="p-0">
                                             <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                                                 <img
-                                                    src={house.house.images[0].image}
+                                                    src={`${config.API_URL}${house.house.images[0].image}`}
                                                     alt={house.house.title}
                                                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                                 />
+
                                             </div>
                                             <div className="p-4">
                                                 <h3 className="text-lg font-semibold line-clamp-1">{house.house.title}</h3>
@@ -174,7 +175,7 @@ const ReadyHouses = () => {
                                     <div className="flex items-center space-x-4">
                                         <div className="flex-shrink-0 w-16 h-16 rounded-md overflow-hidden">
                                             <img
-                                                src={selectedHouse.house.images[0].image}
+                                                src={`${config.API_URL}${selectedHouse.house.images[0].image}`}
                                                 alt={selectedHouse.house.title}
                                                 className="w-full h-full object-cover"
                                             />

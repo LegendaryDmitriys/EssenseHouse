@@ -33,6 +33,8 @@ import AdminProjectDetail from "@/pages/AdminProjectDetail.tsx";
 import BlogsAdmin from "@/pages/BlogsAdmin.tsx";
 
 import AdminNotifications from "@/pages/AdminNotifications.tsx";
+import React from "react";
+import ChatPage from "@/components/admin/questions/ChatPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,7 @@ const App = () => {
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/register" element={<Register />} />
                                 <Route path="*" element={<NotFound />} />
+                                <Route path="/chat/:questionId" element={<ChatPage />} />
 
                                 <Route
                                     path="/profile"

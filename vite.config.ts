@@ -14,7 +14,7 @@ function workboxPlugin() {
         importScripts: ['/sw-custom.js'],
         runtimeCaching: [
           {
-            urlPattern: /http:\/\/192\.168\.0\.103:8000\/.*$/,
+            urlPattern: /https?:\/\/essensehouse\.publicvm\.com\/api\/.*/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',

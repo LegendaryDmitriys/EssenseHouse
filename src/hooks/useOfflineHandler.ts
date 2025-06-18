@@ -67,12 +67,20 @@ export const useOfflineQueue = (onShowNotification?: (message: string) => void) 
         payload: Record<string, any>
     ): Promise<boolean> => {
         try {
+
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/json'
+            };
+
+            const accessToken = localStorage.getItem("accessToken");
+            if (accessToken) {
+                headers['Authorization'] = `Bearer ${accessToken}`;
+            }
+
             const res = await fetch(endpoint, {
                 method: "POST",
                 body: JSON.stringify(payload),
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers,
             });
 
             if (!res.ok) throw new Error("Ошибка сервера");

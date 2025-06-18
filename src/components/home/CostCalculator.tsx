@@ -16,12 +16,15 @@ import {Link} from "react-router-dom";
 
 
 const houseCategories = [
-  { id: "brick", name: "Кирпичные дома", basePrice: 30000, icon: "🏠" },
+  { id: "brick", name: "Кирпичные дома", basePrice: 30000},
+  { id: "carcas", name: "Каркасные дома", basePrice: 25000},
 ]
 
 const constructionTechnologies = [
-  { id: "brick", name: "Кирпичная кладка", priceMultiplier: 1.2 },
+  { id: "brick", name: "Кирпичные дома", priceMultiplier: 1.2 },
+  { id: "carcas", name: "Каркасные дома", priceMultiplier: 0.8 },
 ]
+
 
 const finishingOptions = [
   { id: "standard", name: "Стандартная отделка", priceMultiplier: 2 },
@@ -145,7 +148,6 @@ const HouseCalculator = () => {
                             <TabsList className="grid w-full grid-cols-3 mb-2">
                               {houseCategories.map((type) => (
                                   <TabsTrigger key={type.id} value={type.id} className="text-center">
-                                    <span className="mr-2">{type.icon}</span>
                                     {type.name}
                                   </TabsTrigger>
                               ))}

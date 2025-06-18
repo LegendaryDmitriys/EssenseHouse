@@ -266,7 +266,7 @@ const ProjectDetail = () => {
 
     return (
         <div className="min-h-screen bg-zinc-50 pb-16">
-            <div className="relative h-[400px] md:h-[600px] overflow-hidden">
+            <div className="relative h-[550px] md:h-[600px] overflow-hidden">
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 ease-out"
                     style={{
@@ -277,7 +277,7 @@ const ProjectDetail = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
 
-                <div className="container mx-auto px-4 py-12 md:py-24 relative h-full flex flex-col justify-between">
+                <div className="container mx-auto px-4 py-24 md:py-24 relative h-full flex flex-col justify-between">
                     <div className="flex justify-between items-center">
                         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
                             <Button
@@ -425,51 +425,42 @@ const ProjectDetail = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-12">
                     <div className="lg:col-span-2 space-y-12">
                         <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="w-full bg-white p-1 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-5 gap-1">
-                                <TabsTrigger
-                                    value="overview"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
-                                >
-                                    Обзор
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="plans"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
-                                >
-                                    Планировка
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="interiors"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
-                                >
-                                    Интерьер
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="facades"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
-                                >
-                                    Фасад
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="documents"
-                                    className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white text-xs md:text-sm"
-                                >
-                                    Документы
-                                </TabsTrigger>
-                            </TabsList>
+                            <div className="mb-12">
+                                <TabsList className="grid grid-cols-3 md:grid-cols-5 gap-3">
+                                    {[
+                                        {value: "overview", label: "Обзор"},
+                                        {value: "plans", label: "Планировка"},
+                                        {value: "interiors", label: "Интерьер"},
+                                        {value: "facades", label: "Фасад"},
+                                        {value: "documents", label: "Документы"},
+                                    ].map(({value, label}) => (
+                                        <TabsTrigger
+                                            key={value}
+                                            value={value}
+                                            className="w-full rounded-xl bg-zinc-100 text-zinc-700 text-sm py-2 px-4 text-center
+                   data-[state=active]:bg-primary data-[state=active]:text-white
+                   transition-colors duration-200 shadow-sm"
+                                        >
+                                            {label}
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
+                            </div>
 
-                            <TabsContent value="overview" className="mt-8 space-y-10">
+                            <TabsContent value="overview" className="mt-20 space-y-30">
+                                <div className="m-2">
+
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key="overview"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.5 }}
+                                        initial={{opacity: 0, y: 20}}
+                                        animate={{opacity: 1, y: 0}}
+                                        exit={{opacity: 0, y: -20}}
+                                        transition={{duration: 0.5}}
                                     >
                                         <Card className="border-none shadow-md overflow-hidden">
                                             <CardContent className="pt-6">
-                                                {house.images && house.images.length > 0 ? (
+                                            {house.images && house.images.length > 0 ? (
                                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                                         {house.images.map((image) => (
                                                             <div
@@ -489,14 +480,20 @@ const ProjectDetail = () => {
                                                     </div>
                                                 ) : (
                                                     <Card className="border-none shadow-md overflow-hidden">
-                                                        <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                            <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                                <FileText className="w-10 h-10 text-zinc-400" />
+                                                        <CardContent
+                                                            className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                            <div
+                                                                className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                                <FileText className="w-10 h-10 text-zinc-400"/>
                                                             </div>
-                                                            <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Изображения отсутствуют</h3>
-                                                            <p className="text-zinc-500 text-center max-w-md">
-                                                                Фотографии проекта будут добавлены позже.
-                                                            </p>
+                                                            <div className="px-4 mt-4 text-center">
+                                                                <h3 className="text-xl sm:text-2xl font-semibold text-zinc-700 mb-1 sm:mb-2">
+                                                                    Изображения отсутствуют
+                                                                </h3>
+                                                                <p className="text-sm sm:text-base text-zinc-500 max-w-xs sm:max-w-md mx-auto">
+                                                                    Фотографии проекта будут добавлены позже.
+                                                                </p>
+                                                            </div>
                                                         </CardContent>
                                                     </Card>
                                                 )}
@@ -509,7 +506,7 @@ const ProjectDetail = () => {
                                             </CardHeader>
                                             <CardContent className="pt-6">
                                                 <div className="prose prose-zinc max-w-none">
-                                                    <p className="text-zinc-700 text-lg leading-relaxed">{house.description}</p>
+                                                <p className="text-zinc-700 text-lg leading-relaxed">{house.description}</p>
                                                 </div>
                                             </CardContent>
                                         </Card>
@@ -596,7 +593,7 @@ const ProjectDetail = () => {
                                                 </CardContent>
                                             </Card>
 
-                                            {house.garage && (
+                                            {house.garage > 0 && (
                                                 <Card className="border-none shadow-md overflow-hidden bg-white hover:shadow-lg transition-shadow">
                                                     <CardContent className="p-6 flex flex-col items-center text-center">
                                                         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
@@ -655,6 +652,7 @@ const ProjectDetail = () => {
                                         </Card>
                                     </motion.div>
                                 </AnimatePresence>
+                                </div>
                             </TabsContent>
 
                             <TabsContent value="plans" className="mt-8">
@@ -683,14 +681,21 @@ const ProjectDetail = () => {
                                             </div>
                                         ) : (
                                             <Card className="border-none shadow-md overflow-hidden">
-                                                <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                    <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                        <Map className="w-10 h-10 text-zinc-400" />
+                                                <CardContent
+                                                    className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                    <div
+                                                        className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                        <Map className="w-10 h-10 text-zinc-400"/>
                                                     </div>
-                                                    <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Нет данных о планировке</h3>
-                                                    <p className="text-zinc-500 text-center max-w-md">
-                                                        Планы этажей пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
-                                                    </p>
+                                                    <div className="px-4 mt-4 text-center">
+                                                        <h3 className="text-xl sm:text-2xl font-semibold text-zinc-700 mb-1 sm:mb-2">
+                                                            Нет данных о планировке
+                                                        </h3>
+                                                        <p className="text-sm sm:text-base text-zinc-500 max-w-xs sm:max-w-md mx-auto">
+                                                            Планы этажей пока не добавлены. Свяжитесь с нами, чтобы
+                                                            узнать больше.
+                                                        </p>
+                                                    </div>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -699,7 +704,7 @@ const ProjectDetail = () => {
                             </TabsContent>
 
                             <TabsContent value="interiors" className="mt-8">
-                                <AnimatePresence mode="wait">
+                            <AnimatePresence mode="wait">
                                     <motion.div
                                         key="interiors"
                                         initial={{ opacity: 0, y: 20 }}
@@ -724,29 +729,36 @@ const ProjectDetail = () => {
                                             </div>
                                         ) : (
                                             <Card className="border-none shadow-md overflow-hidden">
-                                                <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                    <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                        <Home className="w-10 h-10 text-zinc-400" />
+                                                <CardContent
+                                                    className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                    <div
+                                                        className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                        <Home className="w-10 h-10 text-zinc-400"/>
                                                     </div>
-                                                    <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Нет данных об интерьере</h3>
-                                                    <p className="text-zinc-500 text-center max-w-md">
-                                                        Интерьерные решения пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
-                                                    </p>
+                                                    <div className="px-4 mt-4 text-center">
+                                                        <h3 className="text-xl sm:text-2xl font-semibold text-zinc-700 mb-1 sm:mb-2">
+                                                            Нет данных об интерьере
+                                                        </h3>
+                                                        <p className="text-sm sm:text-base text-zinc-500 max-w-xs sm:max-w-md mx-auto">
+                                                            Интерьерные решения пока не добавлены. Свяжитесь с нами, чтобы
+                                                            узнать больше.
+                                                        </p>
+                                                    </div>
                                                 </CardContent>
                                             </Card>
                                         )}
                                     </motion.div>
-                                </AnimatePresence>
+                            </AnimatePresence>
                             </TabsContent>
 
                             <TabsContent value="facades" className="mt-8">
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key="facades"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.5 }}
+                                        initial={{opacity: 0, y: 20}}
+                                        animate={{opacity: 1, y: 0}}
+                                        exit={{opacity: 0, y: -20}}
+                                        transition={{duration: 0.5}}
                                     >
                                         {house.facade_images && house.facade_images.length > 0 ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -765,14 +777,20 @@ const ProjectDetail = () => {
                                             </div>
                                         ) : (
                                             <Card className="border-none shadow-md overflow-hidden">
-                                                <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                    <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                        <Building2 className="w-10 h-10 text-zinc-400" />
+                                                <CardContent
+                                                    className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                    <div
+                                                        className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                        <Building2 className="w-10 h-10 text-zinc-400"/>
                                                     </div>
-                                                    <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Нет данных о фасадах</h3>
-                                                    <p className="text-zinc-500 text-center max-w-md">
-                                                        Фасады пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
-                                                    </p>
+                                                    <div className="px-4 mt-4 text-center">
+                                                        <h3 className="text-xl sm:text-2xl font-semibold text-zinc-700 mb-1 sm:mb-2">
+                                                            Нет данных о фасадах
+                                                        </h3>
+                                                        <p className="text-sm sm:text-base text-zinc-500 max-w-xs sm:max-w-md mx-auto">
+                                                            Фасады пока не добавлены. Свяжитесь с нами, чтобы узнать больше.
+                                                        </p>
+                                                    </div>
                                                 </CardContent>
                                             </Card>
                                         )}
@@ -784,10 +802,10 @@ const ProjectDetail = () => {
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key="documents"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.5 }}
+                                        initial={{opacity: 0, y: 20}}
+                                        animate={{opacity: 1, y: 0}}
+                                        exit={{opacity: 0, y: -20}}
+                                        transition={{duration: 0.5}}
                                     >
                                         <Card className="border-none shadow-md overflow-hidden">
                                             <CardContent className="pt-6">
@@ -826,14 +844,21 @@ const ProjectDetail = () => {
                                                     </div>
                                                 ) : (
                                                     <Card className="border-none shadow-md overflow-hidden">
-                                                        <CardContent className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-                                                            <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
-                                                                <FileText className="w-10 h-10 text-zinc-400" />
+                                                        <CardContent
+                                                            className="p-12 flex flex-col items-center justify-center min-h-[400px]">
+                                                            <div
+                                                                className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+                                                                <FileText className="w-10 h-10 text-zinc-400"/>
                                                             </div>
-                                                            <h3 className="text-2xl font-semibold text-zinc-700 mb-2">Документы отсутствуют</h3>
-                                                            <p className="text-zinc-500 text-center max-w-md">
-                                                                Техническая документация по проекту будет доступна позже.
-                                                            </p>
+                                                            <div className="px-4 mt-4 text-center">
+                                                                <h3 className="text-xl sm:text-2xl font-semibold text-zinc-700 mb-1 sm:mb-2">
+                                                                    Документы отсутствуют
+                                                                </h3>
+                                                                <p className="text-sm sm:text-base text-zinc-500 max-w-xs sm:max-w-md mx-auto">
+                                                                    Техническая документация по проекту будет доступна
+                                                                    позже.
+                                                                </p>
+                                                            </div>
                                                         </CardContent>
                                                     </Card>
                                                 )}
@@ -846,9 +871,10 @@ const ProjectDetail = () => {
                     </div>
 
                     <div className="space-y-8">
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                        <motion.div initial={{opacity: 0, y: 20}} animate={{opacity: 1, y: 0}}
+                                    transition={{duration: 0.5}}>
                             <Card className="border-none shadow-lg overflow-hidden">
-                                <CardHeader className="bg-primary text-white">
+                            <CardHeader className="bg-primary text-white">
                                     <CardTitle className="text-xl font-bold">Заинтересовал проект?</CardTitle>
                                     <CardDescription className="text-white/80">Получите бесплатную консультацию</CardDescription>
                                 </CardHeader>
@@ -866,7 +892,7 @@ const ProjectDetail = () => {
                                                     Заказать проект
                                                 </Button>
                                             </DialogTrigger>
-                                            <DialogContent className="sm:max-w-[500px]">
+                                            <DialogContent className="max-h-screen overflow-y-auto">
                                                 <DialogHeader>
                                                     <DialogTitle>Заказать проект</DialogTitle>
                                                     <DialogDescription>
@@ -1010,7 +1036,7 @@ const ProjectDetail = () => {
                                                     Задать вопрос
                                                 </Button>
                                             </DialogTrigger>
-                                            <DialogContent className="sm:max-w-[500px]">
+                                            <DialogContent className="max-h-screen overflow-y-auto">
                                                 <DialogHeader>
                                                     <DialogTitle>Задать вопрос</DialogTitle>
                                                     <DialogDescription>Заполните форму ниже, и мы ответим на все ваши вопросы.</DialogDescription>
@@ -1021,7 +1047,7 @@ const ProjectDetail = () => {
                                                             <Label htmlFor="question-firstName">Ваше имя</Label>
                                                             <Input
                                                                 id="question-firstName"
-                                                                name="firstName"
+                                                                name="first_name"
                                                                 value={questionForm.first_name}
                                                                 onChange={handleQuestionFormChange}
                                                                 disabled={!!user?.first_name}
@@ -1030,10 +1056,10 @@ const ProjectDetail = () => {
                                                         </div>
                                                         <div className="grid gap-4 py-4">
                                                             <div className="grid grid-cols-1 gap-2">
-                                                                <Label htmlFor="question-lastName">Ваше имя</Label>
+                                                                <Label htmlFor="question-lastName">Ваша фамилия</Label>
                                                                 <Input
                                                                     id="question-lastName"
-                                                                    name="lastName"
+                                                                    name="last_name"
                                                                     value={questionForm.last_name}
                                                                     onChange={handleQuestionFormChange}
                                                                     disabled={!!user?.last_name}

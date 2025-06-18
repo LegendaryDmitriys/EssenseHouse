@@ -4,6 +4,8 @@ import { CalendarDays, Trophy, Home, Award, Users, Hammer, Sparkles, Phone, Targ
 import CompanyHistory from "@/components/home/CompanyHistory";
 import TeamSection from "@/components/home/TeamSection";
 import { Button } from "@/components/ui/button";
+import ContactForm from "@/components/home/ContactForm.tsx";
+import React, {useState} from "react";
 
 const values = [
     {
@@ -48,6 +50,7 @@ const advantages = [
 ];
 
 const About = () => {
+    const [isContactVisible, setIsContactVisible] = useState(false);
     return (
         <div className="min-h-screen">
             <section className="relative h-[60vh] bg-gray-900 flex items-center justify-center text-white">
@@ -161,6 +164,7 @@ const About = () => {
                             size="lg"
                             variant="secondary"
                             className="text-primary hover:text-primary"
+                            onClick={() => setIsContactVisible(true)}
                         >
                             <Phone className="w-4 h-4 mr-2" />
                             Связаться с нами
@@ -168,6 +172,10 @@ const About = () => {
                     </motion.div>
                 </div>
             </section>
+
+            {isContactVisible && (
+                <ContactForm onIsContactVisible={setIsContactVisible} />
+            )}
         </div>
     );
 };

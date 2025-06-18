@@ -13,18 +13,21 @@ import {
     Tabs,
     TabsContent
 } from '@/components/ui/tabs';
-import { LogOut, Heart, User, Package } from 'lucide-react';
+import {LogOut, Heart, User, Package, MessageCircleQuestion} from 'lucide-react';
 import UserOrderCard from '@/components/profile/UserOrderCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import {Order} from "@/types/order.ts";
 import config from "@/api/api.ts";
 import {useQuery} from "@tanstack/react-query";
 import {toast} from "@/hooks/use-toast.ts";
+import {QuestionsResponse} from "@/types/question.ts";
+import QuestionCard from "@/components/profile/QuestionCard.tsx";
 
 
 const Profile = () => {
     const { user, setUser, logout, favorites } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
+
 
     useEffect(() => {
         if (user) {
@@ -85,13 +88,13 @@ const Profile = () => {
     }, [formData, user]);
 
     const { data: orders = [], isLoading, isError, error } = useQuery<Order[], Error>({
-        queryKey: ['orders', user?.email],
+        queryKey: ['orders'],
         queryFn: async () => {
-            if (!user?.email) return []
-
-            const response = await fetch(
-                `${config.API_URL}orders/by-email/?email=${encodeURIComponent(user.email)}`
-            )
+            const response = await fetch(`${config.API_URL}orders/my-orders/`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            });
 
             if (!response.ok) {
                 const errorData = await response.json()
@@ -100,9 +103,29 @@ const Profile = () => {
 
             return await response.json()
         },
-        enabled: !!user?.email,
         retry: 1,
     })
+
+
+    const { data: questionsData, isLoading: questionsLoading } = useQuery<QuestionsResponse, Error>({
+        queryKey: ['my-questions'],
+        queryFn: async () => {
+            const response = await fetch(`${config.API_URL}questions/my-questions/`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Не удалось загрузить вопросы');
+            }
+
+            return await response.json();
+        },
+        enabled: !!localStorage.getItem('accessToken'),
+        retry: 1,
+    });
+
 
     return (
         <div className="container mx-auto px-4 py-32">
@@ -131,6 +154,14 @@ const Profile = () => {
                         >
                             <Package className="mr-2 h-4 w-4" />
                             Мои заказы
+                        </Button>
+                        <Button
+                            variant={activeTab === 'questions' ? 'default' : 'ghost'}
+                            className="w-full justify-start"
+                            onClick={() => setActiveTab('questions')}
+                        >
+                            <MessageCircleQuestion className="mr-2 h-4 w-4" />
+                            Мои вопросы
                         </Button>
                         <Button
                             variant={activeTab === 'favorites' ? 'default' : 'ghost'}
@@ -221,8 +252,6 @@ const Profile = () => {
                                         <Skeleton className="h-32 w-full" />
                                         <Skeleton className="h-32 w-full" />
                                     </div>
-                                ) : isError ? (
-                                    <div className="text-destructive text-center py-4">{error.message}</div>
                                 ) : orders.length > 0 ? (
                                     <div className="grid gap-4 md:grid-cols-2">
                                         {orders.map((order) => (
@@ -235,6 +264,68 @@ const Profile = () => {
                                         <Button variant="outline" className="mt-4" asChild>
                                             <Link to="/projects">Перейти к проектам домов</Link>
                                         </Button>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="questions" className="space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Мои вопросы</CardTitle>
+                                <CardDescription>Заявки на консультацию и вопросы по домам</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {questionsLoading ? (
+                                    <div className="space-y-4">
+                                        <Skeleton className="h-32 w-full" />
+                                        <Skeleton className="h-32 w-full" />
+                                    </div>
+                                ) : questionsData ? (
+                                    <div className="space-y-6">
+                                        {questionsData.simple_questions.length > 0 && (
+                                            <div>
+                                                <h3 className="text-lg font-semibold mb-4">Запросы на консультацию</h3>
+                                                <div className="grid gap-4 md:grid-cols-2">
+                                                    {questionsData.simple_questions.map((question) => (
+                                                        <QuestionCard
+                                                            key={`simple-${question.id}`}
+                                                            question={question}
+                                                            type="simple"
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {questionsData.house_questions.length > 0 && (
+                                            <div>
+                                                <h3 className="text-lg font-semibold mb-4">Вопросы по домам</h3>
+                                                <div className="grid gap-4 md:grid-cols-2">
+                                                    {questionsData.house_questions.map((question) => (
+                                                        <QuestionCard
+                                                            key={`house-${question.id}`}
+                                                            question={question}
+                                                            type="house"
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {questionsData.simple_questions.length === 0 && questionsData.house_questions.length === 0 && (
+                                            <div className="text-center py-8 text-muted-foreground">
+                                                <p>У вас пока нет вопросов</p>
+                                                <Button variant="outline" className="mt-4" asChild>
+                                                    <Link to="/projects">Перейти к проектам домов</Link>
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-8 text-muted-foreground">
+                                        <p>Не удалось загрузить вопросы</p>
                                     </div>
                                 )}
                             </CardContent>

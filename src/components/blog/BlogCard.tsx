@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import {BlogPost} from "@/types/blog.ts";
+import config from "@/api/api.ts";
 
 
 interface BlogCardProps {
@@ -14,11 +15,12 @@ const BlogCard = ({ post }: BlogCardProps) => {
         <Card className="overflow-hidden group hover:shadow-lg transition-shadow duration-300">
             <div className="aspect-video relative overflow-hidden">
                 <img
-                    src={post.image}
+                    src={`${config.API_URL}${post.image}`}
                     alt={post.title}
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
                 />
+                <p>{`${config.API_URL}${post.image}`}</p>
             </div>
             <CardHeader>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
